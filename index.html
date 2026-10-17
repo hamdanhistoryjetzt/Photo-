@@ -54,7 +54,7 @@
       border-radius: 14px;
       overflow: hidden;
     }
-    .card img { display: block; width: 100%; height: auto; }
+    .card img { display: block; width: 100%; height: auto; background: #10141a; }
     .card.is-broken img { display: none; }
     .card figcaption { padding: .6rem .8rem; font-size: .8rem; }
     .card a { color: var(--muted); text-decoration: none; }
@@ -160,7 +160,6 @@
           maxFiles: 10,
           clientAllowedFormats: ["image"],
           resourceType: "image"
-          // NOTE: do NOT pass `folder` — unsigned presets usually reject it.
         },
         handleWidgetEvent
       );
@@ -228,7 +227,31 @@
     }
 
     /* ------------------------------------------------------------------ */
-    /* 6. GALLERY: real-time listener with keyed DOM diffing              */
+    /* 6. CLOUDINARY TRANSFORMATION HELPERS                               */
+    /*    Build small, auto-formatted (WebP/AVIF) thumbnail URLs on the   */
+    /*    fly without storing them in the database.                       */
+    /* ------------------------------------------------------------------ */
+
+    // Inserts the given transformation segment right after "/image/upload/".
+    // Example:
+    //   base: https://res.cloudinary.com/<cloud>/image/upload/v123/abc.jpg
+    //   returns: https://res.cloudinary.com/<cloud>/image/upload/<t>/v123/abc.jpg
+    function withTransform(baseUrl, transform) {
+      if (typeof baseUrl !== "string") return baseUrl;
+      if (!baseUrl.includes("/image/upload/")) return baseUrl; // safety fallback
+      return baseUrl.replace("/image/upload/", `/image/upload/${transform}/`);
+    }
+
+    // One transform string per target width. q_auto + f_auto lets Cloudinary
+    // choose the best quality and modern format (AVIF/WebP) per visitor.
+    const THUMB_WIDTHS = [300, 500, 800];
+
+    function thumbUrl(originalUrl, width) {
+      return withTransform(originalUrl, `w_${width},c_limit,q_auto,f_auto`);
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* 7. GALLERY: real-time listener with keyed DOM diffing              */
     /* ------------------------------------------------------------------ */
 
     const cardByKey = new Map();   // firebase push key -> <figure> element
@@ -239,19 +262,34 @@
       card.dataset.key = key;
 
       const img = document.createElement("img");
-      img.src = photo.url;
       img.alt = "Photo uploaded to the public wall";
       img.loading = "lazy";
       img.decoding = "async";
+
+      // Default src = mid-size thumb (used by older browsers)
+      img.src = thumbUrl(photo.url, 500);
+
+      // srcset lets the browser pick the right size for the screen + DPR
+      img.srcset = THUMB_WIDTHS
+        .map(w => `${thumbUrl(photo.url, w)} ${w}w`)
+        .join(", ");
+
+      // Tell the browser how wide the card will render so it picks
+      // the smallest sufficient srcset entry.
+      img.sizes = "(max-width: 600px) 45vw, (max-width: 1000px) 30vw, 240px";
+
+      // Preserve the aspect ratio BEFORE load so nothing jumps.
+      // Uses the original dims — the ratio is identical after resizing.
       if (photo.width && photo.height) {
         img.width = photo.width;
         img.height = photo.height;
       }
+
       img.addEventListener("error", () => card.classList.add("is-broken"), { once: true });
 
       const caption = document.createElement("figcaption");
       const link = document.createElement("a");
-      link.href = photo.url;
+      link.href = photo.url;                 // full-res original
       link.target = "_blank";
       link.rel = "noopener noreferrer";
       link.textContent = "Open original";
@@ -276,7 +314,6 @@
       emptyEl.hidden = entries.length > 0;
 
       // 3. Insert new cards and reorder existing ones WITHOUT recreating them
-      //    (existing <img> nodes keep their decoded bitmap — no flicker/reload)
       entries.forEach((entry, index) => {
         let card = cardByKey.get(entry.key);
         if (!card) {
@@ -316,7 +353,7 @@
     }
 
     /* ------------------------------------------------------------------ */
-    /* 7. EVENT WIRING (bound exactly once)                               */
+    /* 8. EVENT WIRING                                                    */
     /* ------------------------------------------------------------------ */
 
     uploadBtn.addEventListener("click", () => {
