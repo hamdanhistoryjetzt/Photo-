@@ -5,10 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Global Live Photo Gallery</title>
     
-    <!-- Load Cloudinary and Firebase compatible scripts -->
+    <!-- 1. Load Cloudinary Script -->
     <script src="https://cloudinary.com" type="text/javascript"></script>
-    <script src="https://gstatic.com"></script>
-    <script src="https://gstatic.com"></script>
     
     <style>
         body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; min-height: 100vh; margin: 0; background-color: #f3f4f6; padding: 20px; }
@@ -17,7 +15,6 @@
         .upload-btn { background-color: #2563eb; color: white; border: none; padding: 14px 28px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: background 0.2s; }
         .upload-btn:hover { background-color: #1d4ed8; }
         
-        /* Layout for the shared gallery */
         #gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; width: 100%; max-width: 1200px; margin-top: 40px; }
         .gallery-card { background: white; padding: 10px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center; }
         .gallery-card img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; }
@@ -33,94 +30,80 @@
         Upload Photo
     </button>
 
-    <!-- Photo feed grid element -->
     <div id="gallery"></div>
 
-    <script type="text/javascript">
-        // Your real Firebase credentials securely bound to your European project space
+    <!-- 2. Modern Serverless Firebase Initialization Script Module -->
+    <script type="module">
+        import { initializeApp } from "https://gstatic.com";
+        import { getDatabase, ref, push, onValue } from "https://gstatic.com";
+
+        // Your exact Firebase project profile data
         const firebaseConfig = {
             apiKey: "AIzaSyBbxQJFi3UKNv80y2a-_adfutjIqVq8A2w",
             authDomain: "://firebaseapp.com",
-            databaseURL: "https://my-photo-gallery-40bc3-default-rtdb.europe-west1.firebasedatabase.app/", // <-- Updated with your exact European URL!
+            databaseURL: "https://firebasedatabase.app",
             projectId: "my-photo-gallery-40bc",
             storageBucket: "my-photo-gallery-40bc3.firebasestorage.app",
             messagingSenderId: "861309146437",
             appId: "1:861309146437:web:2d26303d34e98170811a2"
         };
 
-        try {
-            // Initialize Firebase app communication pipeline
-            firebase.initializeApp(firebaseConfig);
-            const database = firebase.database();
-            const photosRef = database.ref('public_photos');
+        // Boot system engines safely
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        const photosRef = ref(database, 'public_photos');
 
-            // REAL-TIME LISTENER: Fired automatically when ANY visitor drops an upload record
-            photosRef.on('value', function(snapshot) {
-                const galleryContainer = document.getElementById("gallery");
-                galleryContainer.innerHTML = ""; 
-                
-                const data = snapshot.val();
-                if (data) {
-                    Object.keys(data).reverse().forEach(function(key) {
-                        var record = data[key];
-                        
-                        var card = document.createElement("div");
-                        card.className = "gallery-card";
-                        
-                        var img = document.createElement("img");
-                        img.src = record.url;
-                        
-                        var timeLabel = document.createElement("div");
-                        timeLabel.className = "timestamp";
-                        timeLabel.innerText = new Date(record.timestamp).toLocaleDateString();
-                        
-                        card.appendChild(img);
-                        card.appendChild(timeLabel);
-                        galleryContainer.appendChild(card);
-                    });
-                }
-            }, function(error) {
-                console.error("Database subscription error: ", error);
-            });
-
-            function launchCloudinaryWidget(event) {
-                if (event) event.preventDefault();
-                
-                if (typeof cloudinary === 'undefined') {
-                    alert("Cloudinary library script failed to load. Please refresh and check internet connection.");
-                    return;
-                }
-
-                cloudinary.openUploadWidget({
-                    cloudName: 'boswge8x',
-                    uploadPreset: 'ml_default',
-                    sources: ['local', 'camera'],
-                    multiple: false
-                }, function(error, result) {
-                    if (error) {
-                        alert("Cloudinary Interface Error: " + error.message);
-                        return;
-                    }
-                    if (result && result.event === "success") {
-                        // Pushes the file URL to your global database instantly
-                        photosRef.push({
-                            url: result.info.secure_url,
-                            timestamp: Date.now()
-                        }, function(dbError) {
-                            if (dbError) {
-                                alert("Database write failed! Ensure Realtime Database is initialized in 'Test Mode'. Details: " + dbError.message);
-                            }
-                        });
-                    }
+        // LIVE FEED SYNCHRONIZER: Reads and displays database photos instantly
+        onValue(photosRef, (snapshot) => {
+            const galleryContainer = document.getElementById("gallery");
+            galleryContainer.innerHTML = ""; 
+            
+            const data = snapshot.val();
+            if (data) {
+                Object.keys(data).reverse().forEach((key) => {
+                    var record = data[key];
+                    
+                    var card = document.createElement("div");
+                    card.className = "gallery-card";
+                    
+                    var img = document.createElement("img");
+                    img.src = record.url;
+                    
+                    var timeLabel = document.createElement("div");
+                    timeLabel.className = "timestamp";
+                    timeLabel.innerText = new Date(record.timestamp).toLocaleDateString();
+                    
+                    card.appendChild(img);
+                    card.appendChild(timeLabel);
+                    galleryContainer.appendChild(card);
                 });
             }
-            
-            // Assign function explicitly to global window scope to ensure the button can access it
-            window.launchCloudinaryWidget = launchCloudinaryWidget;
+        });
 
-        } catch (initError) {
-            alert("Firebase startup crash: " + initError.message);
-        }
+        // The Cloudinary setup attached to your window frame
+        window.launchCloudinaryWidget = function(event) {
+            if (event) event.preventDefault();
+            
+            if (typeof cloudinary === 'undefined') {
+                alert("Cloudinary connection failed to load. Please refresh.");
+                return;
+            }
+
+            cloudinary.openUploadWidget({
+                cloudName: 'boswge8x',
+                uploadPreset: 'ml_default',
+                sources: ['local', 'camera'],
+                multiple: false
+            }, function(error, result) {
+                if (!error && result && result.event === "success") {
+                    // Save to Firebase Database using modern syntax
+                    push(photosRef, {
+                        url: result.info.secure_url,
+                        timestamp: Date.now()
+                    });
+                }
+            });
+        };
     </script>
 
 </body>
