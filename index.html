@@ -6,7 +6,7 @@
     <title>Global Live Photo Gallery</title>
     
     <!-- Load Core Framework Libraries -->
-    <script src="https://upload-widget.cloudinary.com/latest/global/all.js" type="text/javascript"></script>
+    <script src="https://cloudinary.com" type="text/javascript"></script>
     <script src="https://gstatic.com"></script>
     <script src="https://gstatic.com"></script>
     
@@ -37,7 +37,6 @@
 
     <!-- STEP 1: ISOLATED CLOUDINARY ENGINE RIGHT AT THE START -->
     <script type="text/javascript">
-        var savedPhotoUrl = null;
         var onUploadSuccessCallback = null;
 
         var actionButton = document.getElementById("upload_widget_btn");
@@ -50,21 +49,24 @@
                     return;
                 }
 
-                // BOTH OF YOUR CREDENTIALS ARE NOW FULLY LOCKED IN PLACE HERE
                 cloudinary.openUploadWidget({
                     cloudName: 'boswge8x',
                     uploadPreset: 'ml_default',
                     sources: ['local', 'camera'],
-                    multiple: false
+                    multiple: false,
+                    resourceType: 'auto' // Smoothly accepts both photos and video media extensions
                 }, function(error, result) {
-                    if (error) {
+                    // CRUCIAL: Only intercept genuine execution errors, ignore standard widget notification updates
+                    if (error && !result) {
                         alert("Cloudinary Setup Error: " + error.message);
                         return;
                     }
+                    
+                    // Explicitly target the SUCCESS validation event to stop popup crashing loops
                     if (result && result.event === "success") {
                         console.log("Cloudinary Upload Success:", result.info.secure_url);
                         
-                        // Hand off the URL to Firebase if the database script is ready
+                        // Hand off the URL payload to the database loop below
                         if (typeof onUploadSuccessCallback === "function") {
                             onUploadSuccessCallback(result.info.secure_url);
                         }
@@ -118,7 +120,7 @@
             }
         });
 
-        // This function handles the message from Cloudinary when an upload finishes
+        // This function handles the incoming link from Cloudinary securely
         onUploadSuccessCallback = function(url) {
             photosRef.push({
                 url: url,
