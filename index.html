@@ -138,7 +138,7 @@
 
   <header>
     <h1>Public Photo Wall</h1>
-    <p class="sub">Upload a photo — it appears instantly for everyone. <span class="badge">v8-rest</span></p>
+    <p class="sub">Upload a photo — it appears instantly for everyone. <span class="badge">v9-rest</span></p>
     <button id="upload-btn" type="button">Upload Photo</button>
     <p id="status" role="status" aria-live="polite"></p>
   </header>
@@ -150,7 +150,7 @@
     <section class="chat-section" aria-labelledby="chat-title">
       <div class="chat-header">
         <h2 id="chat-title">Live Chat</h2>
-        <span class="badge">v8-rest</span>
+        <span class="badge">v9-rest</span>
         <span class="chat-count" id="chat-count"></span>
       </div>
       <div id="chat-messages" class="chat-messages" role="log" aria-live="polite">
@@ -166,10 +166,9 @@
   </main>
 
   <script type="module">
-    const VERSION = "v8-rest";
+    const VERSION = "v9-rest";
     const POLL_MS = 3000;
 
-    // REST endpoint for the Realtime Database (same DB, different access method)
     const DB_URL = "https://my-photo-gallery-40bc3-default-rtdb.europe-west1.firebasedatabase.app";
 
     console.log(`[app] ${VERSION} booting`, new Date().toISOString());
@@ -202,7 +201,6 @@
     }
 
     /* ---------------- REST HELPERS ---------------- */
-    // cache: "no-store" forces a fresh network request every single time.
     async function restGet(path) {
       const res = await fetch(`${DB_URL}${path}.json`, {
         cache: "no-store",
@@ -361,7 +359,6 @@
             entries.push({ key, value: data[key] || {} });
           }
         }
-        // Newest first (push IDs sort chronologically)
         entries.sort((a, b) => b.key.localeCompare(a.key));
         renderPhotos(entries, reason);
       } catch (err) {
@@ -467,12 +464,14 @@
 
     async function readChat(reason) {
       try {
-        // REST equivalent of limitToLast(100)
-        const data = await restGet('/chat_messages?orderBy=%22%24key%22&limitToLast=100');
+        // FIX: no query string in the URL, so ".json" lands in the right place.
+        // Fetches ALL messages, sorts by push-key (chronological), keeps newest 100.
+        const data = await restGet("/chat_messages");
         const messages = [];
         if (data && typeof data === "object") {
           const keys = Object.keys(data).sort();
-          for (const k of keys) messages.push(data[k] || {});
+          const last = keys.slice(-100);
+          for (const k of last) messages.push(data[k] || {});
         }
         renderChat(messages, reason);
       } catch (err) {
