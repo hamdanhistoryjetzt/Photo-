@@ -1,43 +1,93 @@
-npm i cloudinary
-import { v2 as cloudinary } from 'cloudinary';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serverless Direct Upload</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f9;
+        }
+        #upload-btn {
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        #upload-btn:hover {
+            background-color: #2563eb;
+        }
+        #preview-container {
+            margin-top: 30px;
+            max-width: 90%;
+            text-align: center;
+        }
+        img, video {
+            max-width: 100%;
+            max-height: 400px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
 
-(async function() {
+    <button id="upload-btn">Upload Photo or Video</button>
+    <div id="preview-container"></div>
 
-    // Configuration
-    cloudinary.config({ 
-        cloud_name: 'boswge8x', 
-        api_key: '157613569391595', 
-        api_secret: '<your_api_secret>' // Click 'View API Keys' above to copy your API secret
-    });
-    
-    // Upload an image
-     const uploadResult = await cloudinary.uploader
-       .upload(
-           'https://res.cloudinary.com/demo/image/upload/getting-started/shoes.jpg', {
-               public_id: 'shoes',
-           }
-       )
-       .catch((error) => {
-           console.log(error);
-       });
-    
-    console.log(uploadResult);
-    
-    // Optimize delivery by resizing and applying auto-format and auto-quality
-    const optimizeUrl = cloudinary.url('shoes', {
-        fetch_format: 'auto',
-        quality: 'auto'
-    });
-    
-    console.log(optimizeUrl);
-    
-    // Transform the image: auto-crop to square aspect_ratio
-    const autoCropUrl = cloudinary.url('shoes', {
-        crop: 'auto',
-        gravity: 'auto',
-        width: 500,
-        height: 500,
-    });
-    
-    console.log(autoCropUrl);    
-})();
+    <!-- Load the Cloudinary Widget Script -->
+    <script src="https://cloudinary.com" type="text/javascript"></script>
+
+    <script type="text/javascript">
+        // Fully updated credentials using your account configuration
+        const CLOUD_NAME = "boswge8x"; 
+        const UPLOAD_PRESET = "boswge8x"; 
+
+        const uploadButton = document.getElementById("upload-btn");
+        const previewContainer = document.getElementById("preview-container");
+
+        const myWidget = cloudinary.createUploadWidget({
+            cloudName: CLOUD_NAME,
+            uploadPreset: UPLOAD_PRESET,
+            sources: ['local', 'camera'],
+            multiple: false, 
+            maxFileSize: 50000000, // 50MB limit
+            clientAllowedFormats: ["png", "jpeg", "jpg", "mp4", "mov"]
+        }, (error, result) => {
+            if (!error && result && result.event === "success") {
+                console.log('Done! Here is the file info: ', result.info);
+                
+                previewContainer.innerHTML = '';
+
+                // Show the file instantly on screen
+                if (result.info.resource_type === "image") {
+                    const img = document.createElement("img");
+                    img.src = result.info.secure_url;
+                    previewContainer.appendChild(img);
+                } else if (result.info.resource_type === "video") {
+                    const video = document.createElement("video");
+                    video.src = result.info.secure_url;
+                    video.controls = true;
+                    previewContainer.appendChild(video);
+                }
+            }
+        });
+
+        uploadButton.addEventListener("click", function() {
+            myWidget.open();
+        }, false);
+    </script>
+</body>
+</html>
