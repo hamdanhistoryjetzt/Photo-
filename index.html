@@ -7,52 +7,60 @@
 </head>
 <body>
 
-    <!-- 1. The Upload Button -->
-    <button id="upload_widget" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">
+    <!-- 1. The button exactly as you wanted it -->
+    <button id="upload_widget" class="cloudinary-button" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">
         Upload files
     </button>
 
-    <!-- 2. The Photo Display Box -->
+    <!-- 2. The landing box where the uploaded photos will show up on screen -->
     <div id="photo-preview" style="margin-top: 20px;"></div>
 
-    <!-- 3. Load Cloudinary's external script -->
+    <!-- 3. Load the secure script via HTTPS (Required for GitHub Pages) -->
     <script src="https://cloudinary.com" type="text/javascript"></script>  
 
-    <!-- 4. The Magic Logic Script -->
+    <!-- 4. The upload logic setup -->
     <script type="text/javascript">  
     try {
         var myWidget = cloudinary.createUploadWidget({
             cloudName: 'boswge8x',       
             uploadPreset: 'ml_default'   
         }, (error, result) => { 
+            // If Cloudinary returns a backend connection error, alert it
             if (error) {
-                alert("Cloudinary Configuration Error: " + error.message);
+                alert("Cloudinary Connection Error: " + error.message);
+                console.error(error);
             }
+            
+            // If the upload successfully completes
             if (!error && result && result.event === "success") { 
                 console.log('Done! Here is the image info: ', result.info); 
                 
                 var previewBox = document.getElementById("photo-preview");
-                previewBox.innerHTML = ''; // Clear old images
                 
+                // Create a temporary image element on your website screen
                 var newImage = document.createElement("img");
                 newImage.src = result.info.secure_url;
                 newImage.style.maxWidth = "300px";
                 newImage.style.borderRadius = "8px";
+                newImage.style.boxShadow = "0 4px 6px rgba(0,0,0,0.1)";
                 
+                // Append the uploaded image element below your button
                 previewBox.appendChild(newImage);
             }
         });
 
+        // Bind the open widget action securely to your button ID
         document.getElementById("upload_widget").addEventListener("click", function(e){
-            e.preventDefault();
+            e.preventDefault(); // Stop page from reloading/glitching on click
             myWidget.open();
         }, false);
 
     } catch (globalError) {
-        // If there is a typo or code error, this alert will pop up automatically
-        alert("JavaScript Failed to Load: " + globalError.message);
+        // If a script path or spelling error stops execution, show this alert
+        alert("JavaScript Execution Failed: " + globalError.message);
     }
     </script>
 
 </body>
 </html>
+
