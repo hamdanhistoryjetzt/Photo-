@@ -7,13 +7,172 @@
 
   <script src="https://upload-widget.cloudinary.com/global/all.js"></script>
 
-  <link rel="stylesheet" href="styles.css">
+  <style>
+    :root {
+      --bg: #0e1116;
+      --surface: #171c24;
+      --surface-2: #1d232c;
+      --border: #262e3a;
+      --text: #e6edf3;
+      --muted: #8b98a9;
+      --accent: #4f8cff;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* HEADER */
+    header { padding: 2.5rem 1.25rem 1.5rem; text-align: center; }
+    h1 { margin: 0 0 .35rem; font-size: clamp(1.5rem, 4vw, 2.25rem); letter-spacing: -.02em; }
+    .sub { margin: 0 0 1.5rem; color: var(--muted); font-size: .95rem; }
+    .sub .badge { font-size: .7rem; opacity: .6; }
+    #upload-btn {
+      font: inherit; font-weight: 600; font-size: 1rem;
+      padding: .8rem 1.6rem; border-radius: 999px; border: 0;
+      background: var(--accent); color: #fff; cursor: pointer;
+      transition: transform .12s ease, filter .12s ease;
+    }
+    #upload-btn:hover { filter: brightness(1.1); }
+    #upload-btn:active { transform: scale(.97); }
+    #upload-btn:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+    #status { min-height: 1.4em; margin: 1rem 0 0; font-size: .9rem; color: var(--muted); }
+
+    /* GALLERY */
+    main { padding: 1rem 1.25rem 4rem; }
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .card {
+      margin: 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .card img { display: block; width: 100%; height: auto; background: #10141a; }
+    .card.is-broken img { display: none; }
+    .card figcaption { padding: .6rem .8rem; font-size: .8rem; }
+    .card a { color: var(--muted); text-decoration: none; }
+    .card a:hover { color: var(--accent); }
+    #empty-state {
+      max-width: 1200px;
+      margin: 2rem auto;
+      text-align: center;
+      color: var(--muted);
+      font-size: .95rem;
+    }
+
+    /* CHAT */
+    .chat-section {
+      max-width: 760px;
+      margin: 3.5rem auto 0;
+      padding: 0 1.25rem;
+    }
+    .chat-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: .75rem;
+    }
+    .chat-header h2 { margin: 0; font-size: 1.15rem; letter-spacing: -.01em; }
+    .chat-header .badge { font-size: .7rem; color: var(--muted); }
+    .chat-count { font-size: .8rem; color: var(--muted); }
+    .chat-messages {
+      height: 380px;
+      overflow-y: auto;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: .75rem;
+      display: flex;
+      flex-direction: column;
+      gap: .4rem;
+    }
+    .chat-empty { margin: auto; text-align: center; color: var(--muted); font-size: .9rem; }
+    .chat-empty[hidden] { display: none !important; }
+    .chat-message {
+      padding: .5rem .7rem;
+      border-radius: 10px;
+      background: var(--surface-2);
+      border: 1px solid transparent;
+      word-wrap: break-word;
+      overflow-wrap: anywhere;
+      line-height: 1.35;
+    }
+    .chat-message.is-own {
+      border-color: rgba(79, 140, 255, .35);
+      background: rgba(79, 140, 255, .08);
+    }
+    .chat-message-meta {
+      display: flex;
+      align-items: baseline;
+      gap: .5rem;
+      font-size: .75rem;
+      margin-bottom: .15rem;
+    }
+    .chat-name { font-weight: 600; color: var(--accent); }
+    .chat-you {
+      font-size: .65rem;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0 .3rem;
+    }
+    .chat-time { color: var(--muted); margin-left: auto; }
+    .chat-text { font-size: .92rem; }
+    .chat-status {
+      min-height: 1.2em;
+      margin: .4rem 0 0;
+      font-size: .8rem;
+      color: var(--muted);
+    }
+    .chat-form { display: flex; gap: .5rem; margin-top: .5rem; }
+    .chat-form input {
+      font: inherit;
+      color: var(--text);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: .6rem .8rem;
+      outline: none;
+    }
+    .chat-form input:focus { border-color: var(--accent); }
+    #chat-name { width: 130px; flex: 0 0 auto; }
+    #chat-text { flex: 1 1 auto; min-width: 0; }
+    .chat-form button {
+      font: inherit; font-weight: 600;
+      background: var(--accent); color: #fff;
+      border: 0; border-radius: 10px;
+      padding: .6rem 1rem; cursor: pointer;
+      transition: filter .12s ease;
+      min-width: 90px;
+    }
+    .chat-form button:hover { filter: brightness(1.1); }
+    .chat-form button:disabled { opacity: .6; cursor: not-allowed; }
+
+    @media (max-width: 520px) {
+      .chat-form { flex-wrap: wrap; }
+      #chat-name { width: 100%; }
+      .chat-form button { width: 100%; }
+    }
+  </style>
 </head>
 <body>
 
   <header>
     <h1>Public Photo Wall</h1>
-    <p class="sub">Upload a photo — it appears instantly for everyone.</p>
+    <p class="sub">Upload a photo — it appears instantly for everyone. <span class="badge">v5-single-file</span></p>
     <button id="upload-btn" type="button">Upload Photo</button>
     <p id="status" role="status" aria-live="polite"></p>
   </header>
@@ -25,15 +184,13 @@
     <section class="chat-section" aria-labelledby="chat-title">
       <div class="chat-header">
         <h2 id="chat-title">Live Chat</h2>
+        <span class="badge">v5-single-file</span>
         <span class="chat-count" id="chat-count"></span>
       </div>
-
       <div id="chat-messages" class="chat-messages" role="log" aria-live="polite">
         <p class="chat-empty" id="chat-empty">No messages yet. Say hi!</p>
       </div>
-
       <p id="chat-status" class="chat-status" role="status" aria-live="polite"></p>
-
       <form id="chat-form" class="chat-form" autocomplete="off">
         <input id="chat-name" type="text" placeholder="Your name" maxlength="24" aria-label="Your name" />
         <input id="chat-text" type="text" placeholder="Say something…" maxlength="500" required aria-label="Message" />
@@ -42,6 +199,383 @@
     </section>
   </main>
 
-  <script type="module" src="./js/main.js"></script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getDatabase, ref, push, onValue, get, query, limitToLast, serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+    const VERSION = "v5";
+    const POLL_MS = 3000;
+    console.log(`[app] ${VERSION} booting`, new Date().toISOString());
+
+    /* ---------------- CONFIG ---------------- */
+    const firebaseConfig = {
+      apiKey: "AIzaSyBbxQJFi3UKNv80y2a-_adfutjIqVq8A2w",
+      authDomain: "my-photo-gallery-40bc.firebaseapp.com",
+      databaseURL: "https://my-photo-gallery-40bc3-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "my-photo-gallery-40bc",
+      storageBucket: "my-photo-gallery-40bc3.firebasestorage.app",
+      messagingSenderId: "861309146437",
+      appId: "1:861309146437:web:2d26303d34e98170811a2"
+    };
+    const CLOUD_NAME = "boswge8x";
+    const UPLOAD_PRESET = "ml_default";
+    const DB_PATH = "public_photos";
+    const CHAT_PATH = "chat_messages";
+    const CHAT_LIMIT = 100;
+    const CHAT_RATE_MS = 1500;
+    const THUMB_WIDTHS = [300, 500, 800];
+
+    /* ---------------- FIREBASE ---------------- */
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const photosRef = ref(db, DB_PATH);
+    const chatQuery = query(ref(db, CHAT_PATH), limitToLast(CHAT_LIMIT));
+
+    onValue(ref(db, ".info/connected"), (s) =>
+      console.log("[db] connected:", s.val() === true));
+
+    /* ---------------- DOM ---------------- */
+    const galleryEl = document.getElementById("gallery");
+    const emptyEl   = document.getElementById("empty-state");
+    const statusEl  = document.getElementById("status");
+
+    const chatMsgsEl = document.getElementById("chat-messages");
+    const chatEmptyEl = document.getElementById("chat-empty");
+    const chatCountEl = document.getElementById("chat-count");
+    const chatStatusEl = document.getElementById("chat-status");
+    const chatForm = document.getElementById("chat-form");
+    const chatNameInput = document.getElementById("chat-name");
+    const chatTextInput = document.getElementById("chat-text");
+    const chatSendBtn = document.getElementById("chat-send");
+
+    function setStatus(msg) { statusEl.textContent = msg; }
+
+    /* ---------------- CLOUDINARY HELPERS ---------------- */
+    function withTransform(url, transform) {
+      if (typeof url !== "string" || !url.includes("/image/upload/")) return url;
+      return url.replace("/image/upload/", `/image/upload/${transform}/`);
+    }
+    function thumbUrl(url, w) {
+      return withTransform(url, `w_${w},c_limit,q_auto,f_auto`);
+    }
+
+    /* ---------------- UPLOAD ---------------- */
+    let widget = null;
+    let pendingSaves = 0;
+
+    function getWidget() {
+      if (widget) return widget;
+      if (!window.cloudinary || typeof window.cloudinary.createUploadWidget !== "function") {
+        setStatus("Upload widget failed to load.");
+        return null;
+      }
+      widget = window.cloudinary.createUploadWidget(
+        {
+          cloudName: CLOUD_NAME,
+          uploadPreset: UPLOAD_PRESET,
+          sources: ["local", "url", "camera"],
+          multiple: true,
+          maxFiles: 10,
+          clientAllowedFormats: ["image"],
+          resourceType: "image"
+        },
+        (error, result) => {
+          if (error) { console.error("[cloudinary]", error); setStatus("Upload failed."); return; }
+          if (!result?.event) return;
+          switch (result.event) {
+            case "upload-added": setStatus("Uploading…"); break;
+            case "success": savePhoto(result.info); break;
+            case "queues-end":
+              if (pendingSaves === 0) setStatus("Upload complete.");
+              break;
+            case "close":
+              if (pendingSaves === 0) setStatus("");
+              break;
+          }
+        }
+      );
+      return widget;
+    }
+
+    async function savePhoto(info) {
+      pendingSaves++;
+      setStatus("Saving to the wall…");
+      try {
+        const r = await push(photosRef, {
+          url: info.secure_url,
+          publicId: info.public_id,
+          width: info.width || null,
+          height: info.height || null,
+          format: info.format || null,
+          createdAt: serverTimestamp(),
+          uploadedAt: Date.now()
+        });
+        console.log("[upload] saved:", r.key);
+        setStatus("Photo added to the wall.");
+        // Force an immediate re-read so the photo appears right away
+        forceReadPhotos("after upload");
+      } catch (err) {
+        console.error("[upload] push failed:", err);
+        setStatus("Photo uploaded, but saving to the wall failed.");
+      } finally {
+        pendingSaves--;
+      }
+    }
+
+    document.getElementById("upload-btn").addEventListener("click", () => {
+      const w = getWidget();
+      if (w) w.open();
+    });
+
+    /* ---------------- GALLERY ---------------- */
+    const cardByKey = new Map();
+    let lastPhotoKeys = "";
+
+    function createCard(key, photo) {
+      const card = document.createElement("figure");
+      card.className = "card";
+      card.dataset.key = key;
+
+      const img = document.createElement("img");
+      img.alt = "Photo on the wall";
+      img.loading = "lazy";
+      img.decoding = "async";
+      img.src = thumbUrl(photo.url, 500);
+      img.srcset = THUMB_WIDTHS.map(w => `${thumbUrl(photo.url, w)} ${w}w`).join(", ");
+      img.sizes = "(max-width: 600px) 45vw, (max-width: 1000px) 30vw, 240px";
+      if (photo.width && photo.height) { img.width = photo.width; img.height = photo.height; }
+      img.addEventListener("error", () => card.classList.add("is-broken"), { once: true });
+
+      const caption = document.createElement("figcaption");
+      const link = document.createElement("a");
+      link.href = photo.url;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.textContent = "Open original";
+      caption.appendChild(link);
+
+      card.append(img, caption);
+      return card;
+    }
+
+    function renderPhotos(entries, reason) {
+      const key = entries.map(e => e.key).join("|");
+      if (key === lastPhotoKeys) return; // no change
+      lastPhotoKeys = key;
+
+      const incoming = new Set(entries.map(e => e.key));
+      for (const [k, el] of cardByKey) {
+        if (!incoming.has(k)) { el.remove(); cardByKey.delete(k); }
+      }
+      emptyEl.hidden = entries.length > 0;
+
+      entries.forEach((entry, i) => {
+        let card = cardByKey.get(entry.key);
+        if (!card) { card = createCard(entry.key, entry.value); cardByKey.set(entry.key, card); }
+        const at = galleryEl.children[i] || null;
+        if (at !== card) galleryEl.insertBefore(card, at);
+      });
+
+      console.log(`[gallery] ${reason}:`, entries.length, "photo(s)",
+                  entries.map(e => e.key.slice(-6)));
+    }
+
+    async function forceReadPhotos(reason) {
+      try {
+        const snap = await get(photosRef);
+        const entries = [];
+        snap.forEach(c => entries.push({ key: c.key, value: c.val() }));
+        entries.reverse();
+        renderPhotos(entries, reason);
+      } catch (err) {
+        console.error(`[gallery] forceRead(${reason}):`, err);
+      }
+    }
+
+    onValue(photosRef, (snap) => {
+      try {
+        const entries = [];
+        snap.forEach(c => entries.push({ key: c.key, value: c.val() }));
+        entries.reverse();
+        renderPhotos(entries, "onValue");
+      } catch (err) { console.error("[gallery] onValue handler:", err); }
+    }, (err) => console.error("[gallery] listener error:", err));
+
+    forceReadPhotos("initial");
+    setInterval(() => forceReadPhotos("poll"), POLL_MS);
+
+    /* ---------------- CHAT ---------------- */
+    const CHAT_CLIENT_ID = (() => {
+      try {
+        const existing = localStorage.getItem("chat_client_id");
+        if (existing) return existing;
+        const id = (crypto.randomUUID && crypto.randomUUID()) ||
+                   (Date.now().toString(36) + Math.random().toString(36).slice(2));
+        localStorage.setItem("chat_client_id", id);
+        return id;
+      } catch {
+        return "anon-" + Math.random().toString(36).slice(2);
+      }
+    })();
+
+    try {
+      const saved = localStorage.getItem("chat_name");
+      if (saved) chatNameInput.value = saved;
+    } catch {}
+
+    let lastSend = 0;
+    let sending = false;
+    let lastChatKey = "";
+
+    function chatStatus(msg, ms = 4000) {
+      console.log("[chat-status]", msg || "(clear)");
+      chatStatusEl.textContent = msg;
+      if (msg) setTimeout(() => {
+        if (chatStatusEl.textContent === msg) chatStatusEl.textContent = "";
+      }, ms);
+    }
+
+    function fmtTime(ts) {
+      const d = new Date(ts);
+      if (isNaN(d.getTime())) return "";
+      return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    }
+
+    function renderChat(messages, reason) {
+      const key = messages.map(m =>
+        `${m.clientId || ""}|${m.clientSentAt || 0}|${m.text || ""}`
+      ).join("§");
+      if (key === lastChatKey) return;
+      lastChatKey = key;
+
+      const nearBottom =
+        chatMsgsEl.scrollHeight - chatMsgsEl.scrollTop - chatMsgsEl.clientHeight < 80;
+
+      for (const child of Array.from(chatMsgsEl.children)) {
+        if (child !== chatEmptyEl) child.remove();
+      }
+      chatEmptyEl.hidden = messages.length > 0;
+      chatCountEl.textContent = messages.length
+        ? `${messages.length} message${messages.length === 1 ? "" : "s"}`
+        : "";
+
+      for (const msg of messages) {
+        const row = document.createElement("div");
+        row.className = "chat-message";
+        if (msg.clientId && msg.clientId === CHAT_CLIENT_ID) row.classList.add("is-own");
+
+        const meta = document.createElement("div");
+        meta.className = "chat-message-meta";
+
+        const name = document.createElement("span");
+        name.className = "chat-name";
+        name.textContent = String(msg.name || "Anonymous").slice(0, 24);
+        meta.appendChild(name);
+
+        if (row.classList.contains("is-own")) {
+          const you = document.createElement("span");
+          you.className = "chat-you";
+          you.textContent = "You";
+          meta.appendChild(you);
+        }
+
+        const time = document.createElement("span");
+        time.className = "chat-time";
+        time.textContent = fmtTime(msg.createdAt || msg.clientSentAt || Date.now());
+        meta.appendChild(time);
+
+        const text = document.createElement("div");
+        text.className = "chat-text";
+        text.textContent = String(msg.text || "");
+
+        row.append(meta, text);
+        chatMsgsEl.appendChild(row);
+      }
+
+      if (nearBottom) chatMsgsEl.scrollTop = chatMsgsEl.scrollHeight;
+      console.log(`[chat] ${reason}:`, messages.length, "message(s)");
+    }
+
+    async function forceReadChat(reason) {
+      try {
+        const snap = await get(chatQuery);
+        const messages = [];
+        snap.forEach(c => messages.push(c.val() || {}));
+        renderChat(messages, reason);
+      } catch (err) {
+        console.error(`[chat] forceRead(${reason}):`, err);
+      }
+    }
+
+    onValue(chatQuery, (snap) => {
+      try {
+        const messages = [];
+        snap.forEach(c => messages.push(c.val() || {}));
+        renderChat(messages, "onValue");
+      } catch (err) { console.error("[chat] onValue handler:", err); }
+    }, (err) => console.error("[chat] listener error:", err));
+
+    forceReadChat("initial");
+    setInterval(() => forceReadChat("poll"), POLL_MS);
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") {
+        forceReadPhotos("visibility");
+        forceReadChat("visibility");
+      }
+    });
+
+    chatForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      console.log("[chat] submit", { sending, lastSend });
+
+      if (sending) { chatStatus("Still sending…"); return; }
+      const text = chatTextInput.value.trim();
+      if (!text) { chatStatus("Type a message first."); return; }
+
+      const now = Date.now();
+      if (now - lastSend < CHAT_RATE_MS) {
+        chatStatus(`Please wait ${((CHAT_RATE_MS - (now - lastSend)) / 1000).toFixed(1)}s.`);
+        return;
+      }
+
+      const rawName = chatNameInput.value.trim();
+      const name = rawName ? rawName.slice(0, 24) : "Anonymous";
+      try { localStorage.setItem("chat_name", name); } catch {}
+
+      sending = true;
+      chatSendBtn.disabled = true;
+      const origLabel = chatSendBtn.textContent;
+      chatSendBtn.textContent = "Sending…";
+      lastSend = now;
+      chatStatus("Sending…", 12000);
+
+      try {
+        const r = await push(ref(db, CHAT_PATH), {
+          name,
+          text: text.slice(0, 500),
+          clientId: CHAT_CLIENT_ID,
+          createdAt: serverTimestamp(),
+          clientSentAt: now
+        });
+        console.log("[chat] sent:", r.key);
+        chatTextInput.value = "";
+        chatTextInput.focus();
+        await forceReadChat("after push");
+        chatStatus("Sent.");
+      } catch (err) {
+        console.error("[chat] push failed:", err);
+        chatStatus("Failed: " + (err?.message || "unknown"), 8000);
+      } finally {
+        sending = false;
+        chatSendBtn.disabled = false;
+        chatSendBtn.textContent = origLabel;
+      }
+    });
+
+    console.log(`[app] ${VERSION} ready`);
+  </script>
 </body>
 </html>
