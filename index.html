@@ -1,135 +1,328 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Global Live Photo Gallery</title>
-    
-    <!-- Load Core Global Framework Libraries -->
-    <script src="https://cloudinary.com" type="text/javascript"></script>
-    <script src="https://gstatic.com"></script>
-    <script src="https://gstatic.com"></script>
-    
-    <style>
-        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; min-height: 100vh; margin: 0; background-color: #f3f4f6; padding: 20px; }
-        h1 { color: #1f2937; margin-bottom: 5px; }
-        p { color: #4b5563; margin-bottom: 25px; }
-        .upload-btn { background-color: #2563eb; color: white; border: none; padding: 14px 28px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: background 0.2s; }
-        .upload-btn:hover { background-color: #1d4ed8; }
-        
-        /* Shared Live Layout grid */
-        #gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; width: 100%; max-width: 1200px; margin-top: 40px; }
-        .gallery-card { background: white; padding: 10px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center; }
-        .gallery-card img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; }
-        .timestamp { font-size: 12px; color: #9ca3af; margin-top: 8px; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Public Photo Wall</title>
+
+  <!-- Cloudinary Upload Widget (global, must load before the module below runs) -->
+  <script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>
+
+  <style>
+    :root {
+      --bg: #0e1116;
+      --surface: #171c24;
+      --border: #262e3a;
+      --text: #e6edf3;
+      --muted: #8b98a9;
+      --accent: #4f8cff;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    header { padding: 2.5rem 1.25rem 1.5rem; text-align: center; }
+    h1 { margin: 0 0 .35rem; font-size: clamp(1.5rem, 4vw, 2.25rem); letter-spacing: -.02em; }
+    .sub { margin: 0 0 1.5rem; color: var(--muted); font-size: .95rem; }
+    #upload-btn {
+      font: inherit; font-weight: 600; font-size: 1rem;
+      padding: .8rem 1.6rem; border-radius: 999px; border: 0;
+      background: var(--accent); color: #fff; cursor: pointer;
+      transition: transform .12s ease, filter .12s ease;
+    }
+    #upload-btn:hover { filter: brightness(1.1); }
+    #upload-btn:active { transform: scale(.97); }
+    #upload-btn:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+    #status { min-height: 1.4em; margin: 1rem 0 0; font-size: .9rem; color: var(--muted); }
+
+    main { padding: 1rem 1.25rem 4rem; }
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .card {
+      margin: 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .card img { display: block; width: 100%; height: auto; }
+    .card.is-broken img { display: none; }
+    .card figcaption { padding: .6rem .8rem; font-size: .8rem; }
+    .card a { color: var(--muted); text-decoration: none; }
+    .card a:hover { color: var(--accent); }
+
+    #empty-state {
+      max-width: 1200px;
+      margin: 2rem auto;
+      text-align: center;
+      color: var(--muted);
+      font-size: .95rem;
+    }
+  </style>
 </head>
 <body>
 
+  <header>
     <h1>Public Photo Wall</h1>
-    <p>Upload a photo to show it to everyone visiting this site instantly!</p>
+    <p class="sub">Upload a photo — it appears instantly for everyone.</p>
+    <button id="upload-btn" type="button">Upload Photo</button>
+    <p id="status" role="status" aria-live="polite"></p>
+  </header>
 
-    <!-- The Action Trigger Button -->
-    <button id="upload_widget_btn" class="upload-btn">
-        Upload Photo
-    </button>
+  <main>
+    <p id="empty-state">No photos yet. Be the first to upload one!</p>
+    <div id="gallery" class="gallery"></div>
+  </main>
 
-    <!-- This is where everyone's photos stream onto the wall automatically -->
-    <div id="gallery"></div>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getDatabase,
+      ref,
+      push,
+      onValue,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-    <!-- STEP 1: ISOLATED CLOUDINARY ENGINE RIGHT AT THE START -->
-    <script type="text/javascript">
-        var onUploadSuccessCallback = null;
+    /* ------------------------------------------------------------------ */
+    /* 1. CONFIG                                                          */
+    /* ------------------------------------------------------------------ */
 
-        var actionButton = document.getElementById("upload_widget_btn");
-        if (actionButton) {
-            actionButton.addEventListener("click", function(event) {
-                if (event) event.preventDefault();
-                
-                if (typeof cloudinary === 'undefined') {
-                    alert("Cloudinary scripts are loading. Please wait 3 seconds and click again!");
-                    return;
-                }
+    const firebaseConfig = {
+      apiKey: "AIzaSyBbxQJFi3UKNv80y2a-_adfutjIqVq8A2w",
+      authDomain: "my-photo-gallery-40bc.firebaseapp.com",
+      databaseURL: "https://my-photo-gallery-40bc3-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "my-photo-gallery-40bc",
+      storageBucket: "my-photo-gallery-40bc3.firebasestorage.app",
+      messagingSenderId: "861309146437",
+      appId: "1:861309146437:web:2d26303d34e98170811a2"
+    };
 
-                cloudinary.openUploadWidget({
-                    cloudName: 'boswge8x',
-                    uploadPreset: 'ml_default',
-                    sources: ['local', 'camera'],
-                    multiple: false,
-                    resourceType: 'auto'
-                }, function(error, result) {
-                    // Ignore standard configuration check notifications, look for explicit success
-                    if (error && !result) {
-                        console.error("Cloudinary Notification:", error.message);
-                        return;
-                    }
-                    
-                    if (result && result.event === "success") {
-                        console.log("Cloudinary Upload Success:", result.info.secure_url);
-                        
-                        // Hand off the URL data cleanly to the Firebase pipeline below
-                        if (typeof onUploadSuccessCallback === "function") {
-                            onUploadSuccessCallback(result.info.secure_url);
-                        }
-                    }
-                });
-            });
-        }
-    </script>
+    const CLOUD_NAME = "boswge8x";
+    const UPLOAD_PRESET = "ml_default";   // must be UNSIGNED in Cloudinary
+    const DB_PATH = "public_photos";
 
-    <!-- STEP 2: DATABASE DATA PIPELINE RUNS INDEPENDENTLY BELOW -->
-    <script type="text/javascript">
-        // Your real Europe-west1 Firebase credentials fully integrated
-        const firebaseConfig = {
-            apiKey: "AIzaSyBbxQJFi3UKNv80y2a-_adfutjIqVq8A2w",
-            authDomain: "://firebaseapp.com",
-            databaseURL: "https://firebasedatabase.app",
-            projectId: "my-photo-gallery-40bc",
-            storageBucket: "my-photo-gallery-40bc3.firebasestorage.app",
-            messagingSenderId: "861309146437",
-            appId: "1:861309146437:web:2d26303d34e98170811a2"
-        };
+    /* ------------------------------------------------------------------ */
+    /* 2. DOM REFS (grabbed once, never replaced)                         */
+    /* ------------------------------------------------------------------ */
 
-        // Initialize your database link
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
-        const photosRef = database.ref('public_photos');
+    const uploadBtn = document.getElementById("upload-btn");
+    const galleryEl = document.getElementById("gallery");
+    const statusEl  = document.getElementById("status");
+    const emptyEl   = document.getElementById("empty-state");
 
-        // REAL-TIME UPDATER: Downloads photo URLs and adds them to your gallery feed instantly
-        photosRef.on('value', function(snapshot) {
-            const galleryContainer = document.getElementById("gallery");
-            galleryContainer.innerHTML = ""; 
-            
-            const data = snapshot.val();
-            if (data) {
-                Object.keys(data).reverse().forEach(function(key) {
-                    var record = data[key];
-                    
-                    var card = document.createElement("div");
-                    card.className = "gallery-card";
-                    
-                    var img = document.createElement("img");
-                    img.src = record.url;
-                    
-                    var timeLabel = document.createElement("div");
-                    timeLabel.className = "timestamp";
-                    timeLabel.innerText = new Date(record.timestamp).toLocaleDateString();
-                    
-                    card.appendChild(img);
-                    card.appendChild(timeLabel);
-                    galleryContainer.appendChild(card);
-                });
-            }
+    function setStatus(msg) { statusEl.textContent = msg; }
+
+    /* ------------------------------------------------------------------ */
+    /* 3. FIREBASE INIT                                                   */
+    /* ------------------------------------------------------------------ */
+
+    let photosRef = null;
+
+    try {
+      const app = initializeApp(firebaseConfig);
+      photosRef = ref(getDatabase(app), DB_PATH);
+    } catch (err) {
+      console.error("[firebase] init failed:", err);
+      setStatus("Database configuration error — check the console.");
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* 4. CLOUDINARY UPLOAD WIDGET                                        */
+    /* ------------------------------------------------------------------ */
+
+    let widget = null;
+    let pendingSaves = 0;   // prevents the "close" event wiping live status
+
+    function getWidget() {
+      if (widget) return widget;
+
+      if (!window.cloudinary || typeof window.cloudinary.createUploadWidget !== "function") {
+        setStatus("Upload widget failed to load. Check your connection.");
+        return null;
+      }
+
+      widget = window.cloudinary.createUploadWidget(
+        {
+          cloudName: CLOUD_NAME,
+          uploadPreset: UPLOAD_PRESET,
+          sources: ["local", "url", "camera"],
+          multiple: true,
+          maxFiles: 10,
+          clientAllowedFormats: ["image"],
+          resourceType: "image"
+          // NOTE: do NOT pass `folder` — unsigned presets usually reject it.
+        },
+        handleWidgetEvent
+      );
+
+      return widget;
+    }
+
+    function handleWidgetEvent(error, result) {
+      if (error) {
+        console.error("[cloudinary] widget error:", error);
+        setStatus("Upload failed. Please try again.");
+        return;
+      }
+      if (!result || !result.event) return;
+
+      switch (result.event) {
+        case "upload-added":
+          setStatus("Uploading…");
+          break;
+
+        case "success":
+          savePhoto(result.info);   // fires once per file
+          break;
+
+        case "queues-end":
+          if (pendingSaves === 0) setStatus("Upload complete.");
+          break;
+
+        case "close":
+          if (pendingSaves === 0) setStatus("");
+          break;
+      }
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* 5. BRIDGE: Cloudinary success → Firebase push                      */
+    /* ------------------------------------------------------------------ */
+
+    async function savePhoto(info) {
+      if (!photosRef) {
+        setStatus("Photo uploaded, but the wall is offline.");
+        return;
+      }
+
+      pendingSaves++;
+      setStatus("Saving to the wall…");
+
+      try {
+        await push(photosRef, {
+          url: info.secure_url,
+          publicId: info.public_id,
+          width: info.width || null,
+          height: info.height || null,
+          format: info.format || null,
+          createdAt: serverTimestamp(),
+          uploadedAt: Date.now()
         });
+        setStatus("Photo added to the wall.");
+      } catch (err) {
+        console.error("[firebase] push failed:", err);
+        setStatus("Photo uploaded, but saving to the wall failed.");
+      } finally {
+        pendingSaves--;
+      }
+    }
 
-        // Pushes the file URL to your global database room on upload success
-        onUploadSuccessCallback = function(url) {
-            photosRef.push({
-                url: url,
-                timestamp: Date.now()
+    /* ------------------------------------------------------------------ */
+    /* 6. GALLERY: real-time listener with keyed DOM diffing              */
+    /* ------------------------------------------------------------------ */
+
+    const cardByKey = new Map();   // firebase push key -> <figure> element
+
+    function createCard(key, photo) {
+      const card = document.createElement("figure");
+      card.className = "card";
+      card.dataset.key = key;
+
+      const img = document.createElement("img");
+      img.src = photo.url;
+      img.alt = "Photo uploaded to the public wall";
+      img.loading = "lazy";
+      img.decoding = "async";
+      if (photo.width && photo.height) {
+        img.width = photo.width;
+        img.height = photo.height;
+      }
+      img.addEventListener("error", () => card.classList.add("is-broken"), { once: true });
+
+      const caption = document.createElement("figcaption");
+      const link = document.createElement("a");
+      link.href = photo.url;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.textContent = "Open original";
+      caption.appendChild(link);
+
+      card.append(img, caption);
+      return card;
+    }
+
+    function renderGallery(entries) {
+      const incomingKeys = new Set(entries.map(e => e.key));
+
+      // 1. Remove cards that were deleted from the database
+      for (const [key, el] of cardByKey) {
+        if (!incomingKeys.has(key)) {
+          el.remove();
+          cardByKey.delete(key);
+        }
+      }
+
+      // 2. Empty state toggle
+      emptyEl.hidden = entries.length > 0;
+
+      // 3. Insert new cards and reorder existing ones WITHOUT recreating them
+      //    (existing <img> nodes keep their decoded bitmap — no flicker/reload)
+      entries.forEach((entry, index) => {
+        let card = cardByKey.get(entry.key);
+        if (!card) {
+          card = createCard(entry.key, entry.value);
+          cardByKey.set(entry.key, card);
+        }
+        const currentAtSlot = galleryEl.children[index] || null;
+        if (currentAtSlot !== card) {
+          galleryEl.insertBefore(card, currentAtSlot);
+        }
+      });
+    }
+
+    if (photosRef) {
+      onValue(
+        photosRef,
+        (snapshot) => {
+          try {
+            const entries = [];
+            snapshot.forEach((child) => {
+              entries.push({ key: child.key, value: child.val() });
             });
-        };
-    </script>
 
+            // Firebase push IDs sort chronologically → reverse for newest-first
+            entries.reverse();
+
+            renderGallery(entries);
+          } catch (err) {
+            console.error("[gallery] render failed:", err);
+          }
+        },
+        (err) => {
+          console.error("[firebase] listener error:", err);
+          setStatus("Lost connection to the photo wall.");
+        }
+      );
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* 7. EVENT WIRING (bound exactly once)                               */
+    /* ------------------------------------------------------------------ */
+
+    uploadBtn.addEventListener("click", () => {
+      const w = getWidget();
+      if (w) w.open();
+    });
+  </script>
 </body>
 </html>
