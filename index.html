@@ -1,16 +1,39 @@
+<!-- 1. The upload button -->
 <button id="upload_widget" class="cloudinary-button">Upload files</button>
 
+<!-- 2. The empty placeholder box where the photo will appear -->
+<div id="photo-preview" style="margin-top: 20px;"></div>
+
 <!-- Load the Cloudinary Widget Script -->
-<script src="https://upload-widget.cloudinary.com/latest/global/all.js" type="text/javascript"></script>  
+<script src="https://cloudinary.com" type="text/javascript"></script>  
 
 <script type="text/javascript">  
 var myWidget = cloudinary.createUploadWidget({
-  cloudName: 'boswge8x',       // Your Cloud Name
-  uploadPreset: 'ml_default'   // Your Upload Preset
+  cloudName: 'boswge8x',       
+  uploadPreset: 'ml_default'   
 }, (error, result) => { 
     if (!error && result && result.event === "success") { 
-      // This prints the uploaded file details secretly inside your browser console
       console.log('Done! Here is the image info: ', result.info); 
+      
+      // 3. Find our placeholder box on the screen
+      var previewBox = document.getElementById("photo-preview");
+      
+      // Clear out any previous image inside it
+      previewBox.innerHTML = '';
+      
+      // 4. Create a brand new image element
+      var newImage = document.createElement("img");
+      
+      // Give it the secure web address Cloudinary sent back to us
+      newImage.src = result.info.secure_url;
+      
+      // Optional styling so the picture doesn't blow up too big
+      newImage.style.maxWidth = "100%";
+      newImage.style.maxHeight = "400px";
+      newImage.style.borderRadius = "8px";
+      
+      // 5. Throw the new image inside our preview box!
+      previewBox.appendChild(newImage);
     }
   }
 )
