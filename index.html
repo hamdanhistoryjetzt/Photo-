@@ -3,64 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cloudinary Test</title>
+    <title>Cloudinary Dynamic Upload Portal</title>
+    <!-- We load the official Cloudinary library globally right in the header -->
+    <script src="https://upload-widget.cloudinary.com/latest/global/all.js" type="text/javascript"></script>
+    <style>
+        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; background-color: #fafafa; }
+        .upload-btn { background-color: #2563eb; color: white; border: none; padding: 14px 28px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .upload-btn:hover { background-color: #1d4ed8; }
+        #preview { margin-top: 24px; text-align: center; }
+        #preview img { max-width: 90%; max-height: 400px; border-radius: 12px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+    </style>
 </head>
 <body>
 
-    <!-- 1. The button exactly as you wanted it -->
-    <button id="upload_widget" class="cloudinary-button" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">
+    <!-- The operational upload element -->
+    <button class="upload-btn" onclick="launchCloudinaryWidget(event)">
         Upload files
     </button>
 
-    <!-- 2. The landing box where the uploaded photos will show up on screen -->
-    <div id="photo-preview" style="margin-top: 20px;"></div>
+    <!-- The target display layer for your images -->
+    <div id="preview"></div>
 
-    <!-- 3. Load the secure script via HTTPS (Required for GitHub Pages) -->
-    <script src="https://cloudinary.com" type="text/javascript"></script>  
-
-    <!-- 4. The upload logic setup -->
-    <script type="text/javascript">  
-    try {
-        var myWidget = cloudinary.createUploadWidget({
-            cloudName: 'boswge8x',       
-            uploadPreset: 'ml_default'   
-        }, (error, result) => { 
-            // If Cloudinary returns a backend connection error, alert it
-            if (error) {
-                alert("Cloudinary Connection Error: " + error.message);
-                console.error(error);
-            }
+    <script type="text/javascript">
+        // Direct global function initialization to defeat scoping bugs
+        function launchCloudinaryWidget(event) {
+            if (event) event.preventDefault();
             
-            // If the upload successfully completes
-            if (!error && result && result.event === "success") { 
-                console.log('Done! Here is the image info: ', result.info); 
-                
-                var previewBox = document.getElementById("photo-preview");
-                
-                // Create a temporary image element on your website screen
-                var newImage = document.createElement("img");
-                newImage.src = result.info.secure_url;
-                newImage.style.maxWidth = "300px";
-                newImage.style.borderRadius = "8px";
-                newImage.style.boxShadow = "0 4px 6px rgba(0,0,0,0.1)";
-                
-                // Append the uploaded image element below your button
-                previewBox.appendChild(newImage);
+            try {
+                // Ensure the external library script has completely processed
+                if (typeof cloudinary === 'undefined') {
+                    alert("System Critical: The Cloudinary global network script hasn't loaded yet. Please check your internet connection and refresh.");
+                    return;
+                }
+
+                // Initialize and immediately execute the window layer concurrently
+                var checkoutWidget = cloudinary.openUploadWidget({
+                    cloudName: 'boswge8x',
+                    uploadPreset: 'ml_default',
+                    sources: ['local', 'camera'],
+                    multiple: false
+                }, function(error, result) {
+                    if (error) {
+                        alert("Cloudinary Connection Issue: " + error.message);
+                        console.error("Cloudinary error payload:", error);
+                        return;
+                    }
+                    
+                    // Intercept the valid upload event callback frame
+                    if (result && result.event === "success") {
+                        console.log("Upload resolved successfully. Details:", result.info);
+                        
+                        var targetContainer = document.getElementById("preview");
+                        targetContainer.innerHTML = ""; // Purge stale preview objects
+                        
+                        var imageDOMNode = document.createElement("img");
+                        imageDOMNode.src = result.info.secure_url;
+                        targetContainer.appendChild(imageDOMNode);
+                    }
+                });
+            } catch (runtimeError) {
+                alert("Runtime Exception: " + runtimeError.message);
             }
-        });
-
-        // Bind the open widget action securely to your button ID
-        document.getElementById("upload_widget").addEventListener("click", function(e){
-            e.preventDefault(); // Stop page from reloading/glitching on click
-            myWidget.open();
-        }, false);
-
-    } catch (globalError) {
-        // If a script path or spelling error stops execution, show this alert
-        alert("JavaScript Execution Failed: " + globalError.message);
-    }
+        }
     </script>
 
 </body>
 </html>
-
