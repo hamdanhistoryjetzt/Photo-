@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Global Live Photo Gallery</title>
     
-    <!-- 1. Load Standard Global Compatibility Network Scripts -->
-    <script src="https://cloudinary.com" type="text/javascript"></script>
+    <!-- Load Core Framework Libraries -->
+    <script src="https://upload-widget.cloudinary.com/latest/global/all.js" type="text/javascript"></script>
     <script src="https://gstatic.com"></script>
     <script src="https://gstatic.com"></script>
     
@@ -17,7 +17,6 @@
         .upload-btn { background-color: #2563eb; color: white; border: none; padding: 14px 28px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: background 0.2s; }
         .upload-btn:hover { background-color: #1d4ed8; }
         
-        /* Shared Live Layout grid */
         #gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; width: 100%; max-width: 1200px; margin-top: 40px; }
         .gallery-card { background: white; padding: 10px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center; }
         .gallery-card img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; }
@@ -29,16 +28,54 @@
     <h1>Public Photo Wall</h1>
     <p>Upload a photo to show it to everyone visiting this site instantly!</p>
 
-    <!-- The explicit trigger element -->
+    <!-- The Action Trigger Button -->
     <button id="upload_widget_btn" class="upload-btn">
         Upload Photo
     </button>
 
     <div id="gallery"></div>
 
-    <!-- 2. Reverted to Classic Global Script to Bypass Cloudinary Security Blocks -->
+    <!-- STEP 1: ISOLATED CLOUDINARY ENGINE RIGHT AT THE START -->
     <script type="text/javascript">
-        // Your precise profile credentials
+        var savedPhotoUrl = null;
+        var onUploadSuccessCallback = null;
+
+        var actionButton = document.getElementById("upload_widget_btn");
+        if (actionButton) {
+            actionButton.addEventListener("click", function(event) {
+                if (event) event.preventDefault();
+                
+                if (typeof cloudinary === 'undefined') {
+                    alert("Cloudinary scripts are loading. Please wait 3 seconds and click again!");
+                    return;
+                }
+
+                // BOTH OF YOUR CREDENTIALS ARE NOW FULLY LOCKED IN PLACE HERE
+                cloudinary.openUploadWidget({
+                    cloudName: 'boswge8x',
+                    uploadPreset: 'ml_default',
+                    sources: ['local', 'camera'],
+                    multiple: false
+                }, function(error, result) {
+                    if (error) {
+                        alert("Cloudinary Setup Error: " + error.message);
+                        return;
+                    }
+                    if (result && result.event === "success") {
+                        console.log("Cloudinary Upload Success:", result.info.secure_url);
+                        
+                        // Hand off the URL to Firebase if the database script is ready
+                        if (typeof onUploadSuccessCallback === "function") {
+                            onUploadSuccessCallback(result.info.secure_url);
+                        }
+                    }
+                });
+            });
+        }
+    </script>
+
+    <!-- STEP 2: DATABASE DATA PIPELINE RUNS INDEPENDENTLY BELOW -->
+    <script type="text/javascript">
         const firebaseConfig = {
             apiKey: "AIzaSyBbxQJFi3UKNv80y2a-_adfutjIqVq8A2w",
             authDomain: "://firebaseapp.com",
@@ -49,12 +86,12 @@
             appId: "1:861309146437:web:2d26303d34e98170811a2"
         };
 
-        // Initialize Firebase safely via Global context objects
+        // Connect to your European Database Room
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
         const photosRef = database.ref('public_photos');
 
-        // REAL-TIME SYNCHRONIZER: Keeps everyone's browser up-to-date instantly
+        // Watch for photo links and render the shared grid wall
         photosRef.on('value', function(snapshot) {
             const galleryContainer = document.getElementById("gallery");
             galleryContainer.innerHTML = ""; 
@@ -81,33 +118,13 @@
             }
         });
 
-        // Setup the secure upload panel listener
-        var actionButton = document.getElementById("upload_widget_btn");
-        if (actionButton) {
-            actionButton.addEventListener("click", function(event) {
-                if (event) event.preventDefault();
-                
-                if (typeof cloudinary === 'undefined') {
-                    alert("System Notice: Cloudinary layout scripts are still compiling. Please wait 5 seconds and click again!");
-                    return;
-                }
-
-                cloudinary.openUploadWidget({
-                    cloudName: 'boswge8x',
-                    uploadPreset: 'ml_default',
-                    sources: ['local', 'camera'],
-                    multiple: false
-                }, function(error, result) {
-                    if (!error && result && result.event === "success") {
-                        // Securely push the new image link payload to your live European room
-                        photosRef.push({
-                            url: result.info.secure_url,
-                            timestamp: Date.now()
-                        });
-                    }
-                });
+        // This function handles the message from Cloudinary when an upload finishes
+        onUploadSuccessCallback = function(url) {
+            photosRef.push({
+                url: url,
+                timestamp: Date.now()
             });
-        }
+        };
     </script>
 
 </body>
