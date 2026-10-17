@@ -138,7 +138,7 @@
 
   <header>
     <h1>Public Photo Wall</h1>
-    <p class="sub">Upload a photo — it appears instantly for everyone. <span class="badge">v9-rest</span></p>
+    <p class="sub">Upload a photo — it appears instantly for everyone. <span class="badge">v10-auth</span></p>
     <button id="upload-btn" type="button">Upload Photo</button>
     <p id="status" role="status" aria-live="polite"></p>
   </header>
@@ -150,7 +150,7 @@
     <section class="chat-section" aria-labelledby="chat-title">
       <div class="chat-header">
         <h2 id="chat-title">Live Chat</h2>
-        <span class="badge">v9-rest</span>
+        <span class="badge">v10-auth</span>
         <span class="chat-count" id="chat-count"></span>
       </div>
       <div id="chat-messages" class="chat-messages" role="log" aria-live="polite">
@@ -166,10 +166,11 @@
   </main>
 
   <script type="module">
-    const VERSION = "v9-rest";
+    const VERSION = "v10-auth";
     const POLL_MS = 3000;
 
     const DB_URL = "https://my-photo-gallery-40bc3-default-rtdb.europe-west1.firebasedatabase.app";
+    const API_KEY = "AIzaSyBbxQJFi3UKNv80y2a-_adfutjIqVq8A2w";
 
     console.log(`[app] ${VERSION} booting`, new Date().toISOString());
 
@@ -189,6 +190,48 @@
 
     function setStatus(msg) { statusEl.textContent = msg; }
 
+    /* ---------------- AUTH (anonymous) ---------------- */
+    let idToken = null;
+    let idTokenExpiry = 0;
+
+    async function ensureAuth() {
+      if (idToken && Date.now() < idTokenExpiry) return idToken;
+      // Try localStorage
+      try {
+        const saved = localStorage.getItem("fb_id_token");
+        const savedExp = parseInt(localStorage.getItem("fb_id_token_exp") || "0", 10);
+        if (saved && Date.now() < savedExp - 60000) {
+          idToken = saved;
+          idTokenExpiry = savedExp;
+          return idToken;
+        }
+      } catch {}
+      // Fresh anonymous sign-in
+      try {
+        const res = await fetch(
+          `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${API_KEY}`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ returnSecureToken: true })
+          }
+        );
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        idToken = data.idToken;
+        idTokenExpiry = Date.now() + (parseInt(data.expiresIn, 10) - 300) * 1000;
+        try {
+          localStorage.setItem("fb_id_token", idToken);
+          localStorage.setItem("fb_id_token_exp", String(idTokenExpiry));
+        } catch {}
+        console.log("[auth] signed in anonymously");
+        return idToken;
+      } catch (err) {
+        console.error("[auth] sign-in failed:", err);
+        return null;
+      }
+    }
+
     /* ---------------- CLOUDINARY THUMB HELPERS ---------------- */
     const THUMB_WIDTHS = [300, 500, 800];
 
@@ -201,17 +244,27 @@
     }
 
     /* ---------------- REST HELPERS ---------------- */
+    function buildUrl(path) {
+      // path can be "/chat_messages" or "/chat_messages?orderBy=%22%24key%22&limitToLast=100"
+      const [base, query] = path.split("?");
+      let url = `${DB_URL}${base}.json`;
+      const params = [];
+      if (query) params.push(query);
+      if (idToken) params.push(`auth=${encodeURIComponent(idToken)}`);
+      if (params.length) url += "?" + params.join("&");
+      return url;
+    }
+
     async function restGet(path) {
-      const res = await fetch(`${DB_URL}${path}.json`, {
-        cache: "no-store",
-        headers: { "Cache-Control": "no-cache" }
-      });
+      await ensureAuth();
+      const res = await fetch(buildUrl(path), { cache: "no-store" });
       if (!res.ok) throw new Error(`GET ${path} → HTTP ${res.status}`);
       return await res.json();
     }
 
     async function restPost(path, body) {
-      const res = await fetch(`${DB_URL}${path}.json`, {
+      await ensureAuth();
+      const res = await fetch(buildUrl(path), {
         method: "POST",
         cache: "no-store",
         headers: { "Content-Type": "application/json" },
@@ -287,7 +340,7 @@
         await readPhotos("after upload");
       } catch (err) {
         console.error("[upload] push failed:", err);
-        setStatus("Photo uploaded, but saving to the wall failed.");
+        setStatus("Photo uploaded, but saving failed. Try refreshing.");
       } finally {
         pendingSaves--;
       }
@@ -365,9 +418,6 @@
         console.error(`[gallery] read(${reason}):`, err);
       }
     }
-
-    readPhotos("initial");
-    setInterval(() => readPhotos("poll"), POLL_MS);
 
     /* ---------------- CHAT ---------------- */
     const CHAT_CLIENT_ID = (() => {
@@ -464,14 +514,16 @@
 
     async function readChat(reason) {
       try {
-        // FIX: no query string in the URL, so ".json" lands in the right place.
-        // Fetches ALL messages, sorts by push-key (chronological), keeps newest 100.
-        const data = await restGet("/chat_messages");
+        // Proper REST query — .json before ?, auth appended as &auth=
+        // Only downloads the newest 100 messages, not the entire history.
+        const data = await restGet(
+          '/chat_messages?orderBy=%22%24key%22&limitToLast=100'
+        );
         const messages = [];
         if (data && typeof data === "object") {
-          const keys = Object.keys(data).sort();
-          const last = keys.slice(-100);
-          for (const k of last) messages.push(data[k] || {});
+          for (const k of Object.keys(data).sort()) {
+            messages.push(data[k] || {});
+          }
         }
         renderChat(messages, reason);
       } catch (err) {
@@ -479,8 +531,15 @@
       }
     }
 
-    readChat("initial");
-    setInterval(() => readChat("poll"), POLL_MS);
+    /* ---------------- BOOT ---------------- */
+    (async () => {
+      await ensureAuth();
+      readPhotos("initial");
+      readChat("initial");
+      setInterval(() => readPhotos("poll"), POLL_MS);
+      setInterval(() => readChat("poll"), POLL_MS);
+      console.log(`[app] ${VERSION} ready`);
+    })();
 
     document.addEventListener("visibilitychange", () => {
       if (document.visibilityState === "visible") {
@@ -536,8 +595,6 @@
         chatSendBtn.textContent = origLabel;
       }
     });
-
-    console.log(`[app] ${VERSION} ready`);
   </script>
 </body>
 </html>
