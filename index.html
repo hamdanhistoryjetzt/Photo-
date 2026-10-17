@@ -1,45 +1,135 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title>Upload Widget example</title>
-  </head>
-  <body>
-    <h3>Upload Widget Example</h3>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Live Photo Gallery</title>
+    
+    <!-- Load Core Global Framework Libraries -->
+    <script src="https://cloudinary.com" type="text/javascript"></script>
+    <script src="https://gstatic.com"></script>
+    <script src="https://gstatic.com"></script>
+    
+    <style>
+        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; min-height: 100vh; margin: 0; background-color: #f3f4f6; padding: 20px; }
+        h1 { color: #1f2937; margin-bottom: 5px; }
+        p { color: #4b5563; margin-bottom: 25px; }
+        .upload-btn { background-color: #2563eb; color: white; border: none; padding: 14px 28px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: background 0.2s; }
+        .upload-btn:hover { background-color: #1d4ed8; }
+        
+        /* Shared Live Layout grid */
+        #gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; width: 100%; max-width: 1200px; margin-top: 40px; }
+        .gallery-card { background: white; padding: 10px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center; }
+        .gallery-card img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; }
+        .timestamp { font-size: 12px; color: #9ca3af; margin-top: 8px; }
+    </style>
+</head>
+<body>
 
-    <button 
-      id="upload_widget" 
-      class="cloudinary-button">
-        Upload files
+    <h1>Public Photo Wall</h1>
+    <p>Upload a photo to show it to everyone visiting this site instantly!</p>
+
+    <!-- The Action Trigger Button -->
+    <button id="upload_widget_btn" class="upload-btn">
+        Upload Photo
     </button>
-    
-    <p>
-      <a 
-        href="https://cloudinary.com/documentation/upload_widget" 
-        target="_blank">Upload Widget User Guide</a> 
-    </p>
-    <p>
-      <a 
-        href="https://cloudinary.com/documentation/upload_widget_reference" 
-        target="_blank">Upload Widget Reference</a>
-    </p>
-    
-    <!-- placeholder for uploaded image -->
-    <img  
-      id="uploadedimage" 
-      src="">
-    </img> 
 
-    <!-- cloudinary upload widget -->
-    <script 
-     src="https://widget.cloudinary.com/v2.0/global/all.js" 
-     type="text/javascript">
+    <!-- This is where everyone's photos stream onto the wall automatically -->
+    <div id="gallery"></div>
+
+    <!-- STEP 1: ISOLATED CLOUDINARY ENGINE RIGHT AT THE START -->
+    <script type="text/javascript">
+        var onUploadSuccessCallback = null;
+
+        var actionButton = document.getElementById("upload_widget_btn");
+        if (actionButton) {
+            actionButton.addEventListener("click", function(event) {
+                if (event) event.preventDefault();
+                
+                if (typeof cloudinary === 'undefined') {
+                    alert("Cloudinary scripts are loading. Please wait 3 seconds and click again!");
+                    return;
+                }
+
+                cloudinary.openUploadWidget({
+                    cloudName: 'boswge8x',
+                    uploadPreset: 'ml_default',
+                    sources: ['local', 'camera'],
+                    multiple: false,
+                    resourceType: 'auto'
+                }, function(error, result) {
+                    // Ignore standard configuration check notifications, look for explicit success
+                    if (error && !result) {
+                        console.error("Cloudinary Notification:", error.message);
+                        return;
+                    }
+                    
+                    if (result && result.event === "success") {
+                        console.log("Cloudinary Upload Success:", result.info.secure_url);
+                        
+                        // Hand off the URL data cleanly to the Firebase pipeline below
+                        if (typeof onUploadSuccessCallback === "function") {
+                            onUploadSuccessCallback(result.info.secure_url);
+                        }
+                    }
+                });
+            });
+        }
     </script>
 
-    <!-- local upload instantiation -->
-    <script 
-     src="upload_widget.js" 
-     type="text/javascript">
+    <!-- STEP 2: DATABASE DATA PIPELINE RUNS INDEPENDENTLY BELOW -->
+    <script type="text/javascript">
+        // Your real Europe-west1 Firebase credentials fully integrated
+        const firebaseConfig = {
+            apiKey: "AIzaSyBbxQJFi3UKNv80y2a-_adfutjIqVq8A2w",
+            authDomain: "://firebaseapp.com",
+            databaseURL: "https://firebasedatabase.app",
+            projectId: "my-photo-gallery-40bc",
+            storageBucket: "my-photo-gallery-40bc3.firebasestorage.app",
+            messagingSenderId: "861309146437",
+            appId: "1:861309146437:web:2d26303d34e98170811a2"
+        };
+
+        // Initialize your database link
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        const photosRef = database.ref('public_photos');
+
+        // REAL-TIME UPDATER: Downloads photo URLs and adds them to your gallery feed instantly
+        photosRef.on('value', function(snapshot) {
+            const galleryContainer = document.getElementById("gallery");
+            galleryContainer.innerHTML = ""; 
+            
+            const data = snapshot.val();
+            if (data) {
+                Object.keys(data).reverse().forEach(function(key) {
+                    var record = data[key];
+                    
+                    var card = document.createElement("div");
+                    card.className = "gallery-card";
+                    
+                    var img = document.createElement("img");
+                    img.src = record.url;
+                    
+                    var timeLabel = document.createElement("div");
+                    timeLabel.className = "timestamp";
+                    timeLabel.innerText = new Date(record.timestamp).toLocaleDateString();
+                    
+                    card.appendChild(img);
+                    card.appendChild(timeLabel);
+                    galleryContainer.appendChild(card);
+                });
+            }
+        });
+
+        // Pushes the file URL to your global database room on upload success
+        onUploadSuccessCallback = function(url) {
+            photosRef.push({
+                url: url,
+                timestamp: Date.now()
+            });
+        };
     </script>
- 
-  </body>
+
+</body>
 </html>
