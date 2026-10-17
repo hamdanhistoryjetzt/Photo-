@@ -1,10 +1,24 @@
-import { onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { onValue, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 import { photosRef } from "./firebase.js";
 import { THUMB_WIDTHS } from "./config.js";
+
+const VERSION = "v4-polling";
+const POLL_MS = 3000;
 
 const galleryEl = document.getElementById("gallery");
 const emptyEl   = document.getElementById("empty-state");
 const cardByKey = new Map();
+
+console.log(`[gallery] ${VERSION} loaded`);
+
+// Version badge in the header — proves you're running the new code
+const headerSub = document.querySelector("header .sub");
+if (headerSub) {
+  const badge = document.createElement("span");
+  badge.textContent = " · gallery " + VERSION;
+  badge.style.cssText = "font-size:.7rem;opacity:.6;";
+  headerSub.appendChild(badge);
+}
 
 function withTransform(baseUrl, transform) {
   if (typeof baseUrl !== "string") return baseUrl;
@@ -43,33 +57,72 @@ function createCard(key, photo) {
   return card;
 }
 
-function renderGallery(entries) {
-  const incomingKeys = new Set(entries.map(e => e.key));
-  for (const [key, el] of cardByKey) {
-    if (!incomingKeys.has(key)) { el.remove(); cardByKey.delete(key); }
+function renderGallery(entries, reason) {
+  try {
+    const incomingKeys = new Set(entries.map(e => e.key));
+
+    // Remove cards that no longer exist
+    for (const [key, el] of cardByKey) {
+      if (!incomingKeys.has(key)) { el.remove(); cardByKey.delete(key); }
+    }
+
+    emptyEl.hidden = entries.length > 0;
+
+    // Insert/reorder without recreating
+    entries.forEach((entry, index) => {
+      let card = cardByKey.get(entry.key);
+      if (!card) {
+        card = createCard(entry.key, entry.value);
+        cardByKey.set(entry.key, card);
+      }
+      const currentAtSlot = galleryEl.children[index] || null;
+      if (currentAtSlot !== card) galleryEl.insertBefore(card, currentAtSlot);
+    });
+
+    console.log(`[gallery] render (${reason}):`, entries.length, "photos",
+                entries.map(e => e.key.slice(-6)));
+  } catch (err) {
+    console.error("[gallery] render threw:", err);
   }
-  emptyEl.hidden = entries.length > 0;
-  entries.forEach((entry, index) => {
-    let card = cardByKey.get(entry.key);
-    if (!card) { card = createCard(entry.key, entry.value); cardByKey.set(entry.key, card); }
-    const currentAtSlot = galleryEl.children[index] || null;
-    if (currentAtSlot !== card) galleryEl.insertBefore(card, currentAtSlot);
-  });
 }
 
-export function initGallery() {
-  onValue(
-    photosRef,
-    (snapshot) => {
-      try {
-        const entries = [];
-        snapshot.forEach(child => entries.push({ key: child.key, value: child.val() }));
-        entries.reverse();
-        renderGallery(entries);
-      } catch (err) {
-        console.error("[gallery] render failed:", err);
-      }
-    },
-    (err) => console.error("[firebase] listener error:", err)
-  );
+// Live listener (may die on flaky networks)
+onValue(
+  photosRef,
+  (snapshot) => {
+    try {
+      const entries = [];
+      snapshot.forEach(child => entries.push({ key: child.key, value: child.val() }));
+      entries.reverse();
+      renderGallery(entries, "onValue");
+    } catch (err) {
+      console.error("[gallery] listener handler threw:", err);
+    }
+  },
+  (err) => console.error("[gallery] listener error:", err)
+);
+
+// Polling fallback — immune to dead WebSockets
+let polling = false;
+async function forceRead(reason) {
+  if (polling && reason === "poll") return;
+  try {
+    if (reason === "poll") polling = true;
+    const snap = await get(photosRef);
+    const entries = [];
+    snap.forEach(child => entries.push({ key: child.key, value: child.val() }));
+    entries.reverse();
+    renderGallery(entries, reason);
+  } catch (err) {
+    console.error(`[gallery] forceRead(${reason}) failed:`, err);
+  } finally {
+    if (reason === "poll") polling = false;
+  }
 }
+
+forceRead("initial");
+setInterval(() => forceRead("poll"), POLL_MS);
+
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible") forceRead("visibility");
+});
