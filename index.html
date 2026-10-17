@@ -28,9 +28,13 @@
         <h2 id="chat-title">Live Chat</h2>
         <span class="chat-count" id="chat-count"></span>
       </div>
+
       <div id="chat-messages" class="chat-messages" role="log" aria-live="polite">
-        <p class="chat-empty" id="chat-empty">No messages yet. Say hi!</p>
+        <p class="chat-empty" id="chat1-empty">No messages yet. Say hi!</p>
       </div>
+
+      <p id="chat-status" class="chat-status" role="status" aria-live="polite"></p>
+
       <form id="chat-form" class="chat-form" autocomplete="off">
         <input id="chat-name" type="text" placeholder="Your name" maxlength="24" aria-label="Your name" />
         <input id="chat-text" type="text" placeholder="Say something…" maxlength="500" required aria-label="Message" />
