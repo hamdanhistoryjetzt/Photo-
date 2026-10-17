@@ -82,10 +82,11 @@
       align-items: baseline;
       justify-content: space-between;
       margin-bottom: .75rem;
+      gap: .5rem;
     }
     .chat-header h2 { margin: 0; font-size: 1.15rem; letter-spacing: -.01em; }
     .chat-header .badge { font-size: .7rem; color: var(--muted); }
-    .chat-count { font-size: .8rem; color: var(--muted); }
+    .chat-count { font-size: .8rem; color: var(--muted); margin-left: auto; }
     .chat-messages {
       height: 380px;
       overflow-y: auto;
@@ -172,7 +173,7 @@
 
   <header>
     <h1>Public Photo Wall</h1>
-    <p class="sub">Upload a photo — it appears instantly for everyone. <span class="badge">v5-single-file</span></p>
+    <p class="sub">Upload a photo — it appears instantly for everyone. <span class="badge">v6-server-read</span></p>
     <button id="upload-btn" type="button">Upload Photo</button>
     <p id="status" role="status" aria-live="polite"></p>
   </header>
@@ -184,7 +185,7 @@
     <section class="chat-section" aria-labelledby="chat-title">
       <div class="chat-header">
         <h2 id="chat-title">Live Chat</h2>
-        <span class="badge">v5-single-file</span>
+        <span class="badge">v6-server-read</span>
         <span class="chat-count" id="chat-count"></span>
       </div>
       <div id="chat-messages" class="chat-messages" role="log" aria-live="polite">
@@ -205,7 +206,7 @@
       getDatabase, ref, push, onValue, get, query, limitToLast, serverTimestamp
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-    const VERSION = "v5";
+    const VERSION = "v6";
     const POLL_MS = 3000;
     console.log(`[app] ${VERSION} booting`, new Date().toISOString());
 
@@ -314,7 +315,6 @@
         });
         console.log("[upload] saved:", r.key);
         setStatus("Photo added to the wall.");
-        // Force an immediate re-read so the photo appears right away
         forceReadPhotos("after upload");
       } catch (err) {
         console.error("[upload] push failed:", err);
@@ -362,7 +362,7 @@
 
     function renderPhotos(entries, reason) {
       const key = entries.map(e => e.key).join("|");
-      if (key === lastPhotoKeys) return; // no change
+      if (key === lastPhotoKeys) return;
       lastPhotoKeys = key;
 
       const incoming = new Set(entries.map(e => e.key));
@@ -382,13 +382,15 @@
                   entries.map(e => e.key.slice(-6)));
     }
 
+    // KEY FIX: { server: true } bypasses the local cache and forces a fresh
+    // server read. This is what fixes the "stuck at 1 item" bug on iOS.
     async function forceReadPhotos(reason) {
       try {
-        const snap = await get(photosRef);
+        const snap = await get(photosRef, { server: true });
         const entries = [];
         snap.forEach(c => entries.push({ key: c.key, value: c.val() }));
         entries.reverse();
-        renderPhotos(entries, reason);
+        renderPhotos(entries, reason + "/server");
       } catch (err) {
         console.error(`[gallery] forceRead(${reason}):`, err);
       }
@@ -498,12 +500,13 @@
       console.log(`[chat] ${reason}:`, messages.length, "message(s)");
     }
 
+    // Same server-read fix for chat
     async function forceReadChat(reason) {
       try {
-        const snap = await get(chatQuery);
+        const snap = await get(chatQuery, { server: true });
         const messages = [];
         snap.forEach(c => messages.push(c.val() || {}));
-        renderChat(messages, reason);
+        renderChat(messages, reason + "/server");
       } catch (err) {
         console.error(`[chat] forceRead(${reason}):`, err);
       }
