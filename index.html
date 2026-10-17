@@ -1,44 +1,58 @@
-<!-- 1. The upload button -->
-<button id="upload_widget" class="cloudinary-button">Upload files</button>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloudinary Test</title>
+</head>
+<body>
 
-<!-- 2. The empty placeholder box where the photo will appear -->
-<div id="photo-preview" style="margin-top: 20px;"></div>
+    <!-- 1. The Upload Button -->
+    <button id="upload_widget" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">
+        Upload files
+    </button>
 
-<!-- Load the Cloudinary Widget Script -->
-<script src="https://cloudinary.com" type="text/javascript"></script>  
+    <!-- 2. The Photo Display Box -->
+    <div id="photo-preview" style="margin-top: 20px;"></div>
 
-<script type="text/javascript">  
-var myWidget = cloudinary.createUploadWidget({
-  cloudName: 'boswge8x',       
-  uploadPreset: 'ml_default'   
-}, (error, result) => { 
-    if (!error && result && result.event === "success") { 
-      console.log('Done! Here is the image info: ', result.info); 
-      
-      // 3. Find our placeholder box on the screen
-      var previewBox = document.getElementById("photo-preview");
-      
-      // Clear out any previous image inside it
-      previewBox.innerHTML = '';
-      
-      // 4. Create a brand new image element
-      var newImage = document.createElement("img");
-      
-      // Give it the secure web address Cloudinary sent back to us
-      newImage.src = result.info.secure_url;
-      
-      // Optional styling so the picture doesn't blow up too big
-      newImage.style.maxWidth = "100%";
-      newImage.style.maxHeight = "400px";
-      newImage.style.borderRadius = "8px";
-      
-      // 5. Throw the new image inside our preview box!
-      previewBox.appendChild(newImage);
+    <!-- 3. Load Cloudinary's external script -->
+    <script src="https://cloudinary.com" type="text/javascript"></script>  
+
+    <!-- 4. The Magic Logic Script -->
+    <script type="text/javascript">  
+    try {
+        var myWidget = cloudinary.createUploadWidget({
+            cloudName: 'boswge8x',       
+            uploadPreset: 'ml_default'   
+        }, (error, result) => { 
+            if (error) {
+                alert("Cloudinary Configuration Error: " + error.message);
+            }
+            if (!error && result && result.event === "success") { 
+                console.log('Done! Here is the image info: ', result.info); 
+                
+                var previewBox = document.getElementById("photo-preview");
+                previewBox.innerHTML = ''; // Clear old images
+                
+                var newImage = document.createElement("img");
+                newImage.src = result.info.secure_url;
+                newImage.style.maxWidth = "300px";
+                newImage.style.borderRadius = "8px";
+                
+                previewBox.appendChild(newImage);
+            }
+        });
+
+        document.getElementById("upload_widget").addEventListener("click", function(e){
+            e.preventDefault();
+            myWidget.open();
+        }, false);
+
+    } catch (globalError) {
+        // If there is a typo or code error, this alert will pop up automatically
+        alert("JavaScript Failed to Load: " + globalError.message);
     }
-  }
-)
+    </script>
 
-document.getElementById("upload_widget").addEventListener("click", function(){
-    myWidget.open();
-  }, false);
-</script>
+</body>
+</html>
