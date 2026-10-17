@@ -37,68 +37,89 @@
     <div id="gallery"></div>
 
     <script type="text/javascript">
-        // Your real Firebase credentials securely bound to your project space
+        // Your real Firebase credentials securely bound to your European project space
         const firebaseConfig = {
             apiKey: "AIzaSyBbxQJFi3UKNv80y2a-_adfutjIqVq8A2w",
-            authDomain: "my-photo-gallery-40bc.firebaseapp.com",
-            databaseURL: "https://firebaseio.com",
+            authDomain: "://firebaseapp.com",
+            databaseURL: "https://my-photo-gallery-40bc3-default-rtdb.europe-west1.firebasedatabase.app/", // <-- Updated with your exact European URL!
             projectId: "my-photo-gallery-40bc",
             storageBucket: "my-photo-gallery-40bc3.firebasestorage.app",
             messagingSenderId: "861309146437",
             appId: "1:861309146437:web:2d26303d34e98170811a2"
         };
 
-        // Initialize Firebase app communication pipeline
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
-        const photosRef = database.ref('public_photos');
+        try {
+            // Initialize Firebase app communication pipeline
+            firebase.initializeApp(firebaseConfig);
+            const database = firebase.database();
+            const photosRef = database.ref('public_photos');
 
-        // REAL-TIME LISTENER: Fired automatically when ANY visitor drops an upload record
-        photosRef.on('value', function(snapshot) {
-            const galleryContainer = document.getElementById("gallery");
-            galleryContainer.innerHTML = ""; 
-            
-            const data = snapshot.val();
-            if (data) {
-                Object.keys(data).reverse().forEach(function(key) {
-                    var record = data[key];
-                    
-                    var card = document.createElement("div");
-                    card.className = "gallery-card";
-                    
-                    var img = document.createElement("img");
-                    img.src = record.url;
-                    
-                    var timeLabel = document.createElement("div");
-                    timeLabel.className = "timestamp";
-                    timeLabel.innerText = new Date(record.timestamp).toLocaleDateString();
-                    
-                    card.appendChild(img);
-                    card.appendChild(timeLabel);
-                    galleryContainer.appendChild(card);
+            // REAL-TIME LISTENER: Fired automatically when ANY visitor drops an upload record
+            photosRef.on('value', function(snapshot) {
+                const galleryContainer = document.getElementById("gallery");
+                galleryContainer.innerHTML = ""; 
+                
+                const data = snapshot.val();
+                if (data) {
+                    Object.keys(data).reverse().forEach(function(key) {
+                        var record = data[key];
+                        
+                        var card = document.createElement("div");
+                        card.className = "gallery-card";
+                        
+                        var img = document.createElement("img");
+                        img.src = record.url;
+                        
+                        var timeLabel = document.createElement("div");
+                        timeLabel.className = "timestamp";
+                        timeLabel.innerText = new Date(record.timestamp).toLocaleDateString();
+                        
+                        card.appendChild(img);
+                        card.appendChild(timeLabel);
+                        galleryContainer.appendChild(card);
+                    });
+                }
+            }, function(error) {
+                console.error("Database subscription error: ", error);
+            });
+
+            function launchCloudinaryWidget(event) {
+                if (event) event.preventDefault();
+                
+                if (typeof cloudinary === 'undefined') {
+                    alert("Cloudinary library script failed to load. Please refresh and check internet connection.");
+                    return;
+                }
+
+                cloudinary.openUploadWidget({
+                    cloudName: 'boswge8x',
+                    uploadPreset: 'ml_default',
+                    sources: ['local', 'camera'],
+                    multiple: false
+                }, function(error, result) {
+                    if (error) {
+                        alert("Cloudinary Interface Error: " + error.message);
+                        return;
+                    }
+                    if (result && result.event === "success") {
+                        // Pushes the file URL to your global database instantly
+                        photosRef.push({
+                            url: result.info.secure_url,
+                            timestamp: Date.now()
+                        }, function(dbError) {
+                            if (dbError) {
+                                alert("Database write failed! Ensure Realtime Database is initialized in 'Test Mode'. Details: " + dbError.message);
+                            }
+                        });
+                    }
                 });
             }
-        });
-
-        function launchCloudinaryWidget(event) {
-            if (event) event.preventDefault();
             
-            cloudinary.openUploadWidget({
-                cloudName: 'boswge8x',
-                uploadPreset: 'ml_default',
-                sources: ['local', 'camera'],
-                multiple: false
-            }, function(error, result) {
-                if (!error && result && result.event === "success") {
-                    
-                    // Pushes the file URL to your global database instantly
-                    photosRef.push({
-                        url: result.info.secure_url,
-                        timestamp: Date.now()
-                    });
-                    
-                }
-            });
+            // Assign function explicitly to global window scope to ensure the button can access it
+            window.launchCloudinaryWidget = launchCloudinaryWidget;
+
+        } catch (initError) {
+            alert("Firebase startup crash: " + initError.message);
         }
     </script>
 
