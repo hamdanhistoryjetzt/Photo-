@@ -3,67 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cloudinary Dynamic Upload Portal</title>
-    <!-- We load the official Cloudinary library globally right in the header -->
-    <script src="https://upload-widget.cloudinary.com/latest/global/all.js" type="text/javascript"></script>
+    <title>Global Live Photo Gallery</title>
+    
+    <!-- Load Cloudinary and Firebase compatible scripts -->
+    <script src="https://cloudinary.com" type="text/javascript"></script>
+    <script src="https://gstatic.com"></script>
+    <script src="https://gstatic.com"></script>
+    
     <style>
-        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; background-color: #fafafa; }
-        .upload-btn { background-color: #2563eb; color: white; border: none; padding: 14px 28px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; min-height: 100vh; margin: 0; background-color: #f3f4f6; padding: 20px; }
+        h1 { color: #1f2937; margin-bottom: 5px; }
+        p { color: #4b5563; margin-bottom: 25px; }
+        .upload-btn { background-color: #2563eb; color: white; border: none; padding: 14px 28px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: background 0.2s; }
         .upload-btn:hover { background-color: #1d4ed8; }
-        #preview { margin-top: 24px; text-align: center; }
-        #preview img { max-width: 90%; max-height: 400px; border-radius: 12px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+        
+        /* Layout for the shared gallery */
+        #gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; width: 100%; max-width: 1200px; margin-top: 40px; }
+        .gallery-card { background: white; padding: 10px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center; }
+        .gallery-card img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; }
+        .timestamp { font-size: 12px; color: #9ca3af; margin-top: 8px; }
     </style>
 </head>
 <body>
 
-    <!-- The operational upload element -->
+    <h1>Public Photo Wall</h1>
+    <p>Upload a photo to show it to everyone visiting this site instantly!</p>
+
     <button class="upload-btn" onclick="launchCloudinaryWidget(event)">
-        Upload files
+        Upload Photo
     </button>
 
-    <!-- The target display layer for your images -->
-    <div id="preview"></div>
+    <!-- Photo feed grid element -->
+    <div id="gallery"></div>
 
     <script type="text/javascript">
-        // Direct global function initialization to defeat scoping bugs
+        // Your real Firebase credentials securely bound to your project space
+        const firebaseConfig = {
+            apiKey: "AIzaSyBbxQJFi3UKNv80y2a-_adfutjIqVq8A2w",
+            authDomain: "my-photo-gallery-40bc.firebaseapp.com",
+            databaseURL: "https://firebaseio.com",
+            projectId: "my-photo-gallery-40bc",
+            storageBucket: "my-photo-gallery-40bc3.firebasestorage.app",
+            messagingSenderId: "861309146437",
+            appId: "1:861309146437:web:2d26303d34e98170811a2"
+        };
+
+        // Initialize Firebase app communication pipeline
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        const photosRef = database.ref('public_photos');
+
+        // REAL-TIME LISTENER: Fired automatically when ANY visitor drops an upload record
+        photosRef.on('value', function(snapshot) {
+            const galleryContainer = document.getElementById("gallery");
+            galleryContainer.innerHTML = ""; 
+            
+            const data = snapshot.val();
+            if (data) {
+                Object.keys(data).reverse().forEach(function(key) {
+                    var record = data[key];
+                    
+                    var card = document.createElement("div");
+                    card.className = "gallery-card";
+                    
+                    var img = document.createElement("img");
+                    img.src = record.url;
+                    
+                    var timeLabel = document.createElement("div");
+                    timeLabel.className = "timestamp";
+                    timeLabel.innerText = new Date(record.timestamp).toLocaleDateString();
+                    
+                    card.appendChild(img);
+                    card.appendChild(timeLabel);
+                    galleryContainer.appendChild(card);
+                });
+            }
+        });
+
         function launchCloudinaryWidget(event) {
             if (event) event.preventDefault();
             
-            try {
-                // Ensure the external library script has completely processed
-                if (typeof cloudinary === 'undefined') {
-                    alert("System Critical: The Cloudinary global network script hasn't loaded yet. Please check your internet connection and refresh.");
-                    return;
-                }
-
-                // Initialize and immediately execute the window layer concurrently
-                var checkoutWidget = cloudinary.openUploadWidget({
-                    cloudName: 'boswge8x',
-                    uploadPreset: 'ml_default',
-                    sources: ['local', 'camera'],
-                    multiple: false
-                }, function(error, result) {
-                    if (error) {
-                        alert("Cloudinary Connection Issue: " + error.message);
-                        console.error("Cloudinary error payload:", error);
-                        return;
-                    }
+            cloudinary.openUploadWidget({
+                cloudName: 'boswge8x',
+                uploadPreset: 'ml_default',
+                sources: ['local', 'camera'],
+                multiple: false
+            }, function(error, result) {
+                if (!error && result && result.event === "success") {
                     
-                    // Intercept the valid upload event callback frame
-                    if (result && result.event === "success") {
-                        console.log("Upload resolved successfully. Details:", result.info);
-                        
-                        var targetContainer = document.getElementById("preview");
-                        targetContainer.innerHTML = ""; // Purge stale preview objects
-                        
-                        var imageDOMNode = document.createElement("img");
-                        imageDOMNode.src = result.info.secure_url;
-                        targetContainer.appendChild(imageDOMNode);
-                    }
-                });
-            } catch (runtimeError) {
-                alert("Runtime Exception: " + runtimeError.message);
-            }
+                    // Pushes the file URL to your global database instantly
+                    photosRef.push({
+                        url: result.info.secure_url,
+                        timestamp: Date.now()
+                    });
+                    
+                }
+            });
         }
     </script>
 
