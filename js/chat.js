@@ -1,4 +1,4 @@
-import { push, onValue, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { push, onValue, serverTimestamp, ref } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 import { db, chatQuery } from "./firebase.js";
 import { CHAT_PATH, CHAT_RATE_LIMIT_MS } from "./config.js";
 
@@ -122,7 +122,22 @@ export function initChat() {
     lastSend = now;
 
     try {
-      await push(db ? (await import("./firebase.js")).db && undefined : null, {}); // placeholder — replaced below
-    } catch {}
+      await push(ref(db, CHAT_PATH), {
+        name,
+        text: text.slice(0, 500),
+        clientId: CLIENT_ID,
+        createdAt: serverTimestamp(),
+        clientSentAt: now
+      });
+      textInput.value = "";
+      textInput.focus();
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    } catch (err) {
+      console.error("[chat] send failed:", err);
+      setStatus("Message could not be sent.");
+    } finally {
+      sending = false;
+      sendBtn.disabled = false;
+    }
   });
 }
