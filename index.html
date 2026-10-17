@@ -26,7 +26,7 @@
     <h1>Public Photo Wall</h1>
     <p>Upload a photo to show it to everyone visiting this site instantly!</p>
 
-    <!-- 1. ADDED A DISTINCT ID TO THE BUTTON AND REMOVED THE BROKEN ONCLICK BANNER -->
+    <!-- The explicit action target element -->
     <button id="upload_widget_btn" class="upload-btn">
         Upload Photo
     </button>
@@ -81,29 +81,35 @@
             }
         });
 
-        // 2. SECURE INTERNAL EVENT BINDING TO AVOID MODULE SCOPING ERRORS
-        document.getElementById("upload_widget_btn").addEventListener("click", function(event) {
-            if (event) event.preventDefault();
+        // 🛠️ WAITS FOR DOM LAYOUT BEFORE TARGETING THE BUTTON ELEMENT
+        window.addEventListener("DOMContentLoaded", function() {
+            var actionButton = document.getElementById("upload_widget_btn");
             
-            if (typeof cloudinary === 'undefined') {
-                alert("Cloudinary connection failed to load. Please refresh.");
-                return;
-            }
+            if (actionButton) {
+                actionButton.addEventListener("click", function(event) {
+                    if (event) event.preventDefault();
+                    
+                    if (typeof cloudinary === 'undefined') {
+                        alert("Cloudinary script asset failed to stream. Please refresh.");
+                        return;
+                    }
 
-            cloudinary.openUploadWidget({
-                cloudName: 'boswge8x',
-                uploadPreset: 'ml_default',
-                sources: ['local', 'camera'],
-                multiple: false
-            }, function(error, result) {
-                if (!error && result && result.event === "success") {
-                    // Save to Firebase Database using modern syntax
-                    push(photosRef, {
-                        url: result.info.secure_url,
-                        timestamp: Date.now()
+                    cloudinary.openUploadWidget({
+                        cloudName: 'boswge8x',
+                        uploadPreset: 'ml_default',
+                        sources: ['local', 'camera'],
+                        multiple: false
+                    }, function(error, result) {
+                        if (!error && result && result.event === "success") {
+                            // Save upload info to live data layer
+                            push(photosRef, {
+                                url: result.info.secure_url,
+                                timestamp: Date.now()
+                            });
+                        }
                     });
-                }
-            });
+                });
+            }
         });
     </script>
 
