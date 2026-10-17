@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Global Live Photo Gallery</title>
     
-    <!-- 1. Load Cloudinary Script -->
-    <script src="https://cloudinary.com" type="text/javascript"></script>
+    <!-- Load Cloudinary Script -->
+    <script src="https://upload-widget.cloudinary.com/latest/global/all.js" type="text/javascript"></script>
     
     <style>
         body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; min-height: 100vh; margin: 0; background-color: #f3f4f6; padding: 20px; }
@@ -26,13 +26,14 @@
     <h1>Public Photo Wall</h1>
     <p>Upload a photo to show it to everyone visiting this site instantly!</p>
 
-    <button class="upload-btn" onclick="launchCloudinaryWidget(event)">
+    <!-- 1. ADDED A DISTINCT ID TO THE BUTTON AND REMOVED THE BROKEN ONCLICK BANNER -->
+    <button id="upload_widget_btn" class="upload-btn">
         Upload Photo
     </button>
 
     <div id="gallery"></div>
 
-    <!-- 2. Modern Serverless Firebase Initialization Script Module -->
+    <!-- Modern Serverless Firebase Initialization Script Module -->
     <script type="module">
         import { initializeApp } from "https://gstatic.com";
         import { getDatabase, ref, push, onValue } from "https://gstatic.com";
@@ -80,8 +81,8 @@
             }
         });
 
-        // The Cloudinary setup attached to your window frame
-        window.launchCloudinaryWidget = function(event) {
+        // 2. SECURE INTERNAL EVENT BINDING TO AVOID MODULE SCOPING ERRORS
+        document.getElementById("upload_widget_btn").addEventListener("click", function(event) {
             if (event) event.preventDefault();
             
             if (typeof cloudinary === 'undefined') {
@@ -103,7 +104,7 @@
                     });
                 }
             });
-        };
+        });
     </script>
 
 </body>
