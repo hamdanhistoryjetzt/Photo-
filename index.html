@@ -26,7 +26,6 @@
       min-height: 100vh;
     }
 
-    /* HEADER */
     header { padding: 2.5rem 1.25rem 1.5rem; text-align: center; }
     h1 { margin: 0 0 .35rem; font-size: clamp(1.5rem, 4vw, 2.25rem); letter-spacing: -.02em; }
     .sub { margin: 0 0 1.5rem; color: var(--muted); font-size: .95rem; }
@@ -39,10 +38,8 @@
     }
     #upload-btn:hover { filter: brightness(1.1); }
     #upload-btn:active { transform: scale(.97); }
-    #upload-btn:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
     #status { min-height: 1.4em; margin: 1rem 0 0; font-size: .9rem; color: var(--muted); }
 
-    /* GALLERY */
     main { padding: 1rem 1.25rem 4rem; }
     .gallery {
       display: grid;
@@ -71,82 +68,51 @@
       font-size: .95rem;
     }
 
-    /* CHAT */
-    .chat-section {
-      max-width: 760px;
-      margin: 3.5rem auto 0;
-      padding: 0 1.25rem;
-    }
+    .chat-section { max-width: 760px; margin: 3.5rem auto 0; padding: 0 1.25rem; }
     .chat-header {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      margin-bottom: .75rem;
-      gap: .5rem;
+      display: flex; align-items: baseline; justify-content: space-between;
+      margin-bottom: .75rem; gap: .5rem;
     }
     .chat-header h2 { margin: 0; font-size: 1.15rem; letter-spacing: -.01em; }
     .chat-header .badge { font-size: .7rem; color: var(--muted); }
     .chat-count { font-size: .8rem; color: var(--muted); margin-left: auto; }
     .chat-messages {
-      height: 380px;
-      overflow-y: auto;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: .75rem;
-      display: flex;
-      flex-direction: column;
-      gap: .4rem;
+      height: 380px; overflow-y: auto;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; padding: .75rem;
+      display: flex; flex-direction: column; gap: .4rem;
     }
     .chat-empty { margin: auto; text-align: center; color: var(--muted); font-size: .9rem; }
     .chat-empty[hidden] { display: none !important; }
     .chat-message {
-      padding: .5rem .7rem;
-      border-radius: 10px;
-      background: var(--surface-2);
-      border: 1px solid transparent;
-      word-wrap: break-word;
-      overflow-wrap: anywhere;
-      line-height: 1.35;
+      padding: .5rem .7rem; border-radius: 10px;
+      background: var(--surface-2); border: 1px solid transparent;
+      word-wrap: break-word; overflow-wrap: anywhere; line-height: 1.35;
     }
     .chat-message.is-own {
       border-color: rgba(79, 140, 255, .35);
       background: rgba(79, 140, 255, .08);
     }
     .chat-message-meta {
-      display: flex;
-      align-items: baseline;
-      gap: .5rem;
-      font-size: .75rem;
-      margin-bottom: .15rem;
+      display: flex; align-items: baseline; gap: .5rem;
+      font-size: .75rem; margin-bottom: .15rem;
     }
     .chat-name { font-weight: 600; color: var(--accent); }
     .chat-you {
-      font-size: .65rem;
-      text-transform: uppercase;
-      letter-spacing: .06em;
-      color: var(--muted);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 0 .3rem;
+      font-size: .65rem; text-transform: uppercase; letter-spacing: .06em;
+      color: var(--muted); border: 1px solid var(--border);
+      border-radius: 4px; padding: 0 .3rem;
     }
     .chat-time { color: var(--muted); margin-left: auto; }
     .chat-text { font-size: .92rem; }
     .chat-status {
-      min-height: 1.2em;
-      margin: .4rem 0 0;
-      font-size: .8rem;
-      color: var(--muted);
+      min-height: 1.2em; margin: .4rem 0 0; font-size: .8rem; color: var(--muted);
     }
     .chat-form { display: flex; gap: .5rem; margin-top: .5rem; }
     .chat-form input {
-      font: inherit;
-      color: var(--text);
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: .6rem .8rem;
-      outline: none;
+      font: inherit; color: var(--text);
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: .6rem .8rem; outline: none;
     }
     .chat-form input:focus { border-color: var(--accent); }
     #chat-name { width: 130px; flex: 0 0 auto; }
@@ -156,7 +122,6 @@
       background: var(--accent); color: #fff;
       border: 0; border-radius: 10px;
       padding: .6rem 1rem; cursor: pointer;
-      transition: filter .12s ease;
       min-width: 90px;
     }
     .chat-form button:hover { filter: brightness(1.1); }
@@ -173,7 +138,7 @@
 
   <header>
     <h1>Public Photo Wall</h1>
-    <p class="sub">Upload a photo — it appears instantly for everyone. <span class="badge">v6-server-read</span></p>
+    <p class="sub">Upload a photo — it appears instantly for everyone. <span class="badge">v8-rest</span></p>
     <button id="upload-btn" type="button">Upload Photo</button>
     <p id="status" role="status" aria-live="polite"></p>
   </header>
@@ -185,7 +150,7 @@
     <section class="chat-section" aria-labelledby="chat-title">
       <div class="chat-header">
         <h2 id="chat-title">Live Chat</h2>
-        <span class="badge">v6-server-read</span>
+        <span class="badge">v8-rest</span>
         <span class="chat-count" id="chat-count"></span>
       </div>
       <div id="chat-messages" class="chat-messages" role="log" aria-live="polite">
@@ -201,41 +166,13 @@
   </main>
 
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import {
-      getDatabase, ref, push, onValue, get, query, limitToLast, serverTimestamp
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-
-    const VERSION = "v6";
+    const VERSION = "v8-rest";
     const POLL_MS = 3000;
+
+    // REST endpoint for the Realtime Database (same DB, different access method)
+    const DB_URL = "https://my-photo-gallery-40bc3-default-rtdb.europe-west1.firebasedatabase.app";
+
     console.log(`[app] ${VERSION} booting`, new Date().toISOString());
-
-    /* ---------------- CONFIG ---------------- */
-    const firebaseConfig = {
-      apiKey: "AIzaSyBbxQJFi3UKNv80y2a-_adfutjIqVq8A2w",
-      authDomain: "my-photo-gallery-40bc.firebaseapp.com",
-      databaseURL: "https://my-photo-gallery-40bc3-default-rtdb.europe-west1.firebasedatabase.app",
-      projectId: "my-photo-gallery-40bc",
-      storageBucket: "my-photo-gallery-40bc3.firebasestorage.app",
-      messagingSenderId: "861309146437",
-      appId: "1:861309146437:web:2d26303d34e98170811a2"
-    };
-    const CLOUD_NAME = "boswge8x";
-    const UPLOAD_PRESET = "ml_default";
-    const DB_PATH = "public_photos";
-    const CHAT_PATH = "chat_messages";
-    const CHAT_LIMIT = 100;
-    const CHAT_RATE_MS = 1500;
-    const THUMB_WIDTHS = [300, 500, 800];
-
-    /* ---------------- FIREBASE ---------------- */
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const photosRef = ref(db, DB_PATH);
-    const chatQuery = query(ref(db, CHAT_PATH), limitToLast(CHAT_LIMIT));
-
-    onValue(ref(db, ".info/connected"), (s) =>
-      console.log("[db] connected:", s.val() === true));
 
     /* ---------------- DOM ---------------- */
     const galleryEl = document.getElementById("gallery");
@@ -253,13 +190,37 @@
 
     function setStatus(msg) { statusEl.textContent = msg; }
 
-    /* ---------------- CLOUDINARY HELPERS ---------------- */
+    /* ---------------- CLOUDINARY THUMB HELPERS ---------------- */
+    const THUMB_WIDTHS = [300, 500, 800];
+
     function withTransform(url, transform) {
       if (typeof url !== "string" || !url.includes("/image/upload/")) return url;
       return url.replace("/image/upload/", `/image/upload/${transform}/`);
     }
     function thumbUrl(url, w) {
       return withTransform(url, `w_${w},c_limit,q_auto,f_auto`);
+    }
+
+    /* ---------------- REST HELPERS ---------------- */
+    // cache: "no-store" forces a fresh network request every single time.
+    async function restGet(path) {
+      const res = await fetch(`${DB_URL}${path}.json`, {
+        cache: "no-store",
+        headers: { "Cache-Control": "no-cache" }
+      });
+      if (!res.ok) throw new Error(`GET ${path} → HTTP ${res.status}`);
+      return await res.json();
+    }
+
+    async function restPost(path, body) {
+      const res = await fetch(`${DB_URL}${path}.json`, {
+        method: "POST",
+        cache: "no-store",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
+      if (!res.ok) throw new Error(`POST ${path} → HTTP ${res.status}`);
+      return await res.json();
     }
 
     /* ---------------- UPLOAD ---------------- */
@@ -274,8 +235,8 @@
       }
       widget = window.cloudinary.createUploadWidget(
         {
-          cloudName: CLOUD_NAME,
-          uploadPreset: UPLOAD_PRESET,
+          cloudName: "boswge8x",
+          uploadPreset: "ml_default",
           sources: ["local", "url", "camera"],
           multiple: true,
           maxFiles: 10,
@@ -283,8 +244,13 @@
           resourceType: "image"
         },
         (error, result) => {
-          if (error) { console.error("[cloudinary]", error); setStatus("Upload failed."); return; }
-          if (!result?.event) return;
+          if (error) {
+            console.error("[cloudinary] widget error:", error);
+            setStatus("Upload failed. Check Cloudinary preset is Unsigned.");
+            return;
+          }
+          if (!result || !result.event) return;
+          console.log("[cloudinary] event:", result.event);
           switch (result.event) {
             case "upload-added": setStatus("Uploading…"); break;
             case "success": savePhoto(result.info); break;
@@ -301,21 +267,26 @@
     }
 
     async function savePhoto(info) {
+      if (!info || !info.secure_url) {
+        console.error("[upload] missing secure_url:", info);
+        setStatus("Upload succeeded but no URL returned.");
+        return;
+      }
       pendingSaves++;
       setStatus("Saving to the wall…");
       try {
-        const r = await push(photosRef, {
+        const key = await restPost("/public_photos", {
           url: info.secure_url,
-          publicId: info.public_id,
+          publicId: info.public_id || null,
           width: info.width || null,
           height: info.height || null,
           format: info.format || null,
-          createdAt: serverTimestamp(),
+          createdAt: { ".sv": "timestamp" },
           uploadedAt: Date.now()
         });
-        console.log("[upload] saved:", r.key);
+        console.log("[upload] saved:", key);
         setStatus("Photo added to the wall.");
-        forceReadPhotos("after upload");
+        await readPhotos("after upload");
       } catch (err) {
         console.error("[upload] push failed:", err);
         setStatus("Photo uploaded, but saving to the wall failed.");
@@ -378,35 +349,28 @@
         if (at !== card) galleryEl.insertBefore(card, at);
       });
 
-      console.log(`[gallery] ${reason}:`, entries.length, "photo(s)",
-                  entries.map(e => e.key.slice(-6)));
+      console.log(`[gallery] ${reason}:`, entries.length, "photo(s)");
     }
 
-    // KEY FIX: { server: true } bypasses the local cache and forces a fresh
-    // server read. This is what fixes the "stuck at 1 item" bug on iOS.
-    async function forceReadPhotos(reason) {
+    async function readPhotos(reason) {
       try {
-        const snap = await get(photosRef, { server: true });
+        const data = await restGet("/public_photos");
         const entries = [];
-        snap.forEach(c => entries.push({ key: c.key, value: c.val() }));
-        entries.reverse();
-        renderPhotos(entries, reason + "/server");
+        if (data && typeof data === "object") {
+          for (const key of Object.keys(data)) {
+            entries.push({ key, value: data[key] || {} });
+          }
+        }
+        // Newest first (push IDs sort chronologically)
+        entries.sort((a, b) => b.key.localeCompare(a.key));
+        renderPhotos(entries, reason);
       } catch (err) {
-        console.error(`[gallery] forceRead(${reason}):`, err);
+        console.error(`[gallery] read(${reason}):`, err);
       }
     }
 
-    onValue(photosRef, (snap) => {
-      try {
-        const entries = [];
-        snap.forEach(c => entries.push({ key: c.key, value: c.val() }));
-        entries.reverse();
-        renderPhotos(entries, "onValue");
-      } catch (err) { console.error("[gallery] onValue handler:", err); }
-    }, (err) => console.error("[gallery] listener error:", err));
-
-    forceReadPhotos("initial");
-    setInterval(() => forceReadPhotos("poll"), POLL_MS);
+    readPhotos("initial");
+    setInterval(() => readPhotos("poll"), POLL_MS);
 
     /* ---------------- CHAT ---------------- */
     const CHAT_CLIENT_ID = (() => {
@@ -430,6 +394,7 @@
     let lastSend = 0;
     let sending = false;
     let lastChatKey = "";
+    const CHAT_RATE_MS = 1500;
 
     function chatStatus(msg, ms = 4000) {
       console.log("[chat-status]", msg || "(clear)");
@@ -500,33 +465,28 @@
       console.log(`[chat] ${reason}:`, messages.length, "message(s)");
     }
 
-    // Same server-read fix for chat
-    async function forceReadChat(reason) {
+    async function readChat(reason) {
       try {
-        const snap = await get(chatQuery, { server: true });
+        // REST equivalent of limitToLast(100)
+        const data = await restGet('/chat_messages?orderBy=%22%24key%22&limitToLast=100');
         const messages = [];
-        snap.forEach(c => messages.push(c.val() || {}));
-        renderChat(messages, reason + "/server");
+        if (data && typeof data === "object") {
+          const keys = Object.keys(data).sort();
+          for (const k of keys) messages.push(data[k] || {});
+        }
+        renderChat(messages, reason);
       } catch (err) {
-        console.error(`[chat] forceRead(${reason}):`, err);
+        console.error(`[chat] read(${reason}):`, err);
       }
     }
 
-    onValue(chatQuery, (snap) => {
-      try {
-        const messages = [];
-        snap.forEach(c => messages.push(c.val() || {}));
-        renderChat(messages, "onValue");
-      } catch (err) { console.error("[chat] onValue handler:", err); }
-    }, (err) => console.error("[chat] listener error:", err));
-
-    forceReadChat("initial");
-    setInterval(() => forceReadChat("poll"), POLL_MS);
+    readChat("initial");
+    setInterval(() => readChat("poll"), POLL_MS);
 
     document.addEventListener("visibilitychange", () => {
       if (document.visibilityState === "visible") {
-        forceReadPhotos("visibility");
-        forceReadChat("visibility");
+        readPhotos("visibility");
+        readChat("visibility");
       }
     });
 
@@ -556,17 +516,17 @@
       chatStatus("Sending…", 12000);
 
       try {
-        const r = await push(ref(db, CHAT_PATH), {
+        const key = await restPost("/chat_messages", {
           name,
           text: text.slice(0, 500),
           clientId: CHAT_CLIENT_ID,
-          createdAt: serverTimestamp(),
+          createdAt: { ".sv": "timestamp" },
           clientSentAt: now
         });
-        console.log("[chat] sent:", r.key);
+        console.log("[chat] sent:", key);
         chatTextInput.value = "";
         chatTextInput.focus();
-        await forceReadChat("after push");
+        await readChat("after push");
         chatStatus("Sent.");
       } catch (err) {
         console.error("[chat] push failed:", err);
