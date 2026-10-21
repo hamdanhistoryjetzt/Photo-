@@ -16,6 +16,8 @@
       --text: #e6edf3;
       --muted: #8b98a9;
       --accent: #4f8cff;
+      --like: #22c55e;
+      --dislike: #ef4444;
     }
     * { box-sizing: border-box; }
     body {
@@ -28,9 +30,7 @@
 
     #auth-bar {
       padding: .75rem 1.25rem 0;
-      display: flex;
-      justify-content: center;
-      min-height: 60px;
+      display: flex; justify-content: center; min-height: 60px;
     }
     .auth-prompt {
       display: flex; align-items: center; gap: 1rem;
@@ -55,7 +55,7 @@
       display: inline-flex; align-items: center; justify-content: center;
       font-weight: 700; font-size: .85rem;
     }
-    .auth-name { font-weight: 500; }
+    .auth-handle { font-weight: 500; color: var(--text); }
     .auth-btn {
       font: inherit; font-weight: 600; font-size: .85rem;
       padding: .5rem 1rem; border-radius: 999px; border: 0;
@@ -80,15 +80,17 @@
       font: inherit; font-weight: 600; font-size: 1rem;
       padding: .8rem 1.6rem; border-radius: 999px; border: 0;
       background: var(--accent); color: #fff; cursor: pointer;
-      transition: transform .12s ease, filter .12s ease;
     }
     #upload-btn:hover:not(:disabled) { filter: brightness(1.1); }
-    #upload-btn:active:not(:disabled) { transform: scale(.97); }
     #upload-btn:disabled { background: var(--surface-2); color: var(--muted); cursor: not-allowed; }
     #status { min-height: 1.4em; margin: 1rem 0 0; font-size: .9rem; color: var(--muted); }
 
     main { padding: 1rem 1.25rem 4rem; }
 
+    .gallery-meta {
+      max-width: 1200px; margin: 0 auto .75rem;
+      font-size: .8rem; color: var(--muted); text-align: right;
+    }
     .gallery {
       display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
       gap: 1rem; max-width: 1200px; margin: 0 auto;
@@ -96,28 +98,65 @@
     .card {
       margin: 0; background: var(--surface);
       border: 1px solid var(--border); border-radius: 14px; overflow: hidden;
+      position: relative;
     }
     .card img { display: block; width: 100%; height: auto; background: #10141a; }
     .card.is-broken img { display: none; }
-    .card figcaption {
-      padding: .6rem .8rem; font-size: .8rem;
-      display: flex; flex-direction: column; gap: .25rem;
+    .card-body {
+      padding: .6rem .8rem;
+      display: flex; flex-direction: column; gap: .5rem;
     }
     .card-byline {
       display: inline-flex; align-items: center; gap: .4rem;
-      color: var(--text); font-weight: 500;
+      color: var(--text); font-weight: 500; font-size: .8rem;
+      text-decoration: none;
     }
     .card-byline img { width: 18px; height: 18px; border-radius: 50%; background: var(--surface-2); }
-    .card a { color: var(--muted); text-decoration: none; font-size: .75rem; }
-    .card a:hover { color: var(--accent); }
-    #empty-state { max-width: 1200px; margin: 2rem auto; text-align: center; color: var(--muted); font-size: .95rem; }
+    .card-byline .avatar-ph {
+      width: 18px; height: 18px; border-radius: 50%;
+      background: var(--accent); color: #fff;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: .6rem; font-weight: 700;
+    }
+    .card-actions {
+      display: flex; align-items: center; gap: .35rem;
+      font-size: .8rem;
+    }
+    .react-btn {
+      display: inline-flex; align-items: center; gap: .25rem;
+      padding: .3rem .55rem; border-radius: 999px;
+      background: var(--surface-2); border: 1px solid var(--border);
+      color: var(--muted); font: inherit; font-size: .78rem;
+      cursor: pointer; transition: all .12s ease;
+    }
+    .react-btn:hover { border-color: var(--muted); color: var(--text); }
+    .react-btn.active.like { background: rgba(34, 197, 94, .15); border-color: var(--like); color: var(--like); }
+    .react-btn.active.dislike { background: rgba(239, 68, 68, .15); border-color: var(--dislike); color: var(--dislike); }
+    .react-btn:disabled { opacity: .5; cursor: not-allowed; }
+    .card-open {
+      margin-left: auto; color: var(--muted); font-size: .75rem; text-decoration: none;
+    }
+    .card-open:hover { color: var(--accent); }
+    .delete-btn {
+      position: absolute; top: .5rem; right: .5rem;
+      width: 28px; height: 28px; border-radius: 50%;
+      background: rgba(0,0,0,.6); color: #fff; border: 0;
+      cursor: pointer; font-size: .9rem; line-height: 1;
+      display: flex; align-items: center; justify-content: center;
+      opacity: .85;
+    }
+    .delete-btn:hover { background: rgba(239, 68, 68, .9); opacity: 1; }
+    #empty-state {
+      max-width: 1200px; margin: 2rem auto;
+      text-align: center; color: var(--muted); font-size: .95rem;
+    }
 
     .chat-section { max-width: 760px; margin: 3.5rem auto 0; padding: 0 1.25rem; }
     .chat-header {
       display: flex; align-items: baseline; justify-content: space-between;
       margin-bottom: .75rem; gap: .5rem;
     }
-    .chat-header h2 { margin: 0; font-size: 1.15rem; letter-spacing: -.01em; }
+    .chat-header h2 { margin: 0; font-size: 1.15rem; }
     .chat-header .badge { font-size: .7rem; color: var(--muted); }
     .chat-count { font-size: .8rem; color: var(--muted); margin-left: auto; }
     .chat-messages {
@@ -139,7 +178,7 @@
       font-size: .75rem; margin-bottom: .2rem;
     }
     .chat-avatar { width: 20px; height: 20px; border-radius: 50%; background: var(--surface); object-fit: cover; flex-shrink: 0; }
-    .chat-avatar-placeholder {
+    .chat-avatar-ph {
       width: 20px; height: 20px; border-radius: 50%; background: var(--accent); color: #fff;
       display: inline-flex; align-items: center; justify-content: center;
       font-size: .65rem; font-weight: 700; flex-shrink: 0;
@@ -164,7 +203,6 @@
       font: inherit; font-weight: 600; background: var(--accent); color: #fff;
       border: 0; border-radius: 10px; padding: .6rem 1rem; cursor: pointer; min-width: 90px;
     }
-    .chat-form button:hover:not(:disabled) { filter: brightness(1.1); }
     .chat-form button:disabled { opacity: .5; cursor: not-allowed; }
 
     .friends-section { max-width: 760px; margin: 2rem auto 0; padding: 0 1.25rem; }
@@ -172,22 +210,20 @@
       display: flex; align-items: baseline; justify-content: space-between;
       margin-bottom: .75rem; gap: .5rem;
     }
-    .friends-header h2 { margin: 0; font-size: 1.15rem; letter-spacing: -.01em; }
+    .friends-header h2 { margin: 0; font-size: 1.15rem; }
     .friends-header .badge { font-size: .7rem; color: var(--muted); }
     .friends-count { font-size: .8rem; color: var(--muted); margin-left: auto; }
     .friends-panel {
       background: var(--surface); border: 1px solid var(--border);
       border-radius: 14px; padding: 1rem;
     }
-    .friends-signin-msg {
-      text-align: center; color: var(--muted); font-size: .9rem; padding: .5rem;
-    }
+    .friends-signin-msg { text-align: center; color: var(--muted); font-size: .9rem; padding: .5rem; }
     .friend-share {
-      font-size: .78rem; color: var(--muted); margin-bottom: .75rem;
-      padding: .5rem .75rem; background: var(--surface-2);
-      border-radius: 8px; word-break: break-all; line-height: 1.4;
+      font-size: .85rem; color: var(--muted); margin-bottom: .75rem;
+      padding: .55rem .75rem; background: var(--surface-2);
+      border-radius: 8px; line-height: 1.4;
     }
-    .friend-share strong { color: var(--text); font-weight: 500; }
+    .friend-share .handle { color: var(--accent); font-weight: 700; font-size: 1rem; }
     .add-friend { display: flex; gap: .5rem; }
     .add-friend input {
       font: inherit; flex: 1 1 auto; color: var(--text);
@@ -199,7 +235,6 @@
       font: inherit; font-weight: 600; background: var(--accent); color: #fff;
       border: 0; border-radius: 10px; padding: .6rem 1rem; cursor: pointer; white-space: nowrap;
     }
-    .add-friend button:hover:not(:disabled) { filter: brightness(1.1); }
     .add-friend button:disabled { opacity: .5; cursor: not-allowed; }
     .friend-status { min-height: 1.2em; margin: .4rem 0 .75rem; font-size: .8rem; color: var(--muted); }
     .friend-requests h3, .friends-list h3 {
@@ -211,11 +246,11 @@
       padding: .5rem .6rem; background: var(--surface-2);
       border-radius: 10px; margin-bottom: .4rem;
     }
-    .request-avatar, .request-avatar-placeholder {
+    .request-avatar, .request-avatar-ph {
       width: 32px; height: 32px; border-radius: 50%;
       background: var(--surface); object-fit: cover; flex-shrink: 0;
     }
-    .request-avatar-placeholder {
+    .request-avatar-ph {
       background: var(--accent); color: #fff;
       display: inline-flex; align-items: center; justify-content: center;
       font-weight: 700; font-size: .85rem;
@@ -229,9 +264,8 @@
       font: inherit; font-size: .75rem; padding: .3rem .6rem;
       border-radius: 6px; border: 0; cursor: pointer; font-weight: 600;
     }
-    .req-btn.accept { background: #22c55e; color: #fff; }
+    .req-btn.accept { background: var(--like); color: #fff; }
     .req-btn.reject { background: transparent; color: var(--muted); border: 1px solid var(--border); }
-    .req-btn:hover { filter: brightness(1.1); }
     .friend-item {
       display: flex; align-items: center; gap: .6rem;
       padding: .6rem .7rem; background: var(--surface-2);
@@ -239,29 +273,25 @@
       cursor: pointer; transition: background .12s ease;
     }
     .friend-item:hover { background: #252d38; }
-    .friend-avatar, .friend-avatar-placeholder {
+    .friend-avatar, .friend-avatar-ph {
       width: 36px; height: 36px; border-radius: 50%;
       background: var(--surface); object-fit: cover; flex-shrink: 0;
     }
-    .friend-avatar-placeholder {
+    .friend-avatar-ph {
       background: var(--accent); color: #fff;
-      display: inline-flex; align-items: center; justify-content: center;
-      font-weight: 700;
+      display: inline-flex; align-items: center; justify-content: center; font-weight: 700;
     }
     .friend-info { flex: 1 1 auto; min-width: 0; }
-    .friend-name {
-      font-size: .9rem; font-weight: 500; color: var(--text);
+    .friend-handle {
+      font-size: .9rem; font-weight: 600; color: var(--accent);
       overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     }
-    .friend-email {
+    .friend-realname {
       font-size: .75rem; color: var(--muted);
       overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     }
     .friend-chat-icon { color: var(--muted); font-size: 1.1rem; flex-shrink: 0; }
-    .friends-empty {
-      text-align: center; color: var(--muted);
-      font-size: .85rem; margin: 1rem 0 .5rem;
-    }
+    .friends-empty { text-align: center; color: var(--muted); font-size: .85rem; margin: 1rem 0 .5rem; }
 
     .dm-modal {
       position: fixed; inset: 0; background: rgba(0, 0, 0, .6);
@@ -280,22 +310,23 @@
       display: flex; align-items: center; gap: .6rem;
       padding: .75rem 1rem; border-bottom: 1px solid var(--border); flex-shrink: 0;
     }
-    .dm-avatar, .dm-avatar-placeholder {
+    .dm-avatar, .dm-avatar-ph {
       width: 32px; height: 32px; border-radius: 50%;
       background: var(--surface-2); object-fit: cover; flex-shrink: 0;
     }
-    .dm-avatar-placeholder {
+    .dm-avatar-ph {
       background: var(--accent); color: #fff;
       display: inline-flex; align-items: center; justify-content: center;
       font-weight: 700; font-size: .85rem;
     }
-    .dm-name { font-weight: 600; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .dm-header-text { flex: 1 1 auto; min-width: 0; }
+    .dm-handle { font-weight: 600; font-size: .95rem; color: var(--accent); }
+    .dm-realname { font-size: .75rem; color: var(--muted); }
     .dm-close {
       background: transparent; border: 0; color: var(--muted);
       font-size: 1.5rem; cursor: pointer; line-height: 1;
       padding: 0 .25rem; flex-shrink: 0;
     }
-    .dm-close:hover { color: var(--text); }
     .dm-messages {
       flex: 1 1 auto; overflow-y: auto; padding: .75rem;
       display: flex; flex-direction: column; gap: .4rem;
@@ -323,8 +354,43 @@
       font: inherit; font-weight: 600; background: var(--accent); color: #fff;
       border: 0; border-radius: 10px; padding: .6rem 1rem; cursor: pointer;
     }
-    .dm-form button:hover:not(:disabled) { filter: brightness(1.1); }
     .dm-form button:disabled { opacity: .5; cursor: not-allowed; }
+
+    .username-modal {
+      position: fixed; inset: 0; background: rgba(0, 0, 0, .85);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 900; padding: 1rem;
+    }
+    .username-modal[hidden] { display: none; }
+    .username-panel {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; width: 100%; max-width: 420px;
+      padding: 1.5rem; box-shadow: 0 20px 60px rgba(0,0,0,.6);
+    }
+    .username-panel h2 { margin: 0 0 .5rem; font-size: 1.2rem; }
+    .username-panel p { margin: 0 0 1rem; color: var(--muted); font-size: .88rem; line-height: 1.45; }
+    .username-input-wrap {
+      display: flex; align-items: center;
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: 10px; padding: .6rem .75rem; margin-bottom: .5rem;
+      font-size: 1rem;
+    }
+    .username-input-wrap:focus-within { border-color: var(--accent); }
+    .username-input-wrap .prefix { color: var(--muted); margin-right: .15rem; font-weight: 600; }
+    .username-input-wrap input {
+      flex: 1 1 auto; background: transparent; border: 0; outline: 0;
+      font: inherit; color: var(--text); padding: 0; min-width: 0;
+    }
+    .username-hint { font-size: .75rem; color: var(--muted); margin: 0 0 .75rem; }
+    .username-status { min-height: 1.2em; font-size: .8rem; margin: 0 0 .75rem; color: var(--muted); }
+    .username-status.ok { color: var(--like); }
+    .username-status.err { color: var(--dislike); }
+    .username-save {
+      width: 100%; font: inherit; font-weight: 600; font-size: .95rem;
+      padding: .7rem 1rem; border-radius: 10px; border: 0;
+      background: var(--accent); color: #fff; cursor: pointer;
+    }
+    .username-save:disabled { opacity: .5; cursor: not-allowed; }
 
     .toast-container {
       position: fixed; bottom: 1.25rem; right: 1.25rem;
@@ -368,19 +434,20 @@
 
   <header>
     <h1>Public Photo Wall</h1>
-    <p class="sub">Upload a photo — it appears instantly for everyone. <span class="badge">v13.1-friends</span></p>
+    <p class="sub">Upload a photo — it appears instantly for everyone. <span class="badge">v13.2</span></p>
     <button id="upload-btn" type="button" disabled>Sign in to upload</button>
     <p id="status" role="status" aria-live="polite"></p>
   </header>
 
   <main>
+    <div class="gallery-meta" id="gallery-meta"></div>
     <p id="empty-state">No photos yet. Be the first to upload one!</p>
     <div id="gallery" class="gallery"></div>
 
     <section class="chat-section" aria-labelledby="chat-title">
       <div class="chat-header">
         <h2 id="chat-title">Live Chat</h2>
-        <span class="badge">v13.1-friends</span>
+        <span class="badge">v13.2</span>
         <span class="chat-count" id="chat-count"></span>
       </div>
       <div id="chat-messages" class="chat-messages" role="log" aria-live="polite">
@@ -388,7 +455,7 @@
       </div>
       <p id="chat-status" class="chat-status" role="status" aria-live="polite"></p>
       <form id="chat-form" class="chat-form" autocomplete="off">
-        <input id="chat-text" type="text" placeholder="Sign in to chat" maxlength="500" required aria-label="Message" disabled />
+        <input id="chat-text" type="text" placeholder="Sign in to chat" maxlength="500" required disabled />
         <button type="submit" id="chat-send" disabled>Send</button>
       </form>
     </section>
@@ -396,7 +463,7 @@
     <section class="friends-section" aria-labelledby="friends-title">
       <div class="friends-header">
         <h2 id="friends-title">Friends</h2>
-        <span class="badge">v13.1-friends</span>
+        <span class="badge">v13.2</span>
         <span class="friends-count" id="friends-count"></span>
       </div>
       <div class="friends-panel">
@@ -407,7 +474,7 @@
           <div class="friend-share" id="friend-share"></div>
 
           <div class="add-friend">
-            <input id="friend-email" type="email" placeholder="Friend's Google email" autocomplete="off" />
+            <input id="friend-username" type="text" placeholder="@username" autocomplete="off" />
             <button id="add-friend-btn" type="button">Send request</button>
           </div>
           <p class="friend-status" id="friend-status"></p>
@@ -420,7 +487,7 @@
           <div class="friends-list">
             <h3>Your friends</h3>
             <div id="friends-list"></div>
-            <p class="friends-empty" id="friends-empty">No friends yet. Add someone by email above!</p>
+            <p class="friends-empty" id="friends-empty">No friends yet. Add someone by username above!</p>
           </div>
         </div>
       </div>
@@ -431,7 +498,10 @@
     <div class="dm-panel">
       <div class="dm-header">
         <span id="dm-avatar-slot"></span>
-        <span class="dm-name" id="dm-name"></span>
+        <div class="dm-header-text">
+          <div class="dm-handle" id="dm-handle"></div>
+          <div class="dm-realname" id="dm-realname"></div>
+        </div>
         <button class="dm-close" id="dm-close" type="button" aria-label="Close">×</button>
       </div>
       <div class="dm-messages" id="dm-messages">
@@ -444,13 +514,27 @@
     </div>
   </div>
 
+  <div class="username-modal" id="username-modal" hidden>
+    <div class="username-panel">
+      <h2>Pick your username</h2>
+      <p>Your family will use this to find and add you. You can't change it here yet, so choose carefully.</p>
+      <div class="username-input-wrap">
+        <span class="prefix">@</span>
+        <input id="username-input" type="text" maxlength="20" autocomplete="off" spellcheck="false" placeholder="yourname" />
+      </div>
+      <p class="username-hint">3–20 characters, letters, numbers, and underscores only.</p>
+      <p class="username-status" id="username-status"></p>
+      <button class="username-save" id="username-save" type="button" disabled>Save username</button>
+    </div>
+  </div>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import {
       getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-    const VERSION = "v13.1-friends";
+    const VERSION = "v13.2";
     const POLL_MS = 3000;
     const FRIENDS_POLL_MS = 5000;
     const DM_POLL_MS = 2500;
@@ -458,7 +542,6 @@
 
     console.log(`[app] ${VERSION} booting`, new Date().toISOString());
 
-    /* ---------------- FIREBASE (config reverted to v12 working values) ---------------- */
     const app = initializeApp({
       apiKey: "AIzaSyBbxQJFi3UKNv80y2a-_adfutjIqVq8A2w",
       authDomain: "my-photo-gallery-40bc.firebaseapp.com",
@@ -470,8 +553,8 @@
     });
     const auth = getAuth(app);
 
-    /* ---------------- STATE ---------------- */
     let currentUser = null;
+    let currentUsername = null;
     let friends = [];
     let pendingRequests = [];
     let friendsPollTimer = null;
@@ -486,10 +569,10 @@
     let lastChatKey = "";
     const CHAT_RATE_MS = 1500;
 
-    /* ---------------- DOM ---------------- */
     const authBar = document.getElementById("auth-bar");
     const uploadBtn = document.getElementById("upload-btn");
     const galleryEl = document.getElementById("gallery");
+    const galleryMetaEl = document.getElementById("gallery-meta");
     const emptyEl = document.getElementById("empty-state");
     const statusEl = document.getElementById("status");
 
@@ -505,7 +588,7 @@
     const friendsSigninEl = document.getElementById("friends-signin-msg");
     const friendsContentEl = document.getElementById("friends-content");
     const friendShareEl = document.getElementById("friend-share");
-    const friendEmailInput = document.getElementById("friend-email");
+    const friendUsernameInput = document.getElementById("friend-username");
     const addFriendBtn = document.getElementById("add-friend-btn");
     const friendStatusEl = document.getElementById("friend-status");
     const friendRequestsEl = document.getElementById("friend-requests");
@@ -515,13 +598,19 @@
 
     const dmModal = document.getElementById("dm-modal");
     const dmAvatarSlot = document.getElementById("dm-avatar-slot");
-    const dmNameEl = document.getElementById("dm-name");
+    const dmHandleEl = document.getElementById("dm-handle");
+    const dmRealnameEl = document.getElementById("dm-realname");
     const dmCloseBtn = document.getElementById("dm-close");
     const dmMessagesEl = document.getElementById("dm-messages");
     const dmEmptyEl = document.getElementById("dm-empty");
     const dmForm = document.getElementById("dm-form");
     const dmTextInput = document.getElementById("dm-text");
     const dmSendBtn = document.getElementById("dm-send");
+
+    const usernameModal = document.getElementById("username-modal");
+    const usernameInput = document.getElementById("username-input");
+    const usernameStatus = document.getElementById("username-status");
+    const usernameSaveBtn = document.getElementById("username-save");
 
     function setStatus(msg) { statusEl.textContent = msg; }
     function escapeHtml(str) {
@@ -530,101 +619,8 @@
       }[c]));
     }
 
-    /* ---------------- AUTH UI ---------------- */
-    function renderAuthUI(user) {
-      currentUser = user;
-
-      if (user) {
-        const name = user.displayName || (user.email ? user.email.split("@")[0] : "User");
-        const initial = name.charAt(0).toUpperCase();
-        const avatarHtml = user.photoURL
-          ? `<img class="auth-avatar" src="${escapeHtml(user.photoURL)}" alt="" referrerpolicy="no-referrer" />`
-          : `<span class="auth-avatar-placeholder">${escapeHtml(initial)}</span>`;
-
-        authBar.innerHTML = `
-          <div class="auth-user">
-            ${avatarHtml}
-            <span class="auth-name">${escapeHtml(name)}</span>
-            <button id="signout-btn" class="auth-btn signout" type="button">Sign out</button>
-          </div>
-        `;
-        document.getElementById("signout-btn").addEventListener("click", handleSignOut);
-
-        uploadBtn.disabled = false;
-        uploadBtn.textContent = "Upload Photo";
-        chatTextInput.disabled = false;
-        chatTextInput.placeholder = "Say something…";
-        chatSendBtn.disabled = false;
-
-        friendsSigninEl.hidden = true;
-        friendsContentEl.hidden = false;
-      } else {
-        authBar.innerHTML = `
-          <div class="auth-prompt">
-            <span>Sign in to upload photos, chat, and add friends</span>
-            <button id="signin-btn" class="auth-btn google-btn" type="button">
-              <svg viewBox="0 0 48 48" aria-hidden="true">
-                <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.1 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/>
-                <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.1 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/>
-                <path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 34.8 26.7 36 24 36c-5.3 0-9.7-3.1-11.3-8l-6.5 5C9.6 39.6 16.2 44 24 44z"/>
-                <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.3-4.2 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/>
-              </svg>
-              Sign in with Google
-            </button>
-          </div>
-        `;
-        document.getElementById("signin-btn").addEventListener("click", handleSignIn);
-
-        uploadBtn.disabled = true;
-        uploadBtn.textContent = "Sign in to upload";
-        chatTextInput.disabled = true;
-        chatTextInput.placeholder = "Sign in to chat";
-        chatSendBtn.disabled = true;
-
-        friendsSigninEl.hidden = false;
-        friendsContentEl.hidden = true;
-      }
-    }
-
-    async function handleSignIn() {
-      try {
-        const provider = new GoogleAuthProvider();
-        await signInWithPopup(auth, provider);
-        setStatus("");
-      } catch (err) {
-        console.error("[auth] sign-in failed:", err);
-        if (err.code === "auth/unauthorized-domain") {
-          setStatus("Domain not authorized — add it in Firebase Console → Authentication → Settings → Authorized domains.");
-        } else if (err.code === "auth/popup-closed-by-user") {
-          setStatus("");
-        } else {
-          setStatus("Sign-in failed: " + (err.message || err.code || "unknown"));
-        }
-      }
-    }
-
-    async function handleSignOut() {
-      try {
-        await signOut(auth);
-        setStatus("");
-      } catch (err) {
-        console.error("[auth] sign-out failed:", err);
-      }
-    }
-
-    onAuthStateChanged(auth, (user) => {
-      console.log("[auth] state:", user ? user.displayName || user.uid : "(signed out)");
-      renderAuthUI(user);
-      if (user) onUserSignedIn(user).catch(err => console.error("[signedIn]", err));
-      else onUserSignedOut();
-    });
-
-    /* ---------------- REST ---------------- */
     async function restGet(path) {
-      const res = await fetch(`${DB_URL}${path}.json`, {
-        cache: "no-store",
-        headers: { "Cache-Control": "no-cache" }
-      });
+      const res = await fetch(`${DB_URL}${path}.json`, { cache: "no-store" });
       if (!res.ok) throw new Error(`GET ${path} → HTTP ${res.status}`);
       return await res.json();
     }
@@ -647,14 +643,187 @@
       return await res.json();
     }
     async function restDelete(path) {
-      const res = await fetch(`${DB_URL}${path}.json`, {
-        method: "DELETE", cache: "no-store"
-      });
+      const res = await fetch(`${DB_URL}${path}.json`, { method: "DELETE", cache: "no-store" });
       if (!res.ok) throw new Error(`DELETE ${path} → HTTP ${res.status}`);
       return await res.json();
     }
 
-    /* ---------------- CLOUDINARY THUMBS ---------------- */
+    function renderAuthUI(user) {
+      currentUser = user;
+      if (user) {
+        const handle = currentUsername ? "@" + currentUsername : (user.displayName || user.email?.split("@")[0] || "User");
+        const initial = (currentUsername || user.displayName || "U").charAt(0).toUpperCase();
+        const avatarHtml = user.photoURL
+          ? `<img class="auth-avatar" src="${escapeHtml(user.photoURL)}" alt="" referrerpolicy="no-referrer" />`
+          : `<span class="auth-avatar-placeholder">${escapeHtml(initial)}</span>`;
+        authBar.innerHTML = `
+          <div class="auth-user">
+            ${avatarHtml}
+            <span class="auth-handle">${escapeHtml(handle)}</span>
+            <button id="signout-btn" class="auth-btn signout" type="button">Sign out</button>
+          </div>`;
+        document.getElementById("signout-btn").addEventListener("click", handleSignOut);
+        uploadBtn.disabled = false; uploadBtn.textContent = "Upload Photo";
+        chatTextInput.disabled = false; chatTextInput.placeholder = "Say something…"; chatSendBtn.disabled = false;
+        friendsSigninEl.hidden = true; friendsContentEl.hidden = false;
+      } else {
+        authBar.innerHTML = `
+          <div class="auth-prompt">
+            <span>Sign in to upload photos, chat, and add friends</span>
+            <button id="signin-btn" class="auth-btn google-btn" type="button">
+              <svg viewBox="0 0 48 48" aria-hidden="true">
+                <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.1 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/>
+                <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.1 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/>
+                <path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 34.8 26.7 36 24 36c-5.3 0-9.7-3.1-11.3-8l-6.5 5C9.6 39.6 16.2 44 24 44z"/>
+                <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.3-4.2 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/>
+              </svg>
+              Sign in with Google
+            </button>
+          </div>`;
+        document.getElementById("signin-btn").addEventListener("click", handleSignIn);
+        uploadBtn.disabled = true; uploadBtn.textContent = "Sign in to upload";
+        chatTextInput.disabled = true; chatTextInput.placeholder = "Sign in to chat"; chatSendBtn.disabled = true;
+        friendsSigninEl.hidden = false; friendsContentEl.hidden = true;
+      }
+    }
+
+    async function handleSignIn() {
+      try {
+        await signInWithPopup(auth, new GoogleAuthProvider());
+        setStatus("");
+      } catch (err) {
+        console.error("[auth] sign-in failed:", err);
+        if (err.code === "auth/unauthorized-domain") setStatus("Domain not authorized in Firebase Console.");
+        else if (err.code === "auth/popup-closed-by-user") setStatus("");
+        else setStatus("Sign-in failed: " + (err.message || err.code));
+      }
+    }
+    async function handleSignOut() {
+      try { await signOut(auth); setStatus(""); }
+      catch (err) { console.error("[auth]", err); }
+    }
+
+    onAuthStateChanged(auth, (user) => {
+      console.log("[auth] state:", user ? (user.displayName || user.uid) : "(signed out)");
+      if (!user) {
+        currentUsername = null;
+        renderAuthUI(null);
+        onUserSignedOut();
+        return;
+      }
+      onUserSignedIn(user).catch(err => console.error("[signedIn]", err));
+    });
+
+    function suggestUsername(name) {
+      if (!name) return "user" + Math.floor(1000 + Math.random() * 9000);
+      const clean = name.toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 16);
+      return clean || ("user" + Math.floor(1000 + Math.random() * 9000));
+    }
+
+    function validateUsername(v) {
+      if (!v) return "Pick a username.";
+      if (v.length < 3) return "At least 3 characters.";
+      if (v.length > 20) return "20 characters max.";
+      if (!/^[a-z0-9_]+$/.test(v)) return "Only letters, numbers, and underscores.";
+      return null;
+    }
+
+    function setUsernameStatus(msg, cls) {
+      usernameStatus.textContent = msg || "";
+      usernameStatus.className = "username-status" + (cls ? " " + cls : "");
+    }
+
+    function showUsernameModal(user) {
+      usernameModal.hidden = false;
+      usernameInput.value = suggestUsername(user.displayName || user.email?.split("@")[0]);
+      usernameSaveBtn.disabled = false;
+      setUsernameStatus("");
+      usernameInput.focus();
+      usernameInput.select();
+    }
+    function hideUsernameModal() { usernameModal.hidden = true; }
+
+    async function saveUsername() {
+      if (!currentUser) return;
+      const lower = usernameInput.value.trim().toLowerCase();
+      const err = validateUsername(lower);
+      if (err) { setUsernameStatus(err, "err"); return; }
+
+      usernameSaveBtn.disabled = true;
+      setUsernameStatus("Checking availability…");
+
+      try {
+        const existing = await restGet(`/usernames/${lower}`);
+        if (existing && existing.uid && existing.uid !== currentUser.uid) {
+          setUsernameStatus("That username is taken.", "err");
+          usernameSaveBtn.disabled = false;
+          return;
+        }
+        if (currentUsername && currentUsername !== lower) {
+          try { await restDelete(`/usernames/${currentUsername}`); } catch {}
+        }
+        await restPut(`/users/${currentUser.uid}`, {
+          username: lower,
+          displayName: currentUser.displayName || lower,
+          photoURL: currentUser.photoURL || null,
+          email: currentUser.email || null,
+          updatedAt: { ".sv": "timestamp" }
+        });
+        await restPut(`/usernames/${lower}`, {
+          uid: currentUser.uid,
+          displayName: currentUser.displayName || lower,
+          photoURL: currentUser.photoURL || null
+        });
+        currentUsername = lower;
+        setUsernameStatus("Saved!", "ok");
+        setTimeout(() => { hideUsernameModal(); renderAuthUI(currentUser); loadFriends(); loadFriendRequests(); }, 400);
+      } catch (e) {
+        console.error("[username save]", e);
+        setUsernameStatus("Save failed: " + (e.message || "try again"), "err");
+        usernameSaveBtn.disabled = false;
+      }
+    }
+
+    usernameSaveBtn.addEventListener("click", saveUsername);
+    usernameInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") { e.preventDefault(); saveUsername(); }
+    });
+
+    async function onUserSignedIn(user) {
+      let profile = null;
+      try { profile = await restGet(`/users/${user.uid}`); } catch {}
+      if (profile && profile.username) {
+        currentUsername = profile.username;
+      } else {
+        currentUsername = null;
+      }
+      renderAuthUI(user);
+      if (!currentUsername) showUsernameModal(user);
+
+      friendShareEl.innerHTML = currentUsername
+        ? `Your username: <span class="handle">@${escapeHtml(currentUsername)}</span> — share this with family.`
+        : "Set a username to let friends find you.";
+
+      await loadFriends();
+      await loadFriendRequests();
+
+      if (friendsPollTimer) clearInterval(friendsPollTimer);
+      friendsPollTimer = setInterval(async () => {
+        await loadFriends();
+        await loadFriendRequests();
+      }, FRIENDS_POLL_MS);
+    }
+
+    function onUserSignedOut() {
+      friends = []; pendingRequests = [];
+      friendsCountEl.textContent = "";
+      friendRequestsListEl.innerHTML = "";
+      friendsListEl.innerHTML = "";
+      friendsEmptyEl.hidden = false;
+      closeDmModal();
+      if (friendsPollTimer) { clearInterval(friendsPollTimer); friendsPollTimer = null; }
+    }
+
     const THUMB_WIDTHS = [300, 500, 800];
     function withTransform(url, transform) {
       if (typeof url !== "string" || !url.includes("/image/upload/")) return url;
@@ -662,7 +831,6 @@
     }
     function thumbUrl(url, w) { return withTransform(url, `w_${w},c_limit,q_auto,f_auto`); }
 
-    /* ---------------- NOTIFICATIONS ---------------- */
     const NOTIF_PHOTO_KEY = "wall_last_seen_photo";
     const NOTIF_MSG_KEY = "wall_last_seen_msg";
     const BASE_TITLE = "Public Photo Wall";
@@ -671,8 +839,7 @@
       lastSeenPhotoKey = localStorage.getItem(NOTIF_PHOTO_KEY) || "";
       lastSeenMsgKey = localStorage.getItem(NOTIF_MSG_KEY) || "";
     } catch {}
-    let lastProcessedPhotoKey = lastSeenPhotoKey;
-    let lastProcessedMsgKey = lastSeenMsgKey;
+    let lastProcessedPhotoKey = lastSeenPhotoKey, lastProcessedMsgKey = lastSeenMsgKey;
     let firstPhotoRead = true, firstMsgRead = true;
     let pendingUnread = 0, catchupPhotos = 0, catchupMsgs = 0, catchupShown = false;
 
@@ -685,9 +852,7 @@
       toastContainer.appendChild(t);
       setTimeout(() => { t.classList.add("toast-out"); setTimeout(() => t.remove(), 300); }, ms);
     }
-    function updateTitle() {
-      document.title = pendingUnread > 0 ? `(${pendingUnread}) ${BASE_TITLE}` : BASE_TITLE;
-    }
+    function updateTitle() { document.title = pendingUnread > 0 ? `(${pendingUnread}) ${BASE_TITLE}` : BASE_TITLE; }
     function maybeShowCatchup() {
       if (catchupShown) return;
       if (catchupPhotos === 0 && catchupMsgs === 0) return;
@@ -708,7 +873,6 @@
       setTimeout(() => { if (banner.parentNode) banner.remove(); }, 15000);
     }
 
-    /* ---------------- UPLOAD ---------------- */
     let widget = null, pendingSaves = 0;
     function getWidget() {
       if (widget) return widget;
@@ -717,8 +881,7 @@
       }
       widget = window.cloudinary.createUploadWidget(
         {
-          cloudName: "boswge8x",
-          uploadPreset: "ml_default",
+          cloudName: "boswge8x", uploadPreset: "ml_default",
           sources: ["local", "url", "camera"],
           multiple: true, maxFiles: 10,
           clientAllowedFormats: ["image"], resourceType: "image"
@@ -738,6 +901,7 @@
     }
     async function savePhoto(info) {
       if (!currentUser) { setStatus("Sign in to upload photos."); return; }
+      if (!currentUsername) { setStatus("Pick a username first."); return; }
       if (!info || !info.secure_url) { setStatus("Upload succeeded but no URL returned."); return; }
       pendingSaves++;
       setStatus("Saving to the wall…");
@@ -748,7 +912,8 @@
           width: info.width || null, height: info.height || null,
           format: info.format || null,
           uploaderId: currentUser.uid,
-          uploaderName: currentUser.displayName || (currentUser.email ? currentUser.email.split("@")[0] : "User"),
+          uploaderUsername: currentUsername,
+          uploaderName: currentUser.displayName || currentUsername,
           uploaderPhoto: currentUser.photoURL || null,
           createdAt: { ".sv": "timestamp" },
           uploadedAt: Date.now()
@@ -756,21 +921,32 @@
         setStatus("Photo added to the wall.");
         await readPhotos("after upload");
       } catch (err) {
-        console.error("[upload] failed:", err);
+        console.error("[upload]", err);
         setStatus("Photo uploaded, but saving to the wall failed.");
       } finally { pendingSaves--; }
     }
     uploadBtn.addEventListener("click", () => {
       if (!currentUser) { handleSignIn(); return; }
+      if (!currentUsername) { showUsernameModal(currentUser); return; }
       const w = getWidget(); if (w) w.open();
     });
 
-    /* ---------------- GALLERY ---------------- */
     const cardByKey = new Map();
     let lastPhotoKeys = "";
+
+    function photoSignature(entry) {
+      const r = entry.value.reactions || {};
+      const vals = Object.values(r);
+      const likes = vals.filter(v => v === "like").length;
+      const dislikes = vals.filter(v => v === "dislike").length;
+      const mine = currentUser ? (r[currentUser.uid] || "") : "";
+      return `${entry.key}:${likes}:${dislikes}:${mine[0] || ""}`;
+    }
+
     function createCard(key, photo) {
       const card = document.createElement("figure");
       card.className = "card"; card.dataset.key = key;
+
       const img = document.createElement("img");
       img.alt = "Photo on the wall"; img.loading = "lazy"; img.decoding = "async";
       img.src = thumbUrl(photo.url, 500);
@@ -778,39 +954,134 @@
       img.sizes = "(max-width: 600px) 45vw, (max-width: 1000px) 30vw, 240px";
       if (photo.width && photo.height) { img.width = photo.width; img.height = photo.height; }
       img.addEventListener("error", () => card.classList.add("is-broken"), { once: true });
-      const caption = document.createElement("figcaption");
-      if (photo.uploaderName) {
+
+      if (currentUser && photo.uploaderId === currentUser.uid) {
+        const del = document.createElement("button");
+        del.className = "delete-btn"; del.type = "button";
+        del.setAttribute("aria-label", "Delete photo");
+        del.textContent = "×";
+        del.addEventListener("click", (e) => {
+          e.stopPropagation();
+          deletePhoto(key);
+        });
+        card.appendChild(del);
+      }
+
+      const body = document.createElement("div"); body.className = "card-body";
+
+      if (photo.uploaderUsername || photo.uploaderName) {
         const byline = document.createElement("span");
         byline.className = "card-byline";
         if (photo.uploaderPhoto) {
           const av = document.createElement("img");
           av.src = photo.uploaderPhoto; av.alt = ""; av.referrerPolicy = "no-referrer";
           byline.appendChild(av);
+        } else {
+          const ph = document.createElement("span");
+          ph.className = "avatar-ph";
+          ph.textContent = (photo.uploaderUsername || photo.uploaderName || "U").charAt(0).toUpperCase();
+          byline.appendChild(ph);
         }
-        byline.appendChild(document.createTextNode(photo.uploaderName));
-        caption.appendChild(byline);
+        byline.appendChild(document.createTextNode(photo.uploaderUsername ? "@" + photo.uploaderUsername : photo.uploaderName));
+        body.appendChild(byline);
       }
-      const link = document.createElement("a");
-      link.href = photo.url; link.target = "_blank"; link.rel = "noopener noreferrer";
-      link.textContent = "Open original";
-      caption.appendChild(link);
-      card.append(img, caption);
+
+      const actions = document.createElement("div"); actions.className = "card-actions";
+
+      const likeBtn = document.createElement("button");
+      likeBtn.className = "react-btn like reaction-like"; likeBtn.type = "button";
+      likeBtn.innerHTML = `👍 <span class="count">0</span>`;
+      likeBtn.disabled = !currentUser || !currentUsername;
+      likeBtn.addEventListener("click", () => reactToPhoto(key, "like"));
+      actions.appendChild(likeBtn);
+
+      const dislikeBtn = document.createElement("button");
+      dislikeBtn.className = "react-btn dislike reaction-dislike"; dislikeBtn.type = "button";
+      dislikeBtn.innerHTML = `👎 <span class="count">0</span>`;
+      dislikeBtn.disabled = !currentUser || !currentUsername;
+      dislikeBtn.addEventListener("click", () => reactToPhoto(key, "dislike"));
+      actions.appendChild(dislikeBtn);
+
+      const open = document.createElement("a");
+      open.className = "card-open";
+      open.href = photo.url; open.target = "_blank"; open.rel = "noopener noreferrer";
+      open.textContent = "Open ↗";
+      actions.appendChild(open);
+
+      body.appendChild(actions);
+      card.append(img, body);
+
+      updateReactions(card, photo);
       return card;
     }
+
+    function updateReactions(card, photo) {
+      const r = photo.reactions || {};
+      const vals = Object.values(r);
+      const likes = vals.filter(v => v === "like").length;
+      const dislikes = vals.filter(v => v === "dislike").length;
+      const mine = currentUser ? r[currentUser.uid] : null;
+
+      const likeBtn = card.querySelector(".reaction-like");
+      const dislikeBtn = card.querySelector(".reaction-dislike");
+      if (likeBtn) {
+        likeBtn.querySelector(".count").textContent = likes;
+        likeBtn.classList.toggle("active", mine === "like");
+      }
+      if (dislikeBtn) {
+        dislikeBtn.querySelector(".count").textContent = dislikes;
+        dislikeBtn.classList.toggle("active", mine === "dislike");
+      }
+    }
+
+    async function reactToPhoto(photoKey, type) {
+      if (!currentUser || !currentUsername) return;
+      const path = `/public_photos/${photoKey}/reactions/${currentUser.uid}`;
+      try {
+        const current = await restGet(`/public_photos/${photoKey}/reactions`);
+        const mine = current && current[currentUser.uid];
+        if (mine === type) await restDelete(path);
+        else await restPut(path, type);
+        await readPhotos("reaction");
+      } catch (err) { console.error("[react]", err); }
+    }
+
+    async function deletePhoto(photoKey) {
+      if (!currentUser) return;
+      if (!confirm("Delete this photo? It can't be undone.")) return;
+      try {
+        await restDelete(`/public_photos/${photoKey}`);
+        await readPhotos("after delete");
+      } catch (err) {
+        console.error("[delete]", err);
+        alert("Could not delete the photo.");
+      }
+    }
+
     function renderPhotos(entries, reason) {
-      const key = entries.map(e => e.key).join("|");
-      if (key === lastPhotoKeys) return;
-      lastPhotoKeys = key;
+      const newKey = entries.map(photoSignature).join("|");
+      if (newKey === lastPhotoKeys) return;
+      lastPhotoKeys = newKey;
+
       const incoming = new Set(entries.map(e => e.key));
       for (const [k, el] of cardByKey) if (!incoming.has(k)) { el.remove(); cardByKey.delete(k); }
+
       emptyEl.hidden = entries.length > 0;
+      galleryMetaEl.textContent = entries.length ? `${entries.length} photo${entries.length === 1 ? "" : "s"}` : "";
+
       entries.forEach((entry, i) => {
         let card = cardByKey.get(entry.key);
-        if (!card) { card = createCard(entry.key, entry.value); cardByKey.set(entry.key, card); }
+        if (!card) {
+          card = createCard(entry.key, entry.value);
+          cardByKey.set(entry.key, card);
+        } else {
+          updateReactions(card, entry.value);
+        }
         const at = galleryEl.children[i] || null;
         if (at !== card) galleryEl.insertBefore(card, at);
       });
     }
+
     function processPhotoNotifs(entries) {
       const newest = entries[0]?.key || "";
       if (firstPhotoRead) {
@@ -829,6 +1100,7 @@
         else { lastSeenPhotoKey = newest; try { localStorage.setItem(NOTIF_PHOTO_KEY, newest); } catch {} showToast(`📷 ${n} new photo${n > 1 ? "s" : ""}`); }
       }
     }
+
     async function readPhotos(reason) {
       try {
         const data = await restGet("/public_photos");
@@ -842,7 +1114,6 @@
     readPhotos("initial");
     setInterval(() => readPhotos("poll"), POLL_MS);
 
-    /* ---------------- PUBLIC CHAT ---------------- */
     function chatStatus(msg, ms = 4000) {
       chatStatusEl.textContent = msg;
       if (msg) setTimeout(() => { if (chatStatusEl.textContent === msg) chatStatusEl.textContent = ""; }, ms);
@@ -853,7 +1124,7 @@
       return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
     }
     function renderChat(messages, reason) {
-      const key = messages.map(m => `${m.authorId || m.clientId || ""}|${m.clientSentAt || 0}|${m.text || ""}`).join("§");
+      const key = messages.map(m => `${m.authorId || ""}|${m.clientSentAt || 0}|${m.text || ""}`).join("§");
       if (key === lastChatKey) return;
       lastChatKey = key;
       const nearBottom = chatMsgsEl.scrollHeight - chatMsgsEl.scrollTop - chatMsgsEl.clientHeight < 80;
@@ -863,17 +1134,17 @@
       for (const msg of messages) {
         const row = document.createElement("div");
         row.className = "chat-message";
-        const isOwn = currentUser && msg.authorId && msg.authorId === currentUser.uid;
+        const isOwn = currentUser && msg.authorId === currentUser.uid;
         if (isOwn) row.classList.add("is-own");
         const meta = document.createElement("div"); meta.className = "chat-message-meta";
-        const displayName = String(msg.authorName || msg.name || "Anonymous").slice(0, 24);
+        const displayName = msg.authorUsername ? "@" + msg.authorUsername : String(msg.authorName || msg.name || "Anonymous").slice(0, 24);
         if (msg.authorPhoto) {
           const av = document.createElement("img");
           av.className = "chat-avatar"; av.src = msg.authorPhoto; av.alt = ""; av.referrerPolicy = "no-referrer";
           meta.appendChild(av);
         } else {
           const av = document.createElement("span");
-          av.className = "chat-avatar-placeholder"; av.textContent = displayName.charAt(0).toUpperCase();
+          av.className = "chat-avatar-ph"; av.textContent = displayName.replace("@", "").charAt(0).toUpperCase();
           meta.appendChild(av);
         }
         const name = document.createElement("span");
@@ -919,8 +1190,7 @@
         const messages = []; const messageKeys = [];
         if (data && typeof data === "object") {
           const keys = Object.keys(data).sort();
-          const last = keys.slice(-100);
-          for (const k of last) { messages.push(data[k] || {}); messageKeys.push(k); }
+          for (const k of keys.slice(-100)) { messages.push(data[k] || {}); messageKeys.push(k); }
         }
         renderChat(messages, reason);
         processMsgNotifs(messageKeys);
@@ -941,18 +1211,20 @@
     chatForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       if (!currentUser) { chatStatus("Sign in to send messages."); return; }
+      if (!currentUsername) { chatStatus("Pick a username first."); showUsernameModal(currentUser); return; }
       if (sending) { chatStatus("Still sending…"); return; }
       const text = chatTextInput.value.trim();
       if (!text) { chatStatus("Type a message first."); return; }
       const now = Date.now();
       if (now - lastSend < CHAT_RATE_MS) { chatStatus(`Please wait ${((CHAT_RATE_MS - (now - lastSend)) / 1000).toFixed(1)}s.`); return; }
-      const name = currentUser.displayName || (currentUser.email ? currentUser.email.split("@")[0] : "User");
       sending = true; chatSendBtn.disabled = true;
       const origLabel = chatSendBtn.textContent; chatSendBtn.textContent = "Sending…";
       lastSend = now; chatStatus("Sending…", 12000);
       try {
         await restPost("/chat_messages", {
-          authorId: currentUser.uid, authorName: name,
+          authorId: currentUser.uid,
+          authorUsername: currentUsername,
+          authorName: currentUser.displayName || currentUsername,
           authorPhoto: currentUser.photoURL || null,
           text: text.slice(0, 500),
           createdAt: { ".sv": "timestamp" }, clientSentAt: now
@@ -961,47 +1233,10 @@
         await readChat("after push");
         chatStatus("Sent.");
       } catch (err) {
-        console.error("[chat] failed:", err);
+        console.error("[chat]", err);
         chatStatus("Failed: " + (err?.message || "unknown"), 8000);
       } finally { sending = false; chatSendBtn.disabled = false; chatSendBtn.textContent = origLabel; }
     });
-
-    /* ---------------- FRIENDS ---------------- */
-    function encodeEmailKey(email) { return email.toLowerCase().replace(/\./g, ','); }
-
-    async function onUserSignedIn(user) {
-      if (user.email) {
-        try {
-          await restPut(`/emailIndex/${encodeEmailKey(user.email)}`, {
-            uid: user.uid,
-            displayName: user.displayName || user.email.split("@")[0],
-            photoURL: user.photoURL || null,
-            email: user.email,
-            updatedAt: { ".sv": "timestamp" }
-          });
-        } catch (err) { console.error("[emailIndex]", err); }
-        friendShareEl.innerHTML = `Share your email with family so they can add you: <strong>${escapeHtml(user.email)}</strong>`;
-      } else {
-        friendShareEl.textContent = "Your account has no email — friends won't be able to find you.";
-      }
-      await loadFriends();
-      await loadFriendRequests();
-      if (friendsPollTimer) clearInterval(friendsPollTimer);
-      friendsPollTimer = setInterval(async () => {
-        await loadFriends();
-        await loadFriendRequests();
-      }, FRIENDS_POLL_MS);
-    }
-
-    function onUserSignedOut() {
-      friends = []; pendingRequests = [];
-      friendsCountEl.textContent = "";
-      friendRequestsListEl.innerHTML = "";
-      friendsListEl.innerHTML = "";
-      friendsEmptyEl.hidden = false;
-      closeDmModal();
-      if (friendsPollTimer) { clearInterval(friendsPollTimer); friendsPollTimer = null; }
-    }
 
     async function loadFriends() {
       if (!currentUser) return;
@@ -1013,14 +1248,14 @@
             const f = data[uid] || {};
             friends.push({
               uid,
-              displayName: f.displayName || "Friend",
+              username: f.username || "",
+              displayName: f.displayName || f.username || "Friend",
               photoURL: f.photoURL || null,
-              email: f.email || "",
               since: f.since || 0
             });
           }
         }
-        friends.sort((a, b) => a.displayName.localeCompare(b.displayName));
+        friends.sort((a, b) => (a.username || a.displayName).localeCompare(b.username || b.displayName));
         renderFriends();
       } catch (err) { console.error("[friends]", err); }
     }
@@ -1035,9 +1270,9 @@
             const r = data[fromUid] || {};
             pendingRequests.push({
               fromUid,
+              fromUsername: r.fromUsername || "",
               fromName: r.fromName || "Someone",
               fromPhoto: r.fromPhoto || null,
-              fromEmail: r.fromEmail || "",
               createdAt: r.createdAt || 0
             });
           }
@@ -1061,15 +1296,16 @@
           item.appendChild(img);
         } else {
           const ph = document.createElement("span");
-          ph.className = "friend-avatar-placeholder"; ph.textContent = f.displayName.charAt(0).toUpperCase();
+          ph.className = "friend-avatar-ph"; ph.textContent = (f.username || f.displayName).charAt(0).toUpperCase();
           item.appendChild(ph);
         }
         const info = document.createElement("div"); info.className = "friend-info";
-        const name = document.createElement("div"); name.className = "friend-name"; name.textContent = f.displayName;
-        info.appendChild(name);
-        if (f.email) {
-          const email = document.createElement("div"); email.className = "friend-email"; email.textContent = f.email;
-          info.appendChild(email);
+        const handle = document.createElement("div"); handle.className = "friend-handle";
+        handle.textContent = f.username ? "@" + f.username : f.displayName;
+        info.appendChild(handle);
+        if (f.displayName && f.username && f.displayName.toLowerCase() !== f.username) {
+          const real = document.createElement("div"); real.className = "friend-realname"; real.textContent = f.displayName;
+          info.appendChild(real);
         }
         item.appendChild(info);
         const icon = document.createElement("span"); icon.className = "friend-chat-icon"; icon.textContent = "💬";
@@ -1091,10 +1327,12 @@
           item.appendChild(img);
         } else {
           const ph = document.createElement("span");
-          ph.className = "request-avatar-placeholder"; ph.textContent = r.fromName.charAt(0).toUpperCase();
+          ph.className = "request-avatar-ph";
+          ph.textContent = (r.fromUsername || r.fromName).charAt(0).toUpperCase();
           item.appendChild(ph);
         }
-        const name = document.createElement("span"); name.className = "request-name"; name.textContent = r.fromName;
+        const name = document.createElement("span"); name.className = "request-name";
+        name.textContent = r.fromUsername ? "@" + r.fromUsername : r.fromName;
         item.appendChild(name);
         const actions = document.createElement("div"); actions.className = "request-actions";
         const accept = document.createElement("button");
@@ -1116,28 +1354,29 @@
     }
 
     async function sendFriendRequest() {
-      if (!currentUser) return;
-      const email = friendEmailInput.value.trim().toLowerCase();
-      if (!email) { setFriendStatus("Enter their email first."); return; }
-      if (email === currentUser.email.toLowerCase()) { setFriendStatus("That's your own email."); return; }
-      if (friends.some(f => f.email && f.email.toLowerCase() === email)) {
+      if (!currentUser || !currentUsername) { setFriendStatus("Pick a username first."); return; }
+      let target = friendUsernameInput.value.trim().toLowerCase();
+      if (target.startsWith("@")) target = target.slice(1);
+      if (!target) { setFriendStatus("Enter a username first."); return; }
+      if (target === currentUsername) { setFriendStatus("That's your own username."); return; }
+      if (friends.some(f => (f.username || "").toLowerCase() === target)) {
         setFriendStatus("You're already friends with them."); return;
       }
       addFriendBtn.disabled = true; setFriendStatus("Looking up…");
       try {
-        const profile = await restGet(`/emailIndex/${encodeEmailKey(email)}`);
+        const profile = await restGet(`/usernames/${target}`);
         if (!profile || !profile.uid) {
-          setFriendStatus("No account found with that email. They need to sign in first."); return;
+          setFriendStatus("No account with that username."); return;
         }
         if (profile.uid === currentUser.uid) { setFriendStatus("That's your own account."); return; }
         await restPut(`/friendRequests/${profile.uid}/${currentUser.uid}`, {
-          fromName: currentUser.displayName || currentUser.email.split("@")[0],
+          fromUsername: currentUsername,
+          fromName: currentUser.displayName || currentUsername,
           fromPhoto: currentUser.photoURL || null,
-          fromEmail: currentUser.email,
           createdAt: Date.now()
         });
-        friendEmailInput.value = "";
-        setFriendStatus(`Request sent to ${profile.displayName || email}.`);
+        friendUsernameInput.value = "";
+        setFriendStatus(`Request sent to @${target}.`);
       } catch (err) {
         console.error("[friend request]", err);
         setFriendStatus("Failed to send request. Try again.");
@@ -1145,19 +1384,19 @@
     }
 
     async function acceptFriendRequest(req) {
-      if (!currentUser) return;
+      if (!currentUser || !currentUsername) return;
       try {
         const me = {
-          displayName: currentUser.displayName || currentUser.email.split("@")[0],
-          photoURL: currentUser.photoURL || null,
-          email: currentUser.email || ""
+          username: currentUsername,
+          displayName: currentUser.displayName || currentUsername,
+          photoURL: currentUser.photoURL || null
         };
         const now = Date.now();
         await restPut(`/friends/${currentUser.uid}/${req.fromUid}`, {
-          displayName: req.fromName, photoURL: req.fromPhoto, email: req.fromEmail, since: now
+          username: req.fromUsername, displayName: req.fromName, photoURL: req.fromPhoto, since: now
         });
         await restPut(`/friends/${req.fromUid}/${currentUser.uid}`, {
-          displayName: me.displayName, photoURL: me.photoURL, email: me.email, since: now
+          username: me.username, displayName: me.displayName, photoURL: me.photoURL, since: now
         });
         await restDelete(`/friendRequests/${currentUser.uid}/${req.fromUid}`);
         await restDelete(`/friendRequests/${req.fromUid}/${currentUser.uid}`);
@@ -1174,18 +1413,18 @@
     }
 
     addFriendBtn.addEventListener("click", sendFriendRequest);
-    friendEmailInput.addEventListener("keydown", (e) => {
+    friendUsernameInput.addEventListener("keydown", (e) => {
       if (e.key === "Enter") { e.preventDefault(); sendFriendRequest(); }
     });
 
-    /* ---------------- DMs ---------------- */
     function dmPairKey(a, b) { return [a, b].sort().join("_"); }
 
     function openDm(friend) {
       if (!currentUser) return;
       openDmWith = friend;
       lastDmKey = "";
-      dmNameEl.textContent = friend.displayName;
+      dmHandleEl.textContent = friend.username ? "@" + friend.username : friend.displayName;
+      dmRealnameEl.textContent = friend.displayName && friend.username && friend.displayName.toLowerCase() !== friend.username ? friend.displayName : "";
       dmAvatarSlot.innerHTML = "";
       if (friend.photoURL) {
         const av = document.createElement("img");
@@ -1193,7 +1432,7 @@
         dmAvatarSlot.appendChild(av);
       } else {
         const ph = document.createElement("span");
-        ph.className = "dm-avatar-placeholder"; ph.textContent = friend.displayName.charAt(0).toUpperCase();
+        ph.className = "dm-avatar-ph"; ph.textContent = (friend.username || friend.displayName).charAt(0).toUpperCase();
         dmAvatarSlot.appendChild(ph);
       }
       for (const c of Array.from(dmMessagesEl.children)) if (c !== dmEmptyEl) c.remove();
@@ -1219,11 +1458,10 @@
         const messages = [];
         if (data && typeof data === "object") {
           const keys = Object.keys(data).sort();
-          const last = keys.slice(-100);
-          for (const k of last) messages.push(data[k] || {});
+          for (const k of keys.slice(-100)) messages.push(data[k] || {});
         }
         renderDmMessages(messages);
-      } catch (err) { console.error("[dm load]", err); }
+      } catch (err) { console.error("[dm]", err); }
     }
 
     function renderDmMessages(messages) {
@@ -1248,18 +1486,18 @@
     }
 
     async function sendDm() {
-      if (!currentUser || !openDmWith) return;
+      if (!currentUser || !openDmWith || !currentUsername) return;
       const text = dmTextInput.value.trim();
       if (!text) return;
       const now = Date.now();
       if (now - lastDmSend < 1000) return;
-      lastDmSend = now;
-      dmSendBtn.disabled = true;
+      lastDmSend = now; dmSendBtn.disabled = true;
       const pairKey = dmPairKey(currentUser.uid, openDmWith.uid);
       try {
         await restPost(`/conversations/${pairKey}/messages`, {
           authorId: currentUser.uid,
-          authorName: currentUser.displayName || currentUser.email.split("@")[0],
+          authorUsername: currentUsername,
+          authorName: currentUser.displayName || currentUsername,
           authorPhoto: currentUser.photoURL || null,
           text: text.slice(0, 500),
           createdAt: { ".sv": "timestamp" },
