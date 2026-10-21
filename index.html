@@ -26,7 +26,6 @@
       min-height: 100vh;
     }
 
-    /* ---------- AUTH BAR ---------- */
     #auth-bar {
       padding: .75rem 1.25rem 0;
       display: flex;
@@ -110,7 +109,6 @@
     }
     .google-btn svg { width: 18px; height: 18px; }
 
-    /* ---------- HEADER ---------- */
     header { padding: 1.25rem 1.25rem 1.5rem; text-align: center; }
     h1 { margin: 0 0 .35rem; font-size: clamp(1.5rem, 4vw, 2.25rem); letter-spacing: -.02em; }
     .sub { margin: 0 0 1.5rem; color: var(--muted); font-size: .95rem; }
@@ -130,7 +128,6 @@
     }
     #status { min-height: 1.4em; margin: 1rem 0 0; font-size: .9rem; color: var(--muted); }
 
-    /* ---------- GALLERY ---------- */
     main { padding: 1rem 1.25rem 4rem; }
     .gallery {
       display: grid;
@@ -182,7 +179,6 @@
       font-size: .95rem;
     }
 
-    /* ---------- CHAT ---------- */
     .chat-section { max-width: 760px; margin: 3.5rem auto 0; padding: 0 1.25rem; }
     .chat-header {
       display: flex; align-items: baseline; justify-content: space-between;
@@ -266,7 +262,6 @@
     .chat-form button:hover:not(:disabled) { filter: brightness(1.1); }
     .chat-form button:disabled { opacity: .5; cursor: not-allowed; }
 
-    /* ---------- NOTIFICATIONS ---------- */
     .toast-container {
       position: fixed;
       bottom: 1.25rem;
@@ -342,7 +337,7 @@
 
   <header>
     <h1>Public Photo Wall</h1>
-    <p class="sub">Upload a photo — it appears instantly for everyone. <span class="badge">v12-accounts</span></p>
+    <p class="sub">Upload a photo — it appears instantly for everyone. <span class="badge">v13-projectfix</span></p>
     <button id="upload-btn" type="button" disabled>Sign in to upload</button>
     <p id="status" role="status" aria-live="polite"></p>
   </header>
@@ -354,7 +349,7 @@
     <section class="chat-section" aria-labelledby="chat-title">
       <div class="chat-header">
         <h2 id="chat-title">Live Chat</h2>
-        <span class="badge">v12-accounts</span>
+        <span class="badge">v13-projectfix</span>
         <span class="chat-count" id="chat-count"></span>
       </div>
       <div id="chat-messages" class="chat-messages" role="log" aria-live="polite">
@@ -374,18 +369,20 @@
       getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-    const VERSION = "v12-accounts";
+    const VERSION = "v13-projectfix";
     const POLL_MS = 3000;
     const DB_URL = "https://my-photo-gallery-40bc3-default-rtdb.europe-west1.firebasedatabase.app";
 
     console.log(`[app] ${VERSION} booting`, new Date().toISOString());
 
     /* ---------------- FIREBASE AUTH ---------------- */
+    // NOTE: projectId and authDomain now include the "3" to match the real
+    // project shown in Firebase Console (/project/my-photo-gallery-40bc3/).
     const app = initializeApp({
       apiKey: "AIzaSyBbxQJFi3UKNv80y2a-_adfutjIqVq8A2w",
-      authDomain: "my-photo-gallery-40bc.firebaseapp.com",
+      authDomain: "my-photo-gallery-40bc3.firebaseapp.com",
       databaseURL: DB_URL,
-      projectId: "my-photo-gallery-40bc",
+      projectId: "my-photo-gallery-40bc3",
       storageBucket: "my-photo-gallery-40bc3.firebasestorage.app",
       messagingSenderId: "861309146437",
       appId: "1:861309146437:web:2d26303d34e98170811a2"
@@ -493,7 +490,7 @@
     }
 
     onAuthStateChanged(auth, (user) => {
-      console.log("[auth] state:", user ? user.displayName || user.uid : "(signed out)");
+      console.log("[auth] state:", user ? (user.displayName || user.uid) : "(signed out)");
       renderAuthUI(user);
     });
 
