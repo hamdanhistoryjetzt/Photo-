@@ -588,14 +588,14 @@
       <p id="chat-status" class="chat-status" role="status" aria-live="polite"></p>
       <form id="chat-form" class="chat-form" autocomplete="off">
         <input id="chat-text" type="text" placeholder="Melde dich an, um zu chatten" maxlength="500" required disabled />
-        <button type="submitspan" id="chat-send" disabled>Senden</button class>
+        <button type="submit" id="chat-send" disabled>Senden</button>
       </form>
     </section>
 
-   =" <section class="friends-section" aria-labbadelledby="friends-title">
-      <divge class="friends-header">
-        <h2"> id="friends-title">Freunde</h2>
-        <v13.3</span>
+    <section class="friends-section" aria-labelledby="friends-title">
+      <div class="friends-header">
+        <h2 id="friends-title">Freunde</h2>
+        <span class="badge">v13.3</span>
         <span class="friends-count" id="friends-count"></span>
       </div>
       <div class="friends-panel">
@@ -948,6 +948,7 @@
           renderAuthUI(currentUser);
           updateShareText();
           loadFriends(); loadFriendRequests();
+          readPhotos("username-saved");
         }, 400);
       } catch (e) {
         console.error("[username save]", e);
@@ -979,6 +980,9 @@
         await loadFriends(); await loadFriendRequests();
         await checkUnreadDms();
       }, FRIENDS_POLL_MS);
+
+      // Re-render gallery so like/dislike buttons become interactive
+      await readPhotos("signed-in");
     }
     function onUserSignedOut() {
       friends = []; pendingRequests = [];
@@ -1117,7 +1121,8 @@
       const c = p.comments || {};
       const cKeys = Object.keys(c);
       const newest = cKeys.length ? Math.max(...cKeys.map(k => c[k].createdAt || 0)) : 0;
-      return `${entry.key}:${likes}:${dislikes}:${mine[0] || ""}:${cKeys.length}:${newest}`;
+      const enabled = (currentUser && currentUsername) ? 1 : 0;
+      return `${entry.key}:${likes}:${dislikes}:${mine[0] || ""}:${cKeys.length}:${newest}:${enabled}`;
     }
 
     function groupLabel(uploadedAt) {
@@ -1231,15 +1236,18 @@
       const likes = vals.filter(v => v === "like").length;
       const dislikes = vals.filter(v => v === "dislike").length;
       const mine = currentUser ? r[currentUser.uid] : null;
+      const enabled = !!(currentUser && currentUsername);
       const likeBtn = card.querySelector(".reaction-like");
       const dislikeBtn = card.querySelector(".reaction-dislike");
       if (likeBtn) {
         likeBtn.querySelector(".count").textContent = likes;
         likeBtn.classList.toggle("active", mine === "like");
+        likeBtn.disabled = !enabled;
       }
       if (dislikeBtn) {
         dislikeBtn.querySelector(".count").textContent = dislikes;
         dislikeBtn.classList.toggle("active", mine === "dislike");
+        dislikeBtn.disabled = !enabled;
       }
     }
 
