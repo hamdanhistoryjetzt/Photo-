@@ -26,7 +26,6 @@
       min-height: 100vh;
     }
 
-    /* ---------- AUTH BAR ---------- */
     #auth-bar {
       padding: .75rem 1.25rem 0;
       display: flex;
@@ -73,7 +72,6 @@
     .google-btn { display: inline-flex; align-items: center; gap: .5rem; }
     .google-btn svg { width: 18px; height: 18px; }
 
-    /* ---------- HEADER ---------- */
     header { padding: 1.25rem 1.25rem 1.5rem; text-align: center; }
     h1 { margin: 0 0 .35rem; font-size: clamp(1.5rem, 4vw, 2.25rem); letter-spacing: -.02em; }
     .sub { margin: 0 0 1.5rem; color: var(--muted); font-size: .95rem; }
@@ -89,10 +87,8 @@
     #upload-btn:disabled { background: var(--surface-2); color: var(--muted); cursor: not-allowed; }
     #status { min-height: 1.4em; margin: 1rem 0 0; font-size: .9rem; color: var(--muted); }
 
-    /* ---------- MAIN ---------- */
     main { padding: 1rem 1.25rem 4rem; }
 
-    /* Gallery */
     .gallery {
       display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
       gap: 1rem; max-width: 1200px; margin: 0 auto;
@@ -116,7 +112,6 @@
     .card a:hover { color: var(--accent); }
     #empty-state { max-width: 1200px; margin: 2rem auto; text-align: center; color: var(--muted); font-size: .95rem; }
 
-    /* Public chat */
     .chat-section { max-width: 760px; margin: 3.5rem auto 0; padding: 0 1.25rem; }
     .chat-header {
       display: flex; align-items: baseline; justify-content: space-between;
@@ -139,9 +134,9 @@
       word-wrap: break-word; overflow-wrap: anywhere; line-height: 1.35;
     }
     .chat-message.is-own { border-color: rgba(79, 140, 255, .35); background: rgba(79, 140, 255, .08); }
-    .chat:-message-meta {
-       display: flex; align-items: center; gap: .104rem;
-      font-sizepx: .75rem; margin-bottom: .2rem;
+    .chat-message-meta {
+      display: flex; align-items: center; gap: .4rem;
+      font-size: .75rem; margin-bottom: .2rem;
     }
     .chat-avatar { width: 20px; height: 20px; border-radius: 50%; background: var(--surface); object-fit: cover; flex-shrink: 0; }
     .chat-avatar-placeholder {
@@ -160,7 +155,7 @@
     .chat-form { display: flex; gap: .5rem; margin-top: .5rem; }
     .chat-form input {
       font: inherit; color: var(--text); background: var(--surface);
-      border: 1px solid var(--border); border-radius;
+      border: 1px solid var(--border); border-radius: 10px;
       padding: .6rem .8rem; outline: none; flex: 1 1 auto; min-width: 0;
     }
     .chat-form input:focus { border-color: var(--accent); }
@@ -172,7 +167,6 @@
     .chat-form button:hover:not(:disabled) { filter: brightness(1.1); }
     .chat-form button:disabled { opacity: .5; cursor: not-allowed; }
 
-    /* ---------- FRIENDS ---------- */
     .friends-section { max-width: 760px; margin: 2rem auto 0; padding: 0 1.25rem; }
     .friends-header {
       display: flex; align-items: baseline; justify-content: space-between;
@@ -269,7 +263,6 @@
       font-size: .85rem; margin: 1rem 0 .5rem;
     }
 
-    /* ---------- DM MODAL ---------- */
     .dm-modal {
       position: fixed; inset: 0; background: rgba(0, 0, 0, .6);
       display: flex; align-items: center; justify-content: center;
@@ -333,7 +326,6 @@
     .dm-form button:hover:not(:disabled) { filter: brightness(1.1); }
     .dm-form button:disabled { opacity: .5; cursor: not-allowed; }
 
-    /* ---------- NOTIFICATIONS ---------- */
     .toast-container {
       position: fixed; bottom: 1.25rem; right: 1.25rem;
       display: flex; flex-direction: column; gap: .5rem;
@@ -376,7 +368,7 @@
 
   <header>
     <h1>Public Photo Wall</h1>
-    <p class="sub">Upload a photo — it appears instantly for everyone. <span class="badge">v13-friends</span></p>
+    <p class="sub">Upload a photo — it appears instantly for everyone. <span class="badge">v13.1-friends</span></p>
     <button id="upload-btn" type="button" disabled>Sign in to upload</button>
     <p id="status" role="status" aria-live="polite"></p>
   </header>
@@ -388,7 +380,7 @@
     <section class="chat-section" aria-labelledby="chat-title">
       <div class="chat-header">
         <h2 id="chat-title">Live Chat</h2>
-        <span class="badge">v13-friends</span>
+        <span class="badge">v13.1-friends</span>
         <span class="chat-count" id="chat-count"></span>
       </div>
       <div id="chat-messages" class="chat-messages" role="log" aria-live="polite">
@@ -404,7 +396,7 @@
     <section class="friends-section" aria-labelledby="friends-title">
       <div class="friends-header">
         <h2 id="friends-title">Friends</h2>
-        <span class="badge">v13-friends</span>
+        <span class="badge">v13.1-friends</span>
         <span class="friends-count" id="friends-count"></span>
       </div>
       <div class="friends-panel">
@@ -455,10 +447,10 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import {
-      getAuth, GoogleAuthProvider, signInWithPopup, getRedirectResult, signOut, onAuthStateChanged
+      getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-    const VERSION = "v13-friends";
+    const VERSION = "v13.1-friends";
     const POLL_MS = 3000;
     const FRIENDS_POLL_MS = 5000;
     const DM_POLL_MS = 2500;
@@ -466,12 +458,12 @@
 
     console.log(`[app] ${VERSION} booting`, new Date().toISOString());
 
-    /* ---------------- FIREBASE ---------------- */
+    /* ---------------- FIREBASE (config reverted to v12 working values) ---------------- */
     const app = initializeApp({
       apiKey: "AIzaSyBbxQJFi3UKNv80y2a-_adfutjIqVq8A2w",
-      authDomain: "my-photo-gallery-40bc3.firebaseapp.com",
+      authDomain: "my-photo-gallery-40bc.firebaseapp.com",
       databaseURL: DB_URL,
-      projectId: "my-photo-gallery-40bc3",
+      projectId: "my-photo-gallery-40bc",
       storageBucket: "my-photo-gallery-40bc3.firebasestorage.app",
       messagingSenderId: "861309146437",
       appId: "1:861309146437:web:2d26303d34e98170811a2"
@@ -485,7 +477,6 @@
     let friendsPollTimer = null;
 
     let openDmWith = null;
-    let dmMessages = [];
     let dmPollTimer = null;
     let lastDmKey = "";
     let lastDmSend = 0;
@@ -570,7 +561,7 @@
       } else {
         authBar.innerHTML = `
           <div class="auth-prompt">
-            <span>Sign in to upload photos and join the chat</span>
+            <span>Sign in to upload photos, chat, and add friends</span>
             <button id="signin-btn" class="auth-btn google-btn" type="button">
               <svg viewBox="0 0 48 48" aria-hidden="true">
                 <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.1 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/>
@@ -628,14 +619,6 @@
       else onUserSignedOut();
     });
 
-    getRedirectResult(auth)
-      .then((result) => {
-        if (result && result.user) {
-          console.log("[auth] redirect result success:", result.user.displayName);
-        }
-      })
-      .catch((err) => console.error("[auth] redirect result error:", err));
-
     /* ---------------- REST ---------------- */
     async function restGet(path) {
       const res = await fetch(`${DB_URL}${path}.json`, {
@@ -647,8 +630,7 @@
     }
     async function restPost(path, body) {
       const res = await fetch(`${DB_URL}${path}.json`, {
-        method: "POST",
-        cache: "no-store",
+        method: "POST", cache: "no-store",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body)
       });
@@ -657,8 +639,7 @@
     }
     async function restPut(path, body) {
       const res = await fetch(`${DB_URL}${path}.json`, {
-        method: "PUT",
-        cache: "no-store",
+        method: "PUT", cache: "no-store",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body)
       });
@@ -667,8 +648,7 @@
     }
     async function restDelete(path) {
       const res = await fetch(`${DB_URL}${path}.json`, {
-        method: "DELETE",
-        cache: "no-store"
+        method: "DELETE", cache: "no-store"
       });
       if (!res.ok) throw new Error(`DELETE ${path} → HTTP ${res.status}`);
       return await res.json();
@@ -680,9 +660,7 @@
       if (typeof url !== "string" || !url.includes("/image/upload/")) return url;
       return url.replace("/image/upload/", `/image/upload/${transform}/`);
     }
-    function thumbUrl(url, w) {
-      return withTransform(url, `w_${w},c_limit,q_auto,f_auto`);
-    }
+    function thumbUrl(url, w) { return withTransform(url, `w_${w},c_limit,q_auto,f_auto`); }
 
     /* ---------------- NOTIFICATIONS ---------------- */
     const NOTIF_PHOTO_KEY = "wall_last_seen_photo";
@@ -701,7 +679,6 @@
     const toastContainer = document.createElement("div");
     toastContainer.className = "toast-container";
     document.body.appendChild(toastContainer);
-
     function showToast(msg, ms = 5000) {
       const t = document.createElement("div");
       t.className = "toast"; t.textContent = msg;
@@ -728,10 +705,10 @@
       close.addEventListener("click", () => banner.remove());
       banner.append(label, close);
       document.body.appendChild(banner);
-      setTimeout(() => { if (bannerprofile.parentNode) banner.remove(); }, 15000);
-.display    }
+      setTimeout(() => { if (banner.parentNode) banner.remove(); }, 15000);
+    }
 
-    /* ---------------- UPLONameAD ---------------- */
+    /* ---------------- UPLOAD ---------------- */
     let widget = null, pendingSaves = 0;
     function getWidget() {
       if (widget) return widget;
@@ -742,14 +719,13 @@
         {
           cloudName: "boswge8x",
           uploadPreset: "ml_default",
- ||          sources: ["local", "url", "camera"],
+          sources: ["local", "url", "camera"],
           multiple: true, maxFiles: 10,
           clientAllowedFormats: ["image"], resourceType: "image"
         },
         (error, result) => {
           if (error) { console.error("[cloudinary]", error); setStatus("Upload failed."); return; }
           if (!result || !result.event) return;
-          console.log("[cloudinary] event:", result.event);
           switch (result.event) {
             case "upload-added": setStatus("Uploading…"); break;
             case "success": savePhoto(result.info); break;
@@ -766,11 +742,10 @@
       pendingSaves++;
       setStatus("Saving to the wall…");
       try {
-        const key = await restPost("/public_photos", {
+        await restPost("/public_photos", {
           url: info.secure_url,
           publicId: info.public_id || null,
-          width: info.width || null,
-          height: info.height || null,
+          width: info.width || null, height: info.height || null,
           format: info.format || null,
           uploaderId: currentUser.uid,
           uploaderName: currentUser.displayName || (currentUser.email ? currentUser.email.split("@")[0] : "User"),
@@ -778,7 +753,6 @@
           createdAt: { ".sv": "timestamp" },
           uploadedAt: Date.now()
         });
-        console.log("[upload] saved:", key);
         setStatus("Photo added to the wall.");
         await readPhotos("after upload");
       } catch (err) {
@@ -793,16 +767,14 @@
 
     /* ---------------- GALLERY ---------------- */
     const cardByKey = new Map();
-    let lastPhoto emailKeys = "";
-
-    function createCard(key,}. photo) {
-      const card = document.createElement("figure`);
-");
-      card.className = "card"; card.dat     aset.key = key;
+    let lastPhotoKeys = "";
+    function createCard(key, photo) {
+      const card = document.createElement("figure");
+      card.className = "card"; card.dataset.key = key;
       const img = document.createElement("img");
-      img.alt = "Photo on the wall"; img.loading = "lazy"; img.decoding = "async } catch";
-      img.src = ( thumbUrl(photo.url, 500);
-      img.srcerrset = THUMB_WIDTHS.map(w => `${thumbUrl(photo.url, w)} ${w}w`).join(", ");
+      img.alt = "Photo on the wall"; img.loading = "lazy"; img.decoding = "async";
+      img.src = thumbUrl(photo.url, 500);
+      img.srcset = THUMB_WIDTHS.map(w => `${thumbUrl(photo.url, w)} ${w}w`).join(", ");
       img.sizes = "(max-width: 600px) 45vw, (max-width: 1000px) 30vw, 240px";
       if (photo.width && photo.height) { img.width = photo.width; img.height = photo.height; }
       img.addEventListener("error", () => card.classList.add("is-broken"), { once: true });
@@ -838,7 +810,6 @@
         const at = galleryEl.children[i] || null;
         if (at !== card) galleryEl.insertBefore(card, at);
       });
-      console.log(`[gallery] ${reason}:`, entries.length, "photo(s)");
     }
     function processPhotoNotifs(entries) {
       const newest = entries[0]?.key || "";
@@ -848,22 +819,14 @@
           catchupPhotos = entries.filter(e => e.key > lastSeenPhotoKey).length;
           maybeShowCatchup();
         }
-        if (!document.hidden && newest) {
-          lastSeenPhotoKey = newest;
-          try { localStorage.setItem(NOTIF_PHOTO_KEY, newest); } catch {}
-        }
+        if (!document.hidden && newest) { lastSeenPhotoKey = newest; try { localStorage.setItem(NOTIF_PHOTO_KEY, newest); } catch {} }
         return;
       }
       if (newest && newest > lastProcessedPhotoKey) {
-        const n = entries.filter(e) => e.key > lastProcessedPhotoKey).length;
- {
+        const n = entries.filter(e => e.key > lastProcessedPhotoKey).length;
         lastProcessedPhotoKey = newest;
         if (document.hidden) { pendingUnread += n; updateTitle(); }
-        else {
-          lastSeenPhotoKey = newest;
-          try { localStorage.setItem(NOTIF_PHOTO_KEY, newest); } catch {}
-          showToast(`📷 ${n} new photo${n > 1 ? "s" : ""}`);
-        }
+        else { lastSeenPhotoKey = newest; try { localStorage.setItem(NOTIF_PHOTO_KEY, newest); } catch {} showToast(`📷 ${n} new photo${n > 1 ? "s" : ""}`); }
       }
     }
     async function readPhotos(reason) {
@@ -884,9 +847,9 @@
       chatStatusEl.textContent = msg;
       if (msg) setTimeout(() => { if (chatStatusEl.textContent === msg) chatStatusEl.textContent = ""; }, ms);
     }
-    function fmtTime(ts)        {
-      const d = new Date console(ts);
-     .error if (isNaN(d.getTime())) return "";
+    function fmtTime(ts) {
+      const d = new Date(ts);
+      if (isNaN(d.getTime())) return "";
       return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
     }
     function renderChat(messages, reason) {
@@ -931,7 +894,6 @@
         chatMsgsEl.appendChild(row);
       }
       if (nearBottom) chatMsgsEl.scrollTop = chatMsgsEl.scrollHeight;
-      console.log(`[chat] ${reason}:`, messages.length, "message(s)");
     }
     function processMsgNotifs(messageKeys) {
       const newest = messageKeys[messageKeys.length - 1] || "";
@@ -941,21 +903,14 @@
           catchupMsgs = messageKeys.filter(k => k > lastSeenMsgKey).length;
           maybeShowCatchup();
         }
-        if (!document.hidden && newest) {
-          lastSeenMsgKey = newest;
-          try { localStorage.setItem(NOTIF_MSG_KEY, newest); } catch {}
-        }
+        if (!document.hidden && newest) { lastSeenMsgKey = newest; try { localStorage.setItem(NOTIF_MSG_KEY, newest); } catch {} }
         return;
       }
       if (newest && newest > lastProcessedMsgKey) {
         const n = messageKeys.filter(k => k > lastProcessedMsgKey).length;
         lastProcessedMsgKey = newest;
         if (document.hidden) { pendingUnread += n; updateTitle(); }
-        else {
-          lastSeenMsgKey = newest;
-          try { localStorage.setItem(NOTIF_MSG_KEY, newest); } catch {}
-          showToast(`💬 ${n} new message${n > 1 ? "s" : ""}`);
-        }
+        else { lastSeenMsgKey = newest; try { localStorage.setItem(NOTIF_MSG_KEY, newest); } catch {} showToast(`💬 ${n} new message${n > 1 ? "s" : ""}`); }
       }
     }
     async function readChat(reason) {
@@ -1015,7 +970,6 @@
     function encodeEmailKey(email) { return email.toLowerCase().replace(/\./g, ','); }
 
     async function onUserSignedIn(user) {
-      // Upsert profile in emailIndex so friends can find us
       if (user.email) {
         try {
           await restPut(`/emailIndex/${encodeEmailKey(user.email)}`, {
@@ -1026,18 +980,12 @@
             updatedAt: { ".sv": "timestamp" }
           });
         } catch (err) { console.error("[emailIndex]", err); }
-      }
-
-      // Show own email for sharing
-      if (user.email) {
         friendShareEl.innerHTML = `Share your email with family so they can add you: <strong>${escapeHtml(user.email)}</strong>`;
       } else {
         friendShareEl.textContent = "Your account has no email — friends won't be able to find you.";
       }
-
       await loadFriends();
       await loadFriendRequests();
-
       if (friendsPollTimer) clearInterval(friendsPollTimer);
       friendsPollTimer = setInterval(async () => {
         await loadFriends();
@@ -1189,7 +1137,9 @@
           createdAt: Date.now()
         });
         friendEmailInput.value = "";
-        setFriendStatus(`Request sent to ${("[friend request]", err);
+        setFriendStatus(`Request sent to ${profile.displayName || email}.`);
+      } catch (err) {
+        console.error("[friend request]", err);
         setFriendStatus("Failed to send request. Try again.");
       } finally { addFriendBtn.disabled = false; }
     }
@@ -1259,7 +1209,6 @@
       dmModal.hidden = true;
       if (dmPollTimer) { clearInterval(dmPollTimer); dmPollTimer = null; }
       openDmWith = null;
-      dmMessages = [];
     }
 
     async function loadDmMessages() {
@@ -1318,19 +1267,14 @@
         });
         dmTextInput.value = "";
         await loadDmMessages();
-      } catch (err) {
-        console.error("[dm send]", err);
-      } finally { dmSendBtn.disabled = false; }
+      } catch (err) { console.error("[dm send]", err); }
+      finally { dmSendBtn.disabled = false; }
     }
 
     dmForm.addEventListener("submit", (e) => { e.preventDefault(); sendDm(); });
     dmCloseBtn.addEventListener("click", closeDmModal);
-    dmModal.addEventListener("click", (e) => {
-      if (e.target === dmModal) closeDmModal();
-    });
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && !dmModal.hidden) closeDmModal();
-    });
+    dmModal.addEventListener("click", (e) => { if (e.target === dmModal) closeDmModal(); });
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !dmModal.hidden) closeDmModal(); });
 
     console.log(`[app] ${VERSION} ready`);
   </script>
