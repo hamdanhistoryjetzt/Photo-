@@ -26,6 +26,7 @@
       min-height: 100vh;
     }
 
+    /* ---------- AUTH BAR ---------- */
     #auth-bar {
       padding: .75rem 1.25rem 0;
       display: flex;
@@ -33,82 +34,46 @@
       min-height: 60px;
     }
     .auth-prompt {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      flex-wrap: wrap;
-      justify-content: center;
+      display: flex; align-items: center; gap: 1rem;
+      flex-wrap: wrap; justify-content: center;
       padding: .75rem 1.25rem;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      font-size: .9rem;
-      color: var(--muted);
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; font-size: .9rem; color: var(--muted);
     }
     .auth-user {
-      display: inline-flex;
-      align-items: center;
-      gap: .75rem;
+      display: inline-flex; align-items: center; gap: .75rem;
       padding: .4rem .5rem .4rem .4rem;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      font-size: .9rem;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 999px; font-size: .9rem;
     }
     .auth-avatar {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: var(--surface-2);
-      object-fit: cover;
-      display: block;
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--surface-2); object-fit: cover; display: block;
     }
     .auth-avatar-placeholder {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: var(--accent);
-      color: #fff;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: .85rem;
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--accent); color: #fff;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: .85rem;
     }
     .auth-name { font-weight: 500; }
     .auth-btn {
-      font: inherit;
-      font-weight: 600;
-      font-size: .85rem;
-      padding: .5rem 1rem;
-      border-radius: 999px;
-      border: 0;
-      background: var(--accent);
-      color: #fff;
-      cursor: pointer;
+      font: inherit; font-weight: 600; font-size: .85rem;
+      padding: .5rem 1rem; border-radius: 999px; border: 0;
+      background: var(--accent); color: #fff; cursor: pointer;
       transition: filter .12s ease;
     }
     .auth-btn:hover { filter: brightness(1.1); }
     .auth-btn.signout {
-      background: transparent;
-      color: var(--muted);
-      border: 1px solid var(--border);
-      font-size: .75rem;
-      padding: .35rem .75rem;
-      font-weight: 500;
+      background: transparent; color: var(--muted);
+      border: 1px solid var(--border); font-size: .75rem;
+      padding: .35rem .75rem; font-weight: 500;
     }
-    .auth-btn.signout:hover {
-      color: var(--text);
-      border-color: var(--muted);
-      filter: none;
-    }
-    .google-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: .5rem;
-    }
+    .auth-btn.signout:hover { color: var(--text); border-color: var(--muted); filter: none; }
+    .google-btn { display: inline-flex; align-items: center; gap: .5rem; }
     .google-btn svg { width: 18px; height: 18px; }
 
+    /* ---------- HEADER ---------- */
     header { padding: 1.25rem 1.25rem 1.5rem; text-align: center; }
     h1 { margin: 0 0 .35rem; font-size: clamp(1.5rem, 4vw, 2.25rem); letter-spacing: -.02em; }
     .sub { margin: 0 0 1.5rem; color: var(--muted); font-size: .95rem; }
@@ -121,64 +86,37 @@
     }
     #upload-btn:hover:not(:disabled) { filter: brightness(1.1); }
     #upload-btn:active:not(:disabled) { transform: scale(.97); }
-    #upload-btn:disabled {
-      background: var(--surface-2);
-      color: var(--muted);
-      cursor: not-allowed;
-    }
+    #upload-btn:disabled { background: var(--surface-2); color: var(--muted); cursor: not-allowed; }
     #status { min-height: 1.4em; margin: 1rem 0 0; font-size: .9rem; color: var(--muted); }
 
+    /* ---------- MAIN ---------- */
     main { padding: 1rem 1.25rem 4rem; }
+
+    /* Gallery */
     .gallery {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 1rem;
-      max-width: 1200px;
-      margin: 0 auto;
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1rem; max-width: 1200px; margin: 0 auto;
     }
     .card {
-      margin: 0;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      overflow: hidden;
+      margin: 0; background: var(--surface);
+      border: 1px solid var(--border); border-radius: 14px; overflow: hidden;
     }
     .card img { display: block; width: 100%; height: auto; background: #10141a; }
     .card.is-broken img { display: none; }
     .card figcaption {
-      padding: .6rem .8rem;
-      font-size: .8rem;
-      display: flex;
-      flex-direction: column;
-      gap: .25rem;
+      padding: .6rem .8rem; font-size: .8rem;
+      display: flex; flex-direction: column; gap: .25rem;
     }
     .card-byline {
-      display: inline-flex;
-      align-items: center;
-      gap: .4rem;
-      color: var(--text);
-      font-weight: 500;
+      display: inline-flex; align-items: center; gap: .4rem;
+      color: var(--text); font-weight: 500;
     }
-    .card-byline img {
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: var(--surface-2);
-    }
-    .card a {
-      color: var(--muted);
-      text-decoration: none;
-      font-size: .75rem;
-    }
+    .card-byline img { width: 18px; height: 18px; border-radius: 50%; background: var(--surface-2); }
+    .card a { color: var(--muted); text-decoration: none; font-size: .75rem; }
     .card a:hover { color: var(--accent); }
-    #empty-state {
-      max-width: 1200px;
-      margin: 2rem auto;
-      text-align: center;
-      color: var(--muted);
-      font-size: .95rem;
-    }
+    #empty-state { max-width: 1200px; margin: 2rem auto; text-align: center; color: var(--muted); font-size: .95rem; }
 
+    /* Public chat */
     .chat-section { max-width: 760px; margin: 3.5rem auto 0; padding: 0 1.25rem; }
     .chat-header {
       display: flex; align-items: baseline; justify-content: space-between;
@@ -200,134 +138,235 @@
       background: var(--surface-2); border: 1px solid transparent;
       word-wrap: break-word; overflow-wrap: anywhere; line-height: 1.35;
     }
-    .chat-message.is-own {
-      border-color: rgba(79, 140, 255, .35);
-      background: rgba(79, 140, 255, .08);
+    .chat-message.is-own { border-color: rgba(79, 140, 255, .35); background: rgba(79, 140, 255, .08); }
+    .chat:-message-meta {
+       display: flex; align-items: center; gap: .104rem;
+      font-sizepx: .75rem; margin-bottom: .2rem;
     }
-    .chat-message-meta {
-      display: flex; align-items: center; gap: .4rem;
-      font-size: .75rem; margin-bottom: .2rem;
-    }
-    .chat-avatar {
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background: var(--surface);
-      object-fit: cover;
-      flex-shrink: 0;
-    }
+    .chat-avatar { width: 20px; height: 20px; border-radius: 50%; background: var(--surface); object-fit: cover; flex-shrink: 0; }
     .chat-avatar-placeholder {
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background: var(--accent);
-      color: #fff;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: .65rem;
-      font-weight: 700;
-      flex-shrink: 0;
+      width: 20px; height: 20px; border-radius: 50%; background: var(--accent); color: #fff;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: .65rem; font-weight: 700; flex-shrink: 0;
     }
     .chat-name { font-weight: 600; color: var(--accent); }
     .chat-you {
       font-size: .65rem; text-transform: uppercase; letter-spacing: .06em;
-      color: var(--muted); border: 1px solid var(--border);
-      border-radius: 4px; padding: 0 .3rem;
+      color: var(--muted); border: 1px solid var(--border); border-radius: 4px; padding: 0 .3rem;
     }
     .chat-time { color: var(--muted); margin-left: auto; }
     .chat-text { font-size: .92rem; }
-    .chat-status {
-      min-height: 1.2em; margin: .4rem 0 0; font-size: .8rem; color: var(--muted);
-    }
+    .chat-status { min-height: 1.2em; margin: .4rem 0 0; font-size: .8rem; color: var(--muted); }
     .chat-form { display: flex; gap: .5rem; margin-top: .5rem; }
     .chat-form input {
-      font: inherit; color: var(--text);
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 10px; padding: .6rem .8rem; outline: none;
-      flex: 1 1 auto; min-width: 0;
+      font: inherit; color: var(--text); background: var(--surface);
+      border: 1px solid var(--border); border-radius;
+      padding: .6rem .8rem; outline: none; flex: 1 1 auto; min-width: 0;
     }
     .chat-form input:focus { border-color: var(--accent); }
-    .chat-form input:disabled {
-      opacity: .5;
-      cursor: not-allowed;
-    }
+    .chat-form input:disabled { opacity: .5; cursor: not-allowed; }
     .chat-form button {
-      font: inherit; font-weight: 600;
-      background: var(--accent); color: #fff;
-      border: 0; border-radius: 10px;
-      padding: .6rem 1rem; cursor: pointer;
-      min-width: 90px;
+      font: inherit; font-weight: 600; background: var(--accent); color: #fff;
+      border: 0; border-radius: 10px; padding: .6rem 1rem; cursor: pointer; min-width: 90px;
     }
     .chat-form button:hover:not(:disabled) { filter: brightness(1.1); }
     .chat-form button:disabled { opacity: .5; cursor: not-allowed; }
 
-    .toast-container {
-      position: fixed;
-      bottom: 1.25rem;
-      right: 1.25rem;
-      display: flex;
-      flex-direction: column;
-      gap: .5rem;
-      z-index: 1000;
-      pointer-events: none;
-      max-width: calc(100vw - 2.5rem);
+    /* ---------- FRIENDS ---------- */
+    .friends-section { max-width: 760px; margin: 2rem auto 0; padding: 0 1.25rem; }
+    .friends-header {
+      display: flex; align-items: baseline; justify-content: space-between;
+      margin-bottom: .75rem; gap: .5rem;
     }
-    .toast {
-      background: var(--surface-2);
-      border: 1px solid var(--accent);
-      border-radius: 10px;
-      padding: .7rem 1rem;
-      font-size: .9rem;
-      color: var(--text);
-      box-shadow: 0 8px 24px rgba(0,0,0,.4);
-      pointer-events: auto;
-      animation: toast-in .25s ease-out;
-      max-width: 320px;
+    .friends-header h2 { margin: 0; font-size: 1.15rem; letter-spacing: -.01em; }
+    .friends-header .badge { font-size: .7rem; color: var(--muted); }
+    .friends-count { font-size: .8rem; color: var(--muted); margin-left: auto; }
+    .friends-panel {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; padding: 1rem;
     }
-    .toast.toast-out { animation: toast-out .25s ease-in forwards; }
-    @keyframes toast-in {
-      from { transform: translateY(20px); opacity: 0; }
-      to   { transform: translateY(0); opacity: 1; }
+    .friends-signin-msg {
+      text-align: center; color: var(--muted); font-size: .9rem; padding: .5rem;
     }
-    @keyframes toast-out {
-      to { transform: translateY(20px); opacity: 0; }
+    .friend-share {
+      font-size: .78rem; color: var(--muted); margin-bottom: .75rem;
+      padding: .5rem .75rem; background: var(--surface-2);
+      border-radius: 8px; word-break: break-all; line-height: 1.4;
+    }
+    .friend-share strong { color: var(--text); font-weight: 500; }
+    .add-friend { display: flex; gap: .5rem; }
+    .add-friend input {
+      font: inherit; flex: 1 1 auto; color: var(--text);
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: 10px; padding: .6rem .8rem; outline: none; min-width: 0;
+    }
+    .add-friend input:focus { border-color: var(--accent); }
+    .add-friend button {
+      font: inherit; font-weight: 600; background: var(--accent); color: #fff;
+      border: 0; border-radius: 10px; padding: .6rem 1rem; cursor: pointer; white-space: nowrap;
+    }
+    .add-friend button:hover:not(:disabled) { filter: brightness(1.1); }
+    .add-friend button:disabled { opacity: .5; cursor: not-allowed; }
+    .friend-status { min-height: 1.2em; margin: .4rem 0 .75rem; font-size: .8rem; color: var(--muted); }
+    .friend-requests h3, .friends-list h3 {
+      font-size: .78rem; color: var(--muted); text-transform: uppercase;
+      letter-spacing: .06em; margin: .5rem 0 .4rem; font-weight: 600;
+    }
+    .request-item {
+      display: flex; align-items: center; gap: .5rem;
+      padding: .5rem .6rem; background: var(--surface-2);
+      border-radius: 10px; margin-bottom: .4rem;
+    }
+    .request-avatar, .request-avatar-placeholder {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--surface); object-fit: cover; flex-shrink: 0;
+    }
+    .request-avatar-placeholder {
+      background: var(--accent); color: #fff;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: .85rem;
+    }
+    .request-name {
+      flex: 1 1 auto; font-size: .9rem; min-width: 0;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .request-actions { display: flex; gap: .35rem; flex-shrink: 0; }
+    .req-btn {
+      font: inherit; font-size: .75rem; padding: .3rem .6rem;
+      border-radius: 6px; border: 0; cursor: pointer; font-weight: 600;
+    }
+    .req-btn.accept { background: #22c55e; color: #fff; }
+    .req-btn.reject { background: transparent; color: var(--muted); border: 1px solid var(--border); }
+    .req-btn:hover { filter: brightness(1.1); }
+    .friend-item {
+      display: flex; align-items: center; gap: .6rem;
+      padding: .6rem .7rem; background: var(--surface-2);
+      border-radius: 10px; margin-bottom: .4rem;
+      cursor: pointer; transition: background .12s ease;
+    }
+    .friend-item:hover { background: #252d38; }
+    .friend-avatar, .friend-avatar-placeholder {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--surface); object-fit: cover; flex-shrink: 0;
+    }
+    .friend-avatar-placeholder {
+      background: var(--accent); color: #fff;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-weight: 700;
+    }
+    .friend-info { flex: 1 1 auto; min-width: 0; }
+    .friend-name {
+      font-size: .9rem; font-weight: 500; color: var(--text);
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .friend-email {
+      font-size: .75rem; color: var(--muted);
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .friend-chat-icon { color: var(--muted); font-size: 1.1rem; flex-shrink: 0; }
+    .friends-empty {
+      text-align: center; color: var(--muted);
+      font-size: .85rem; margin: 1rem 0 .5rem;
     }
 
+    /* ---------- DM MODAL ---------- */
+    .dm-modal {
+      position: fixed; inset: 0; background: rgba(0, 0, 0, .6);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 500; padding: 1rem;
+    }
+    .dm-modal[hidden] { display: none; }
+    .dm-panel {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; width: 100%; max-width: 500px;
+      height: 80vh; max-height: 600px;
+      display: flex; flex-direction: column; overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,.5);
+    }
+    .dm-header {
+      display: flex; align-items: center; gap: .6rem;
+      padding: .75rem 1rem; border-bottom: 1px solid var(--border); flex-shrink: 0;
+    }
+    .dm-avatar, .dm-avatar-placeholder {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--surface-2); object-fit: cover; flex-shrink: 0;
+    }
+    .dm-avatar-placeholder {
+      background: var(--accent); color: #fff;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: .85rem;
+    }
+    .dm-name { font-weight: 600; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .dm-close {
+      background: transparent; border: 0; color: var(--muted);
+      font-size: 1.5rem; cursor: pointer; line-height: 1;
+      padding: 0 .25rem; flex-shrink: 0;
+    }
+    .dm-close:hover { color: var(--text); }
+    .dm-messages {
+      flex: 1 1 auto; overflow-y: auto; padding: .75rem;
+      display: flex; flex-direction: column; gap: .4rem;
+    }
+    .dm-empty { margin: auto; text-align: center; color: var(--muted); font-size: .85rem; }
+    .dm-msg {
+      max-width: 80%; padding: .5rem .7rem; border-radius: 12px;
+      font-size: .9rem; line-height: 1.35;
+      word-wrap: break-word; overflow-wrap: anywhere;
+    }
+    .dm-msg.them { align-self: flex-start; background: var(--surface-2); color: var(--text); }
+    .dm-msg.me { align-self: flex-end; background: var(--accent); color: #fff; }
+    .dm-msg-time { display: block; font-size: .65rem; opacity: .7; margin-top: .15rem; }
+    .dm-form {
+      display: flex; gap: .5rem; padding: .75rem;
+      border-top: 1px solid var(--border); flex-shrink: 0;
+    }
+    .dm-form input {
+      font: inherit; flex: 1 1 auto; color: var(--text);
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: 10px; padding: .6rem .8rem; outline: none; min-width: 0;
+    }
+    .dm-form input:focus { border-color: var(--accent); }
+    .dm-form button {
+      font: inherit; font-weight: 600; background: var(--accent); color: #fff;
+      border: 0; border-radius: 10px; padding: .6rem 1rem; cursor: pointer;
+    }
+    .dm-form button:hover:not(:disabled) { filter: brightness(1.1); }
+    .dm-form button:disabled { opacity: .5; cursor: not-allowed; }
+
+    /* ---------- NOTIFICATIONS ---------- */
+    .toast-container {
+      position: fixed; bottom: 1.25rem; right: 1.25rem;
+      display: flex; flex-direction: column; gap: .5rem;
+      z-index: 1000; pointer-events: none; max-width: calc(100vw - 2.5rem);
+    }
+    .toast {
+      background: var(--surface-2); border: 1px solid var(--accent);
+      border-radius: 10px; padding: .7rem 1rem; font-size: .9rem; color: var(--text);
+      box-shadow: 0 8px 24px rgba(0,0,0,.4); pointer-events: auto;
+      animation: toast-in .25s ease-out; max-width: 320px;
+    }
+    .toast.toast-out { animation: toast-out .25s ease-in forwards; }
+    @keyframes toast-in { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    @keyframes toast-out { to { transform: translateY(20px); opacity: 0; } }
     .catchup-banner {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      background: linear-gradient(90deg, var(--accent), #6ea0ff);
-      color: #fff;
-      padding: .75rem 1rem;
-      text-align: center;
-      font-size: .9rem;
-      font-weight: 500;
-      z-index: 999;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: .75rem;
-      box-shadow: 0 2px 12px rgba(0,0,0,.3);
+      position: fixed; top: 0; left: 0; right: 0;
+      background: linear-gradient(90deg, var(--accent), #6ea0ff); color: #fff;
+      padding: .75rem 1rem; text-align: center; font-size: .9rem; font-weight: 500;
+      z-index: 999; display: flex; justify-content: center; align-items: center;
+      gap: .75rem; box-shadow: 0 2px 12px rgba(0,0,0,.3);
       animation: banner-in .3s ease-out;
     }
     .catchup-banner button {
-      background: transparent;
-      border: 0;
-      color: #fff;
-      font-size: 1.3rem;
-      cursor: pointer;
-      line-height: 1;
-      padding: 0 .25rem;
+      background: transparent; border: 0; color: #fff;
+      font-size: 1.3rem; cursor: pointer; line-height: 1; padding: 0 .25rem;
     }
-    @keyframes banner-in {
-      from { transform: translateY(-100%); }
-      to   { transform: translateY(0); }
-    }
+    @keyframes banner-in { from { transform: translateY(-100%); } to { transform: translateY(0); } }
 
     @media (max-width: 520px) {
       .chat-form { flex-wrap: wrap; }
       .chat-form button { width: 100%; }
+      .add-friend { flex-wrap: wrap; }
+      .add-friend button { width: 100%; }
     }
   </style>
 </head>
@@ -337,7 +376,7 @@
 
   <header>
     <h1>Public Photo Wall</h1>
-    <p class="sub">Upload a photo — it appears instantly for everyone. <span class="badge">v13-projectfix</span></p>
+    <p class="sub">Upload a photo — it appears instantly for everyone. <span class="badge">v13-friends</span></p>
     <button id="upload-btn" type="button" disabled>Sign in to upload</button>
     <p id="status" role="status" aria-live="polite"></p>
   </header>
@@ -349,7 +388,7 @@
     <section class="chat-section" aria-labelledby="chat-title">
       <div class="chat-header">
         <h2 id="chat-title">Live Chat</h2>
-        <span class="badge">v13-projectfix</span>
+        <span class="badge">v13-friends</span>
         <span class="chat-count" id="chat-count"></span>
       </div>
       <div id="chat-messages" class="chat-messages" role="log" aria-live="polite">
@@ -361,23 +400,73 @@
         <button type="submit" id="chat-send" disabled>Send</button>
       </form>
     </section>
+
+    <section class="friends-section" aria-labelledby="friends-title">
+      <div class="friends-header">
+        <h2 id="friends-title">Friends</h2>
+        <span class="badge">v13-friends</span>
+        <span class="friends-count" id="friends-count"></span>
+      </div>
+      <div class="friends-panel">
+        <div class="friends-signin-msg" id="friends-signin-msg">
+          Sign in to add friends and send private messages.
+        </div>
+        <div id="friends-content" hidden>
+          <div class="friend-share" id="friend-share"></div>
+
+          <div class="add-friend">
+            <input id="friend-email" type="email" placeholder="Friend's Google email" autocomplete="off" />
+            <button id="add-friend-btn" type="button">Send request</button>
+          </div>
+          <p class="friend-status" id="friend-status"></p>
+
+          <div class="friend-requests" id="friend-requests" hidden>
+            <h3>Friend requests</h3>
+            <div id="friend-requests-list"></div>
+          </div>
+
+          <div class="friends-list">
+            <h3>Your friends</h3>
+            <div id="friends-list"></div>
+            <p class="friends-empty" id="friends-empty">No friends yet. Add someone by email above!</p>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
+
+  <div class="dm-modal" id="dm-modal" hidden>
+    <div class="dm-panel">
+      <div class="dm-header">
+        <span id="dm-avatar-slot"></span>
+        <span class="dm-name" id="dm-name"></span>
+        <button class="dm-close" id="dm-close" type="button" aria-label="Close">×</button>
+      </div>
+      <div class="dm-messages" id="dm-messages">
+        <p class="dm-empty" id="dm-empty">No messages yet. Say hi!</p>
+      </div>
+      <form class="dm-form" id="dm-form" autocomplete="off">
+        <input id="dm-text" type="text" placeholder="Message…" maxlength="500" required />
+        <button type="submit" id="dm-send">Send</button>
+      </form>
+    </div>
+  </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import {
-      getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged
+      getAuth, GoogleAuthProvider, signInWithPopup, getRedirectResult, signOut, onAuthStateChanged
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-    const VERSION = "v13-projectfix";
+    const VERSION = "v13-friends";
     const POLL_MS = 3000;
+    const FRIENDS_POLL_MS = 5000;
+    const DM_POLL_MS = 2500;
     const DB_URL = "https://my-photo-gallery-40bc3-default-rtdb.europe-west1.firebasedatabase.app";
 
     console.log(`[app] ${VERSION} booting`, new Date().toISOString());
 
-    /* ---------------- FIREBASE AUTH ---------------- */
-    // NOTE: projectId and authDomain now include the "3" to match the real
-    // project shown in Firebase Console (/project/my-photo-gallery-40bc3/).
+    /* ---------------- FIREBASE ---------------- */
     const app = initializeApp({
       apiKey: "AIzaSyBbxQJFi3UKNv80y2a-_adfutjIqVq8A2w",
       authDomain: "my-photo-gallery-40bc3.firebaseapp.com",
@@ -388,6 +477,23 @@
       appId: "1:861309146437:web:2d26303d34e98170811a2"
     });
     const auth = getAuth(app);
+
+    /* ---------------- STATE ---------------- */
+    let currentUser = null;
+    let friends = [];
+    let pendingRequests = [];
+    let friendsPollTimer = null;
+
+    let openDmWith = null;
+    let dmMessages = [];
+    let dmPollTimer = null;
+    let lastDmKey = "";
+    let lastDmSend = 0;
+
+    let lastSend = 0;
+    let sending = false;
+    let lastChatKey = "";
+    const CHAT_RATE_MS = 1500;
 
     /* ---------------- DOM ---------------- */
     const authBar = document.getElementById("auth-bar");
@@ -404,6 +510,28 @@
     const chatTextInput = document.getElementById("chat-text");
     const chatSendBtn = document.getElementById("chat-send");
 
+    const friendsCountEl = document.getElementById("friends-count");
+    const friendsSigninEl = document.getElementById("friends-signin-msg");
+    const friendsContentEl = document.getElementById("friends-content");
+    const friendShareEl = document.getElementById("friend-share");
+    const friendEmailInput = document.getElementById("friend-email");
+    const addFriendBtn = document.getElementById("add-friend-btn");
+    const friendStatusEl = document.getElementById("friend-status");
+    const friendRequestsEl = document.getElementById("friend-requests");
+    const friendRequestsListEl = document.getElementById("friend-requests-list");
+    const friendsListEl = document.getElementById("friends-list");
+    const friendsEmptyEl = document.getElementById("friends-empty");
+
+    const dmModal = document.getElementById("dm-modal");
+    const dmAvatarSlot = document.getElementById("dm-avatar-slot");
+    const dmNameEl = document.getElementById("dm-name");
+    const dmCloseBtn = document.getElementById("dm-close");
+    const dmMessagesEl = document.getElementById("dm-messages");
+    const dmEmptyEl = document.getElementById("dm-empty");
+    const dmForm = document.getElementById("dm-form");
+    const dmTextInput = document.getElementById("dm-text");
+    const dmSendBtn = document.getElementById("dm-send");
+
     function setStatus(msg) { statusEl.textContent = msg; }
     function escapeHtml(str) {
       return String(str).replace(/[&<>"']/g, c => ({
@@ -411,9 +539,7 @@
       }[c]));
     }
 
-    /* ---------------- AUTH STATE ---------------- */
-    let currentUser = null;
-
+    /* ---------------- AUTH UI ---------------- */
     function renderAuthUI(user) {
       currentUser = user;
 
@@ -438,6 +564,9 @@
         chatTextInput.disabled = false;
         chatTextInput.placeholder = "Say something…";
         chatSendBtn.disabled = false;
+
+        friendsSigninEl.hidden = true;
+        friendsContentEl.hidden = false;
       } else {
         authBar.innerHTML = `
           <div class="auth-prompt">
@@ -460,6 +589,9 @@
         chatTextInput.disabled = true;
         chatTextInput.placeholder = "Sign in to chat";
         chatSendBtn.disabled = true;
+
+        friendsSigninEl.hidden = false;
+        friendsContentEl.hidden = true;
       }
     }
 
@@ -471,7 +603,7 @@
       } catch (err) {
         console.error("[auth] sign-in failed:", err);
         if (err.code === "auth/unauthorized-domain") {
-          setStatus("Domain not authorized in Firebase Console — add it under Authentication → Settings → Authorized domains.");
+          setStatus("Domain not authorized — add it in Firebase Console → Authentication → Settings → Authorized domains.");
         } else if (err.code === "auth/popup-closed-by-user") {
           setStatus("");
         } else {
@@ -490,21 +622,21 @@
     }
 
     onAuthStateChanged(auth, (user) => {
-      console.log("[auth] state:", user ? (user.displayName || user.uid) : "(signed out)");
+      console.log("[auth] state:", user ? user.displayName || user.uid : "(signed out)");
       renderAuthUI(user);
+      if (user) onUserSignedIn(user).catch(err => console.error("[signedIn]", err));
+      else onUserSignedOut();
     });
 
-    /* ---------------- CLOUDINARY THUMB HELPERS ---------------- */
-    const THUMB_WIDTHS = [300, 500, 800];
-    function withTransform(url, transform) {
-      if (typeof url !== "string" || !url.includes("/image/upload/")) return url;
-      return url.replace("/image/upload/", `/image/upload/${transform}/`);
-    }
-    function thumbUrl(url, w) {
-      return withTransform(url, `w_${w},c_limit,q_auto,f_auto`);
-    }
+    getRedirectResult(auth)
+      .then((result) => {
+        if (result && result.user) {
+          console.log("[auth] redirect result success:", result.user.displayName);
+        }
+      })
+      .catch((err) => console.error("[auth] redirect result error:", err));
 
-    /* ---------------- REST HELPERS ---------------- */
+    /* ---------------- REST ---------------- */
     async function restGet(path) {
       const res = await fetch(`${DB_URL}${path}.json`, {
         cache: "no-store",
@@ -513,7 +645,6 @@
       if (!res.ok) throw new Error(`GET ${path} → HTTP ${res.status}`);
       return await res.json();
     }
-
     async function restPost(path, body) {
       const res = await fetch(`${DB_URL}${path}.json`, {
         method: "POST",
@@ -524,47 +655,62 @@
       if (!res.ok) throw new Error(`POST ${path} → HTTP ${res.status}`);
       return await res.json();
     }
+    async function restPut(path, body) {
+      const res = await fetch(`${DB_URL}${path}.json`, {
+        method: "PUT",
+        cache: "no-store",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
+      if (!res.ok) throw new Error(`PUT ${path} → HTTP ${res.status}`);
+      return await res.json();
+    }
+    async function restDelete(path) {
+      const res = await fetch(`${DB_URL}${path}.json`, {
+        method: "DELETE",
+        cache: "no-store"
+      });
+      if (!res.ok) throw new Error(`DELETE ${path} → HTTP ${res.status}`);
+      return await res.json();
+    }
+
+    /* ---------------- CLOUDINARY THUMBS ---------------- */
+    const THUMB_WIDTHS = [300, 500, 800];
+    function withTransform(url, transform) {
+      if (typeof url !== "string" || !url.includes("/image/upload/")) return url;
+      return url.replace("/image/upload/", `/image/upload/${transform}/`);
+    }
+    function thumbUrl(url, w) {
+      return withTransform(url, `w_${w},c_limit,q_auto,f_auto`);
+    }
 
     /* ---------------- NOTIFICATIONS ---------------- */
     const NOTIF_PHOTO_KEY = "wall_last_seen_photo";
     const NOTIF_MSG_KEY = "wall_last_seen_msg";
     const BASE_TITLE = "Public Photo Wall";
-
-    let lastSeenPhotoKey = "";
-    let lastSeenMsgKey = "";
+    let lastSeenPhotoKey = "", lastSeenMsgKey = "";
     try {
       lastSeenPhotoKey = localStorage.getItem(NOTIF_PHOTO_KEY) || "";
       lastSeenMsgKey = localStorage.getItem(NOTIF_MSG_KEY) || "";
     } catch {}
-
     let lastProcessedPhotoKey = lastSeenPhotoKey;
     let lastProcessedMsgKey = lastSeenMsgKey;
-    let firstPhotoRead = true;
-    let firstMsgRead = true;
-    let pendingUnread = 0;
-    let catchupPhotos = 0;
-    let catchupMsgs = 0;
-    let catchupShown = false;
+    let firstPhotoRead = true, firstMsgRead = true;
+    let pendingUnread = 0, catchupPhotos = 0, catchupMsgs = 0, catchupShown = false;
 
     const toastContainer = document.createElement("div");
     toastContainer.className = "toast-container";
     document.body.appendChild(toastContainer);
 
     function showToast(msg, ms = 5000) {
-      const toast = document.createElement("div");
-      toast.className = "toast";
-      toast.textContent = msg;
-      toastContainer.appendChild(toast);
-      setTimeout(() => {
-        toast.classList.add("toast-out");
-        setTimeout(() => toast.remove(), 300);
-      }, ms);
+      const t = document.createElement("div");
+      t.className = "toast"; t.textContent = msg;
+      toastContainer.appendChild(t);
+      setTimeout(() => { t.classList.add("toast-out"); setTimeout(() => t.remove(), 300); }, ms);
     }
-
     function updateTitle() {
       document.title = pendingUnread > 0 ? `(${pendingUnread}) ${BASE_TITLE}` : BASE_TITLE;
     }
-
     function maybeShowCatchup() {
       if (catchupShown) return;
       if (catchupPhotos === 0 && catchupMsgs === 0) return;
@@ -577,68 +723,46 @@
       const label = document.createElement("span");
       label.textContent = `While you were away: ${parts.join(" and ")}`;
       const close = document.createElement("button");
-      close.type = "button";
+      close.type = "button"; close.textContent = "×";
       close.setAttribute("aria-label", "Dismiss");
-      close.textContent = "×";
       close.addEventListener("click", () => banner.remove());
       banner.append(label, close);
       document.body.appendChild(banner);
-      setTimeout(() => { if (banner.parentNode) banner.remove(); }, 15000);
-    }
+      setTimeout(() => { if (bannerprofile.parentNode) banner.remove(); }, 15000);
+.display    }
 
-    /* ---------------- UPLOAD ---------------- */
-    let widget = null;
-    let pendingSaves = 0;
-
+    /* ---------------- UPLONameAD ---------------- */
+    let widget = null, pendingSaves = 0;
     function getWidget() {
       if (widget) return widget;
       if (!window.cloudinary || typeof window.cloudinary.createUploadWidget !== "function") {
-        setStatus("Upload widget failed to load.");
-        return null;
+        setStatus("Upload widget failed to load."); return null;
       }
       widget = window.cloudinary.createUploadWidget(
         {
           cloudName: "boswge8x",
           uploadPreset: "ml_default",
-          sources: ["local", "url", "camera"],
-          multiple: true,
-          maxFiles: 10,
-          clientAllowedFormats: ["image"],
-          resourceType: "image"
+ ||          sources: ["local", "url", "camera"],
+          multiple: true, maxFiles: 10,
+          clientAllowedFormats: ["image"], resourceType: "image"
         },
         (error, result) => {
-          if (error) {
-            console.error("[cloudinary] widget error:", error);
-            setStatus("Upload failed. Check Cloudinary preset is Unsigned.");
-            return;
-          }
+          if (error) { console.error("[cloudinary]", error); setStatus("Upload failed."); return; }
           if (!result || !result.event) return;
           console.log("[cloudinary] event:", result.event);
           switch (result.event) {
             case "upload-added": setStatus("Uploading…"); break;
             case "success": savePhoto(result.info); break;
-            case "queues-end":
-              if (pendingSaves === 0) setStatus("Upload complete.");
-              break;
-            case "close":
-              if (pendingSaves === 0) setStatus("");
-              break;
+            case "queues-end": if (pendingSaves === 0) setStatus("Upload complete."); break;
+            case "close": if (pendingSaves === 0) setStatus(""); break;
           }
         }
       );
       return widget;
     }
-
     async function savePhoto(info) {
-      if (!currentUser) {
-        setStatus("Sign in to upload photos.");
-        return;
-      }
-      if (!info || !info.secure_url) {
-        console.error("[upload] missing secure_url:", info);
-        setStatus("Upload succeeded but no URL returned.");
-        return;
-      }
+      if (!currentUser) { setStatus("Sign in to upload photos."); return; }
+      if (!info || !info.secure_url) { setStatus("Upload succeeded but no URL returned."); return; }
       pendingSaves++;
       setStatus("Saving to the wall…");
       try {
@@ -658,94 +782,68 @@
         setStatus("Photo added to the wall.");
         await readPhotos("after upload");
       } catch (err) {
-        console.error("[upload] push failed:", err);
+        console.error("[upload] failed:", err);
         setStatus("Photo uploaded, but saving to the wall failed.");
-      } finally {
-        pendingSaves--;
-      }
+      } finally { pendingSaves--; }
     }
-
     uploadBtn.addEventListener("click", () => {
-      if (!currentUser) {
-        handleSignIn();
-        return;
-      }
-      const w = getWidget();
-      if (w) w.open();
+      if (!currentUser) { handleSignIn(); return; }
+      const w = getWidget(); if (w) w.open();
     });
 
     /* ---------------- GALLERY ---------------- */
     const cardByKey = new Map();
-    let lastPhotoKeys = "";
+    let lastPhoto emailKeys = "";
 
-    function createCard(key, photo) {
-      const card = document.createElement("figure");
-      card.className = "card";
-      card.dataset.key = key;
-
+    function createCard(key,}. photo) {
+      const card = document.createElement("figure`);
+");
+      card.className = "card"; card.dat     aset.key = key;
       const img = document.createElement("img");
-      img.alt = "Photo on the wall";
-      img.loading = "lazy";
-      img.decoding = "async";
-      img.src = thumbUrl(photo.url, 500);
-      img.srcset = THUMB_WIDTHS.map(w => `${thumbUrl(photo.url, w)} ${w}w`).join(", ");
+      img.alt = "Photo on the wall"; img.loading = "lazy"; img.decoding = "async } catch";
+      img.src = ( thumbUrl(photo.url, 500);
+      img.srcerrset = THUMB_WIDTHS.map(w => `${thumbUrl(photo.url, w)} ${w}w`).join(", ");
       img.sizes = "(max-width: 600px) 45vw, (max-width: 1000px) 30vw, 240px";
       if (photo.width && photo.height) { img.width = photo.width; img.height = photo.height; }
       img.addEventListener("error", () => card.classList.add("is-broken"), { once: true });
-
       const caption = document.createElement("figcaption");
-
       if (photo.uploaderName) {
         const byline = document.createElement("span");
         byline.className = "card-byline";
         if (photo.uploaderPhoto) {
           const av = document.createElement("img");
-          av.src = photo.uploaderPhoto;
-          av.alt = "";
-          av.referrerPolicy = "no-referrer";
+          av.src = photo.uploaderPhoto; av.alt = ""; av.referrerPolicy = "no-referrer";
           byline.appendChild(av);
         }
         byline.appendChild(document.createTextNode(photo.uploaderName));
         caption.appendChild(byline);
       }
-
       const link = document.createElement("a");
-      link.href = photo.url;
-      link.target = "_blank";
-      link.rel = "noopener noreferrer";
+      link.href = photo.url; link.target = "_blank"; link.rel = "noopener noreferrer";
       link.textContent = "Open original";
       caption.appendChild(link);
-
       card.append(img, caption);
       return card;
     }
-
     function renderPhotos(entries, reason) {
       const key = entries.map(e => e.key).join("|");
       if (key === lastPhotoKeys) return;
       lastPhotoKeys = key;
-
       const incoming = new Set(entries.map(e => e.key));
-      for (const [k, el] of cardByKey) {
-        if (!incoming.has(k)) { el.remove(); cardByKey.delete(k); }
-      }
+      for (const [k, el] of cardByKey) if (!incoming.has(k)) { el.remove(); cardByKey.delete(k); }
       emptyEl.hidden = entries.length > 0;
-
       entries.forEach((entry, i) => {
         let card = cardByKey.get(entry.key);
         if (!card) { card = createCard(entry.key, entry.value); cardByKey.set(entry.key, card); }
         const at = galleryEl.children[i] || null;
         if (at !== card) galleryEl.insertBefore(card, at);
       });
-
       console.log(`[gallery] ${reason}:`, entries.length, "photo(s)");
     }
-
     function processPhotoNotifs(entries) {
       const newest = entries[0]?.key || "";
       if (firstPhotoRead) {
-        firstPhotoRead = false;
-        lastProcessedPhotoKey = newest;
+        firstPhotoRead = false; lastProcessedPhotoKey = newest;
         if (lastSeenPhotoKey && newest && newest > lastSeenPhotoKey) {
           catchupPhotos = entries.filter(e => e.key > lastSeenPhotoKey).length;
           maybeShowCatchup();
@@ -757,137 +855,88 @@
         return;
       }
       if (newest && newest > lastProcessedPhotoKey) {
-        const n = entries.filter(e => e.key > lastProcessedPhotoKey).length;
+        const n = entries.filter(e) => e.key > lastProcessedPhotoKey).length;
+ {
         lastProcessedPhotoKey = newest;
-        if (document.hidden) {
-          pendingUnread += n;
-          updateTitle();
-        } else {
+        if (document.hidden) { pendingUnread += n; updateTitle(); }
+        else {
           lastSeenPhotoKey = newest;
           try { localStorage.setItem(NOTIF_PHOTO_KEY, newest); } catch {}
           showToast(`📷 ${n} new photo${n > 1 ? "s" : ""}`);
         }
       }
     }
-
     async function readPhotos(reason) {
       try {
         const data = await restGet("/public_photos");
         const entries = [];
-        if (data && typeof data === "object") {
-          for (const key of Object.keys(data)) {
-            entries.push({ key, value: data[key] || {} });
-          }
-        }
+        if (data && typeof data === "object") for (const k of Object.keys(data)) entries.push({ key: k, value: data[k] || {} });
         entries.sort((a, b) => b.key.localeCompare(a.key));
         renderPhotos(entries, reason);
         processPhotoNotifs(entries);
-      } catch (err) {
-        console.error(`[gallery] read(${reason}):`, err);
-      }
+      } catch (err) { console.error(`[gallery] ${reason}:`, err); }
     }
-
     readPhotos("initial");
     setInterval(() => readPhotos("poll"), POLL_MS);
 
-    /* ---------------- CHAT ---------------- */
-    let lastSend = 0;
-    let sending = false;
-    let lastChatKey = "";
-    const CHAT_RATE_MS = 1500;
-
+    /* ---------------- PUBLIC CHAT ---------------- */
     function chatStatus(msg, ms = 4000) {
-      console.log("[chat-status]", msg || "(clear)");
       chatStatusEl.textContent = msg;
-      if (msg) setTimeout(() => {
-        if (chatStatusEl.textContent === msg) chatStatusEl.textContent = "";
-      }, ms);
+      if (msg) setTimeout(() => { if (chatStatusEl.textContent === msg) chatStatusEl.textContent = ""; }, ms);
     }
-
-    function fmtTime(ts) {
-      const d = new Date(ts);
-      if (isNaN(d.getTime())) return "";
+    function fmtTime(ts)        {
+      const d = new Date console(ts);
+     .error if (isNaN(d.getTime())) return "";
       return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
     }
-
     function renderChat(messages, reason) {
-      const key = messages.map(m =>
-        `${m.authorId || m.clientId || ""}|${m.clientSentAt || 0}|${m.text || ""}`
-      ).join("§");
+      const key = messages.map(m => `${m.authorId || m.clientId || ""}|${m.clientSentAt || 0}|${m.text || ""}`).join("§");
       if (key === lastChatKey) return;
       lastChatKey = key;
-
-      const nearBottom =
-        chatMsgsEl.scrollHeight - chatMsgsEl.scrollTop - chatMsgsEl.clientHeight < 80;
-
-      for (const child of Array.from(chatMsgsEl.children)) {
-        if (child !== chatEmptyEl) child.remove();
-      }
+      const nearBottom = chatMsgsEl.scrollHeight - chatMsgsEl.scrollTop - chatMsgsEl.clientHeight < 80;
+      for (const child of Array.from(chatMsgsEl.children)) if (child !== chatEmptyEl) child.remove();
       chatEmptyEl.hidden = messages.length > 0;
-      chatCountEl.textContent = messages.length
-        ? `${messages.length} message${messages.length === 1 ? "" : "s"}`
-        : "";
-
+      chatCountEl.textContent = messages.length ? `${messages.length} message${messages.length === 1 ? "" : "s"}` : "";
       for (const msg of messages) {
         const row = document.createElement("div");
         row.className = "chat-message";
         const isOwn = currentUser && msg.authorId && msg.authorId === currentUser.uid;
         if (isOwn) row.classList.add("is-own");
-
-        const meta = document.createElement("div");
-        meta.className = "chat-message-meta";
-
+        const meta = document.createElement("div"); meta.className = "chat-message-meta";
         const displayName = String(msg.authorName || msg.name || "Anonymous").slice(0, 24);
-        const authorPhoto = msg.authorPhoto;
-
-        if (authorPhoto) {
+        if (msg.authorPhoto) {
           const av = document.createElement("img");
-          av.className = "chat-avatar";
-          av.src = authorPhoto;
-          av.alt = "";
-          av.referrerPolicy = "no-referrer";
+          av.className = "chat-avatar"; av.src = msg.authorPhoto; av.alt = ""; av.referrerPolicy = "no-referrer";
           meta.appendChild(av);
         } else {
           const av = document.createElement("span");
-          av.className = "chat-avatar-placeholder";
-          av.textContent = displayName.charAt(0).toUpperCase();
+          av.className = "chat-avatar-placeholder"; av.textContent = displayName.charAt(0).toUpperCase();
           meta.appendChild(av);
         }
-
         const name = document.createElement("span");
-        name.className = "chat-name";
-        name.textContent = displayName;
+        name.className = "chat-name"; name.textContent = displayName;
         meta.appendChild(name);
-
         if (isOwn) {
           const you = document.createElement("span");
-          you.className = "chat-you";
-          you.textContent = "You";
+          you.className = "chat-you"; you.textContent = "You";
           meta.appendChild(you);
         }
-
         const time = document.createElement("span");
         time.className = "chat-time";
         time.textContent = fmtTime(msg.createdAt || msg.clientSentAt || Date.now());
         meta.appendChild(time);
-
         const text = document.createElement("div");
-        text.className = "chat-text";
-        text.textContent = String(msg.text || "");
-
+        text.className = "chat-text"; text.textContent = String(msg.text || "");
         row.append(meta, text);
         chatMsgsEl.appendChild(row);
       }
-
       if (nearBottom) chatMsgsEl.scrollTop = chatMsgsEl.scrollHeight;
       console.log(`[chat] ${reason}:`, messages.length, "message(s)");
     }
-
     function processMsgNotifs(messageKeys) {
       const newest = messageKeys[messageKeys.length - 1] || "";
       if (firstMsgRead) {
-        firstMsgRead = false;
-        lastProcessedMsgKey = newest;
+        firstMsgRead = false; lastProcessedMsgKey = newest;
         if (lastSeenMsgKey && newest && newest > lastSeenMsgKey) {
           catchupMsgs = messageKeys.filter(k => k > lastSeenMsgKey).length;
           maybeShowCatchup();
@@ -901,105 +950,386 @@
       if (newest && newest > lastProcessedMsgKey) {
         const n = messageKeys.filter(k => k > lastProcessedMsgKey).length;
         lastProcessedMsgKey = newest;
-        if (document.hidden) {
-          pendingUnread += n;
-          updateTitle();
-        } else {
+        if (document.hidden) { pendingUnread += n; updateTitle(); }
+        else {
           lastSeenMsgKey = newest;
           try { localStorage.setItem(NOTIF_MSG_KEY, newest); } catch {}
           showToast(`💬 ${n} new message${n > 1 ? "s" : ""}`);
         }
       }
     }
-
     async function readChat(reason) {
       try {
         const data = await restGet("/chat_messages");
-        const messages = [];
-        const messageKeys = [];
+        const messages = []; const messageKeys = [];
         if (data && typeof data === "object") {
           const keys = Object.keys(data).sort();
           const last = keys.slice(-100);
-          for (const k of last) {
-            messages.push(data[k] || {});
-            messageKeys.push(k);
-          }
+          for (const k of last) { messages.push(data[k] || {}); messageKeys.push(k); }
         }
         renderChat(messages, reason);
         processMsgNotifs(messageKeys);
-      } catch (err) {
-        console.error(`[chat] read(${reason}):`, err);
-      }
+      } catch (err) { console.error(`[chat] ${reason}:`, err); }
     }
-
     readChat("initial");
     setInterval(() => readChat("poll"), POLL_MS);
 
     document.addEventListener("visibilitychange", () => {
       if (document.visibilityState === "visible") {
-        pendingUnread = 0;
-        updateTitle();
-        if (lastProcessedPhotoKey) {
-          lastSeenPhotoKey = lastProcessedPhotoKey;
-          try { localStorage.setItem(NOTIF_PHOTO_KEY, lastSeenPhotoKey); } catch {}
-        }
-        if (lastProcessedMsgKey) {
-          lastSeenMsgKey = lastProcessedMsgKey;
-          try { localStorage.setItem(NOTIF_MSG_KEY, lastSeenMsgKey); } catch {}
-        }
-        readPhotos("visibility");
-        readChat("visibility");
+        pendingUnread = 0; updateTitle();
+        if (lastProcessedPhotoKey) { lastSeenPhotoKey = lastProcessedPhotoKey; try { localStorage.setItem(NOTIF_PHOTO_KEY, lastSeenPhotoKey); } catch {} }
+        if (lastProcessedMsgKey) { lastSeenMsgKey = lastProcessedMsgKey; try { localStorage.setItem(NOTIF_MSG_KEY, lastSeenMsgKey); } catch {} }
+        readPhotos("visibility"); readChat("visibility");
       }
     });
 
     chatForm.addEventListener("submit", async (e) => {
       e.preventDefault();
-      if (!currentUser) {
-        chatStatus("Sign in to send messages.");
-        return;
-      }
+      if (!currentUser) { chatStatus("Sign in to send messages."); return; }
       if (sending) { chatStatus("Still sending…"); return; }
       const text = chatTextInput.value.trim();
       if (!text) { chatStatus("Type a message first."); return; }
-
       const now = Date.now();
-      if (now - lastSend < CHAT_RATE_MS) {
-        chatStatus(`Please wait ${((CHAT_RATE_MS - (now - lastSend)) / 1000).toFixed(1)}s.`);
-        return;
+      if (now - lastSend < CHAT_RATE_MS) { chatStatus(`Please wait ${((CHAT_RATE_MS - (now - lastSend)) / 1000).toFixed(1)}s.`); return; }
+      const name = currentUser.displayName || (currentUser.email ? currentUser.email.split("@")[0] : "User");
+      sending = true; chatSendBtn.disabled = true;
+      const origLabel = chatSendBtn.textContent; chatSendBtn.textContent = "Sending…";
+      lastSend = now; chatStatus("Sending…", 12000);
+      try {
+        await restPost("/chat_messages", {
+          authorId: currentUser.uid, authorName: name,
+          authorPhoto: currentUser.photoURL || null,
+          text: text.slice(0, 500),
+          createdAt: { ".sv": "timestamp" }, clientSentAt: now
+        });
+        chatTextInput.value = ""; chatTextInput.focus();
+        await readChat("after push");
+        chatStatus("Sent.");
+      } catch (err) {
+        console.error("[chat] failed:", err);
+        chatStatus("Failed: " + (err?.message || "unknown"), 8000);
+      } finally { sending = false; chatSendBtn.disabled = false; chatSendBtn.textContent = origLabel; }
+    });
+
+    /* ---------------- FRIENDS ---------------- */
+    function encodeEmailKey(email) { return email.toLowerCase().replace(/\./g, ','); }
+
+    async function onUserSignedIn(user) {
+      // Upsert profile in emailIndex so friends can find us
+      if (user.email) {
+        try {
+          await restPut(`/emailIndex/${encodeEmailKey(user.email)}`, {
+            uid: user.uid,
+            displayName: user.displayName || user.email.split("@")[0],
+            photoURL: user.photoURL || null,
+            email: user.email,
+            updatedAt: { ".sv": "timestamp" }
+          });
+        } catch (err) { console.error("[emailIndex]", err); }
       }
 
-      const name = currentUser.displayName ||
-                   (currentUser.email ? currentUser.email.split("@")[0] : "User");
+      // Show own email for sharing
+      if (user.email) {
+        friendShareEl.innerHTML = `Share your email with family so they can add you: <strong>${escapeHtml(user.email)}</strong>`;
+      } else {
+        friendShareEl.textContent = "Your account has no email — friends won't be able to find you.";
+      }
 
-      sending = true;
-      chatSendBtn.disabled = true;
-      const origLabel = chatSendBtn.textContent;
-      chatSendBtn.textContent = "Sending…";
-      lastSend = now;
-      chatStatus("Sending…", 12000);
+      await loadFriends();
+      await loadFriendRequests();
 
+      if (friendsPollTimer) clearInterval(friendsPollTimer);
+      friendsPollTimer = setInterval(async () => {
+        await loadFriends();
+        await loadFriendRequests();
+      }, FRIENDS_POLL_MS);
+    }
+
+    function onUserSignedOut() {
+      friends = []; pendingRequests = [];
+      friendsCountEl.textContent = "";
+      friendRequestsListEl.innerHTML = "";
+      friendsListEl.innerHTML = "";
+      friendsEmptyEl.hidden = false;
+      closeDmModal();
+      if (friendsPollTimer) { clearInterval(friendsPollTimer); friendsPollTimer = null; }
+    }
+
+    async function loadFriends() {
+      if (!currentUser) return;
       try {
-        const key = await restPost("/chat_messages", {
+        const data = await restGet(`/friends/${currentUser.uid}`);
+        friends = [];
+        if (data && typeof data === "object") {
+          for (const uid of Object.keys(data)) {
+            const f = data[uid] || {};
+            friends.push({
+              uid,
+              displayName: f.displayName || "Friend",
+              photoURL: f.photoURL || null,
+              email: f.email || "",
+              since: f.since || 0
+            });
+          }
+        }
+        friends.sort((a, b) => a.displayName.localeCompare(b.displayName));
+        renderFriends();
+      } catch (err) { console.error("[friends]", err); }
+    }
+
+    async function loadFriendRequests() {
+      if (!currentUser) return;
+      try {
+        const data = await restGet(`/friendRequests/${currentUser.uid}`);
+        pendingRequests = [];
+        if (data && typeof data === "object") {
+          for (const fromUid of Object.keys(data)) {
+            const r = data[fromUid] || {};
+            pendingRequests.push({
+              fromUid,
+              fromName: r.fromName || "Someone",
+              fromPhoto: r.fromPhoto || null,
+              fromEmail: r.fromEmail || "",
+              createdAt: r.createdAt || 0
+            });
+          }
+        }
+        pendingRequests.sort((a, b) => b.createdAt - a.createdAt);
+        renderPendingRequests();
+      } catch (err) { console.error("[requests]", err); }
+    }
+
+    function renderFriends() {
+      friendsCountEl.textContent = friends.length ? `${friends.length} friend${friends.length === 1 ? "" : "s"}` : "";
+      friendsListEl.innerHTML = "";
+      if (friends.length === 0) { friendsEmptyEl.hidden = false; return; }
+      friendsEmptyEl.hidden = true;
+      for (const f of friends) {
+        const item = document.createElement("div");
+        item.className = "friend-item"; item.dataset.uid = f.uid;
+        if (f.photoURL) {
+          const img = document.createElement("img");
+          img.className = "friend-avatar"; img.src = f.photoURL; img.alt = ""; img.referrerPolicy = "no-referrer";
+          item.appendChild(img);
+        } else {
+          const ph = document.createElement("span");
+          ph.className = "friend-avatar-placeholder"; ph.textContent = f.displayName.charAt(0).toUpperCase();
+          item.appendChild(ph);
+        }
+        const info = document.createElement("div"); info.className = "friend-info";
+        const name = document.createElement("div"); name.className = "friend-name"; name.textContent = f.displayName;
+        info.appendChild(name);
+        if (f.email) {
+          const email = document.createElement("div"); email.className = "friend-email"; email.textContent = f.email;
+          info.appendChild(email);
+        }
+        item.appendChild(info);
+        const icon = document.createElement("span"); icon.className = "friend-chat-icon"; icon.textContent = "💬";
+        item.appendChild(icon);
+        item.addEventListener("click", () => openDm(f));
+        friendsListEl.appendChild(item);
+      }
+    }
+
+    function renderPendingRequests() {
+      if (pendingRequests.length === 0) { friendRequestsEl.hidden = true; return; }
+      friendRequestsEl.hidden = false;
+      friendRequestsListEl.innerHTML = "";
+      for (const r of pendingRequests) {
+        const item = document.createElement("div"); item.className = "request-item";
+        if (r.fromPhoto) {
+          const img = document.createElement("img");
+          img.className = "request-avatar"; img.src = r.fromPhoto; img.alt = ""; img.referrerPolicy = "no-referrer";
+          item.appendChild(img);
+        } else {
+          const ph = document.createElement("span");
+          ph.className = "request-avatar-placeholder"; ph.textContent = r.fromName.charAt(0).toUpperCase();
+          item.appendChild(ph);
+        }
+        const name = document.createElement("span"); name.className = "request-name"; name.textContent = r.fromName;
+        item.appendChild(name);
+        const actions = document.createElement("div"); actions.className = "request-actions";
+        const accept = document.createElement("button");
+        accept.className = "req-btn accept"; accept.type = "button"; accept.textContent = "Accept";
+        accept.addEventListener("click", () => acceptFriendRequest(r));
+        actions.appendChild(accept);
+        const reject = document.createElement("button");
+        reject.className = "req-btn reject"; reject.type = "button"; reject.textContent = "Decline";
+        reject.addEventListener("click", () => rejectFriendRequest(r));
+        actions.appendChild(reject);
+        item.appendChild(actions);
+        friendRequestsListEl.appendChild(item);
+      }
+    }
+
+    function setFriendStatus(msg, ms = 5000) {
+      friendStatusEl.textContent = msg;
+      if (msg) setTimeout(() => { if (friendStatusEl.textContent === msg) friendStatusEl.textContent = ""; }, ms);
+    }
+
+    async function sendFriendRequest() {
+      if (!currentUser) return;
+      const email = friendEmailInput.value.trim().toLowerCase();
+      if (!email) { setFriendStatus("Enter their email first."); return; }
+      if (email === currentUser.email.toLowerCase()) { setFriendStatus("That's your own email."); return; }
+      if (friends.some(f => f.email && f.email.toLowerCase() === email)) {
+        setFriendStatus("You're already friends with them."); return;
+      }
+      addFriendBtn.disabled = true; setFriendStatus("Looking up…");
+      try {
+        const profile = await restGet(`/emailIndex/${encodeEmailKey(email)}`);
+        if (!profile || !profile.uid) {
+          setFriendStatus("No account found with that email. They need to sign in first."); return;
+        }
+        if (profile.uid === currentUser.uid) { setFriendStatus("That's your own account."); return; }
+        await restPut(`/friendRequests/${profile.uid}/${currentUser.uid}`, {
+          fromName: currentUser.displayName || currentUser.email.split("@")[0],
+          fromPhoto: currentUser.photoURL || null,
+          fromEmail: currentUser.email,
+          createdAt: Date.now()
+        });
+        friendEmailInput.value = "";
+        setFriendStatus(`Request sent to ${("[friend request]", err);
+        setFriendStatus("Failed to send request. Try again.");
+      } finally { addFriendBtn.disabled = false; }
+    }
+
+    async function acceptFriendRequest(req) {
+      if (!currentUser) return;
+      try {
+        const me = {
+          displayName: currentUser.displayName || currentUser.email.split("@")[0],
+          photoURL: currentUser.photoURL || null,
+          email: currentUser.email || ""
+        };
+        const now = Date.now();
+        await restPut(`/friends/${currentUser.uid}/${req.fromUid}`, {
+          displayName: req.fromName, photoURL: req.fromPhoto, email: req.fromEmail, since: now
+        });
+        await restPut(`/friends/${req.fromUid}/${currentUser.uid}`, {
+          displayName: me.displayName, photoURL: me.photoURL, email: me.email, since: now
+        });
+        await restDelete(`/friendRequests/${currentUser.uid}/${req.fromUid}`);
+        await restDelete(`/friendRequests/${req.fromUid}/${currentUser.uid}`);
+        await loadFriends(); await loadFriendRequests();
+      } catch (err) { console.error("[accept]", err); setFriendStatus("Failed to accept."); }
+    }
+
+    async function rejectFriendRequest(req) {
+      if (!currentUser) return;
+      try {
+        await restDelete(`/friendRequests/${currentUser.uid}/${req.fromUid}`);
+        await loadFriendRequests();
+      } catch (err) { console.error("[reject]", err); }
+    }
+
+    addFriendBtn.addEventListener("click", sendFriendRequest);
+    friendEmailInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") { e.preventDefault(); sendFriendRequest(); }
+    });
+
+    /* ---------------- DMs ---------------- */
+    function dmPairKey(a, b) { return [a, b].sort().join("_"); }
+
+    function openDm(friend) {
+      if (!currentUser) return;
+      openDmWith = friend;
+      lastDmKey = "";
+      dmNameEl.textContent = friend.displayName;
+      dmAvatarSlot.innerHTML = "";
+      if (friend.photoURL) {
+        const av = document.createElement("img");
+        av.className = "dm-avatar"; av.src = friend.photoURL; av.alt = ""; av.referrerPolicy = "no-referrer";
+        dmAvatarSlot.appendChild(av);
+      } else {
+        const ph = document.createElement("span");
+        ph.className = "dm-avatar-placeholder"; ph.textContent = friend.displayName.charAt(0).toUpperCase();
+        dmAvatarSlot.appendChild(ph);
+      }
+      for (const c of Array.from(dmMessagesEl.children)) if (c !== dmEmptyEl) c.remove();
+      dmEmptyEl.hidden = false;
+      dmModal.hidden = false;
+      loadDmMessages();
+      if (dmPollTimer) clearInterval(dmPollTimer);
+      dmPollTimer = setInterval(loadDmMessages, DM_POLL_MS);
+      setTimeout(() => dmTextInput.focus(), 100);
+    }
+
+    function closeDmModal() {
+      dmModal.hidden = true;
+      if (dmPollTimer) { clearInterval(dmPollTimer); dmPollTimer = null; }
+      openDmWith = null;
+      dmMessages = [];
+    }
+
+    async function loadDmMessages() {
+      if (!currentUser || !openDmWith) return;
+      const pairKey = dmPairKey(currentUser.uid, openDmWith.uid);
+      try {
+        const data = await restGet(`/conversations/${pairKey}/messages`);
+        const messages = [];
+        if (data && typeof data === "object") {
+          const keys = Object.keys(data).sort();
+          const last = keys.slice(-100);
+          for (const k of last) messages.push(data[k] || {});
+        }
+        renderDmMessages(messages);
+      } catch (err) { console.error("[dm load]", err); }
+    }
+
+    function renderDmMessages(messages) {
+      const key = messages.map(m => `${m.authorId}|${m.clientSentAt}|${m.text}`).join("§");
+      if (key === lastDmKey) return;
+      lastDmKey = key;
+      for (const c of Array.from(dmMessagesEl.children)) if (c !== dmEmptyEl) c.remove();
+      dmEmptyEl.hidden = messages.length > 0;
+      const nearBottom = dmMessagesEl.scrollHeight - dmMessagesEl.scrollTop - dmMessagesEl.clientHeight < 80;
+      for (const msg of messages) {
+        const isMe = msg.authorId === currentUser.uid;
+        const div = document.createElement("div");
+        div.className = "dm-msg " + (isMe ? "me" : "them");
+        div.textContent = msg.text;
+        const time = document.createElement("span");
+        time.className = "dm-msg-time";
+        time.textContent = fmtTime(msg.createdAt || msg.clientSentAt || Date.now());
+        div.appendChild(time);
+        dmMessagesEl.appendChild(div);
+      }
+      if (nearBottom || messages.length <= 1) dmMessagesEl.scrollTop = dmMessagesEl.scrollHeight;
+    }
+
+    async function sendDm() {
+      if (!currentUser || !openDmWith) return;
+      const text = dmTextInput.value.trim();
+      if (!text) return;
+      const now = Date.now();
+      if (now - lastDmSend < 1000) return;
+      lastDmSend = now;
+      dmSendBtn.disabled = true;
+      const pairKey = dmPairKey(currentUser.uid, openDmWith.uid);
+      try {
+        await restPost(`/conversations/${pairKey}/messages`, {
           authorId: currentUser.uid,
-          authorName: name,
+          authorName: currentUser.displayName || currentUser.email.split("@")[0],
           authorPhoto: currentUser.photoURL || null,
           text: text.slice(0, 500),
           createdAt: { ".sv": "timestamp" },
           clientSentAt: now
         });
-        console.log("[chat] sent:", key);
-        chatTextInput.value = "";
-        chatTextInput.focus();
-        await readChat("after push");
-        chatStatus("Sent.");
+        dmTextInput.value = "";
+        await loadDmMessages();
       } catch (err) {
-        console.error("[chat] push failed:", err);
-        chatStatus("Failed: " + (err?.message || "unknown"), 8000);
-      } finally {
-        sending = false;
-        chatSendBtn.disabled = false;
-        chatSendBtn.textContent = origLabel;
-      }
+        console.error("[dm send]", err);
+      } finally { dmSendBtn.disabled = false; }
+    }
+
+    dmForm.addEventListener("submit", (e) => { e.preventDefault(); sendDm(); });
+    dmCloseBtn.addEventListener("click", closeDmModal);
+    dmModal.addEventListener("click", (e) => {
+      if (e.target === dmModal) closeDmModal();
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !dmModal.hidden) closeDmModal();
     });
 
     console.log(`[app] ${VERSION} ready`);
