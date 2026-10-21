@@ -26,7 +26,92 @@
       min-height: 100vh;
     }
 
-    header { padding: 2.5rem 1.25rem 1.5rem; text-align: center; }
+    /* ---------- AUTH BAR ---------- */
+    #auth-bar {
+      padding: .75rem 1.25rem 0;
+      display: flex;
+      justify-content: center;
+      min-height: 60px;
+    }
+    .auth-prompt {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: .75rem 1.25rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      font-size: .9rem;
+      color: var(--muted);
+    }
+    .auth-user {
+      display: inline-flex;
+      align-items: center;
+      gap: .75rem;
+      padding: .4rem .5rem .4rem .4rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: .9rem;
+    }
+    .auth-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--surface-2);
+      object-fit: cover;
+      display: block;
+    }
+    .auth-avatar-placeholder {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: .85rem;
+    }
+    .auth-name { font-weight: 500; }
+    .auth-btn {
+      font: inherit;
+      font-weight: 600;
+      font-size: .85rem;
+      padding: .5rem 1rem;
+      border-radius: 999px;
+      border: 0;
+      background: var(--accent);
+      color: #fff;
+      cursor: pointer;
+      transition: filter .12s ease;
+    }
+    .auth-btn:hover { filter: brightness(1.1); }
+    .auth-btn.signout {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      font-size: .75rem;
+      padding: .35rem .75rem;
+      font-weight: 500;
+    }
+    .auth-btn.signout:hover {
+      color: var(--text);
+      border-color: var(--muted);
+      filter: none;
+    }
+    .google-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+    }
+    .google-btn svg { width: 18px; height: 18px; }
+
+    /* ---------- HEADER ---------- */
+    header { padding: 1.25rem 1.25rem 1.5rem; text-align: center; }
     h1 { margin: 0 0 .35rem; font-size: clamp(1.5rem, 4vw, 2.25rem); letter-spacing: -.02em; }
     .sub { margin: 0 0 1.5rem; color: var(--muted); font-size: .95rem; }
     .sub .badge { font-size: .7rem; opacity: .6; }
@@ -36,10 +121,16 @@
       background: var(--accent); color: #fff; cursor: pointer;
       transition: transform .12s ease, filter .12s ease;
     }
-    #upload-btn:hover { filter: brightness(1.1); }
-    #upload-btn:active { transform: scale(.97); }
+    #upload-btn:hover:not(:disabled) { filter: brightness(1.1); }
+    #upload-btn:active:not(:disabled) { transform: scale(.97); }
+    #upload-btn:disabled {
+      background: var(--surface-2);
+      color: var(--muted);
+      cursor: not-allowed;
+    }
     #status { min-height: 1.4em; margin: 1rem 0 0; font-size: .9rem; color: var(--muted); }
 
+    /* ---------- GALLERY ---------- */
     main { padding: 1rem 1.25rem 4rem; }
     .gallery {
       display: grid;
@@ -57,8 +148,31 @@
     }
     .card img { display: block; width: 100%; height: auto; background: #10141a; }
     .card.is-broken img { display: none; }
-    .card figcaption { padding: .6rem .8rem; font-size: .8rem; }
-    .card a { color: var(--muted); text-decoration: none; }
+    .card figcaption {
+      padding: .6rem .8rem;
+      font-size: .8rem;
+      display: flex;
+      flex-direction: column;
+      gap: .25rem;
+    }
+    .card-byline {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      color: var(--text);
+      font-weight: 500;
+    }
+    .card-byline img {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--surface-2);
+    }
+    .card a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: .75rem;
+    }
     .card a:hover { color: var(--accent); }
     #empty-state {
       max-width: 1200px;
@@ -68,6 +182,7 @@
       font-size: .95rem;
     }
 
+    /* ---------- CHAT ---------- */
     .chat-section { max-width: 760px; margin: 3.5rem auto 0; padding: 0 1.25rem; }
     .chat-header {
       display: flex; align-items: baseline; justify-content: space-between;
@@ -94,8 +209,29 @@
       background: rgba(79, 140, 255, .08);
     }
     .chat-message-meta {
-      display: flex; align-items: baseline; gap: .5rem;
-      font-size: .75rem; margin-bottom: .15rem;
+      display: flex; align-items: center; gap: .4rem;
+      font-size: .75rem; margin-bottom: .2rem;
+    }
+    .chat-avatar {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--surface);
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+    .chat-avatar-placeholder {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .65rem;
+      font-weight: 700;
+      flex-shrink: 0;
     }
     .chat-name { font-weight: 600; color: var(--accent); }
     .chat-you {
@@ -113,10 +249,13 @@
       font: inherit; color: var(--text);
       background: var(--surface); border: 1px solid var(--border);
       border-radius: 10px; padding: .6rem .8rem; outline: none;
+      flex: 1 1 auto; min-width: 0;
     }
     .chat-form input:focus { border-color: var(--accent); }
-    #chat-name { width: 130px; flex: 0 0 auto; }
-    #chat-text { flex: 1 1 auto; min-width: 0; }
+    .chat-form input:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+    }
     .chat-form button {
       font: inherit; font-weight: 600;
       background: var(--accent); color: #fff;
@@ -124,22 +263,87 @@
       padding: .6rem 1rem; cursor: pointer;
       min-width: 90px;
     }
-    .chat-form button:hover { filter: brightness(1.1); }
-    .chat-form button:disabled { opacity: .6; cursor: not-allowed; }
+    .chat-form button:hover:not(:disabled) { filter: brightness(1.1); }
+    .chat-form button:disabled { opacity: .5; cursor: not-allowed; }
+
+    /* ---------- NOTIFICATIONS ---------- */
+    .toast-container {
+      position: fixed;
+      bottom: 1.25rem;
+      right: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: .5rem;
+      z-index: 1000;
+      pointer-events: none;
+      max-width: calc(100vw - 2.5rem);
+    }
+    .toast {
+      background: var(--surface-2);
+      border: 1px solid var(--accent);
+      border-radius: 10px;
+      padding: .7rem 1rem;
+      font-size: .9rem;
+      color: var(--text);
+      box-shadow: 0 8px 24px rgba(0,0,0,.4);
+      pointer-events: auto;
+      animation: toast-in .25s ease-out;
+      max-width: 320px;
+    }
+    .toast.toast-out { animation: toast-out .25s ease-in forwards; }
+    @keyframes toast-in {
+      from { transform: translateY(20px); opacity: 0; }
+      to   { transform: translateY(0); opacity: 1; }
+    }
+    @keyframes toast-out {
+      to { transform: translateY(20px); opacity: 0; }
+    }
+
+    .catchup-banner {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      background: linear-gradient(90deg, var(--accent), #6ea0ff);
+      color: #fff;
+      padding: .75rem 1rem;
+      text-align: center;
+      font-size: .9rem;
+      font-weight: 500;
+      z-index: 999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: .75rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,.3);
+      animation: banner-in .3s ease-out;
+    }
+    .catchup-banner button {
+      background: transparent;
+      border: 0;
+      color: #fff;
+      font-size: 1.3rem;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0 .25rem;
+    }
+    @keyframes banner-in {
+      from { transform: translateY(-100%); }
+      to   { transform: translateY(0); }
+    }
 
     @media (max-width: 520px) {
       .chat-form { flex-wrap: wrap; }
-      #chat-name { width: 100%; }
       .chat-form button { width: 100%; }
     }
   </style>
 </head>
 <body>
 
+  <div id="auth-bar"></div>
+
   <header>
     <h1>Public Photo Wall</h1>
-    <p class="sub">Upload a photo — it appears instantly for everyone. <span class="badge">v10-auth</span></p>
-    <button id="upload-btn" type="button">Upload Photo</button>
+    <p class="sub">Upload a photo — it appears instantly for everyone. <span class="badge">v12-accounts</span></p>
+    <button id="upload-btn" type="button" disabled>Sign in to upload</button>
     <p id="status" role="status" aria-live="polite"></p>
   </header>
 
@@ -150,7 +354,7 @@
     <section class="chat-section" aria-labelledby="chat-title">
       <div class="chat-header">
         <h2 id="chat-title">Live Chat</h2>
-        <span class="badge">v10-auth</span>
+        <span class="badge">v12-accounts</span>
         <span class="chat-count" id="chat-count"></span>
       </div>
       <div id="chat-messages" class="chat-messages" role="log" aria-live="polite">
@@ -158,83 +362,143 @@
       </div>
       <p id="chat-status" class="chat-status" role="status" aria-live="polite"></p>
       <form id="chat-form" class="chat-form" autocomplete="off">
-        <input id="chat-name" type="text" placeholder="Your name" maxlength="24" aria-label="Your name" />
-        <input id="chat-text" type="text" placeholder="Say something…" maxlength="500" required aria-label="Message" />
-        <button type="submit" id="chat-send">Send</button>
+        <input id="chat-text" type="text" placeholder="Sign in to chat" maxlength="500" required aria-label="Message" disabled />
+        <button type="submit" id="chat-send" disabled>Send</button>
       </form>
     </section>
   </main>
 
   <script type="module">
-    const VERSION = "v10-auth";
-    const POLL_MS = 3000;
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
+    const VERSION = "v12-accounts";
+    const POLL_MS = 3000;
     const DB_URL = "https://my-photo-gallery-40bc3-default-rtdb.europe-west1.firebasedatabase.app";
-    const API_KEY = "AIzaSyBbxQJFi3UKNv80y2a-_adfutjIqVq8A2w";
 
     console.log(`[app] ${VERSION} booting`, new Date().toISOString());
 
+    /* ---------------- FIREBASE AUTH ---------------- */
+    const app = initializeApp({
+      apiKey: "AIzaSyBbxQJFi3UKNv80y2a-_adfutjIqVq8A2w",
+      authDomain: "my-photo-gallery-40bc.firebaseapp.com",
+      databaseURL: DB_URL,
+      projectId: "my-photo-gallery-40bc",
+      storageBucket: "my-photo-gallery-40bc3.firebasestorage.app",
+      messagingSenderId: "861309146437",
+      appId: "1:861309146437:web:2d26303d34e98170811a2"
+    });
+    const auth = getAuth(app);
+
     /* ---------------- DOM ---------------- */
+    const authBar = document.getElementById("auth-bar");
+    const uploadBtn = document.getElementById("upload-btn");
     const galleryEl = document.getElementById("gallery");
-    const emptyEl   = document.getElementById("empty-state");
-    const statusEl  = document.getElementById("status");
+    const emptyEl = document.getElementById("empty-state");
+    const statusEl = document.getElementById("status");
 
     const chatMsgsEl = document.getElementById("chat-messages");
     const chatEmptyEl = document.getElementById("chat-empty");
     const chatCountEl = document.getElementById("chat-count");
     const chatStatusEl = document.getElementById("chat-status");
     const chatForm = document.getElementById("chat-form");
-    const chatNameInput = document.getElementById("chat-name");
     const chatTextInput = document.getElementById("chat-text");
     const chatSendBtn = document.getElementById("chat-send");
 
     function setStatus(msg) { statusEl.textContent = msg; }
+    function escapeHtml(str) {
+      return String(str).replace(/[&<>"']/g, c => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+      }[c]));
+    }
 
-    /* ---------------- AUTH (anonymous) ---------------- */
-    let idToken = null;
-    let idTokenExpiry = 0;
+    /* ---------------- AUTH STATE ---------------- */
+    let currentUser = null;
 
-    async function ensureAuth() {
-      if (idToken && Date.now() < idTokenExpiry) return idToken;
-      // Try localStorage
-      try {
-        const saved = localStorage.getItem("fb_id_token");
-        const savedExp = parseInt(localStorage.getItem("fb_id_token_exp") || "0", 10);
-        if (saved && Date.now() < savedExp - 60000) {
-          idToken = saved;
-          idTokenExpiry = savedExp;
-          return idToken;
-        }
-      } catch {}
-      // Fresh anonymous sign-in
-      try {
-        const res = await fetch(
-          `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${API_KEY}`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ returnSecureToken: true })
-          }
-        );
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
-        idToken = data.idToken;
-        idTokenExpiry = Date.now() + (parseInt(data.expiresIn, 10) - 300) * 1000;
-        try {
-          localStorage.setItem("fb_id_token", idToken);
-          localStorage.setItem("fb_id_token_exp", String(idTokenExpiry));
-        } catch {}
-        console.log("[auth] signed in anonymously");
-        return idToken;
-      } catch (err) {
-        console.error("[auth] sign-in failed:", err);
-        return null;
+    function renderAuthUI(user) {
+      currentUser = user;
+
+      if (user) {
+        const name = user.displayName || (user.email ? user.email.split("@")[0] : "User");
+        const initial = name.charAt(0).toUpperCase();
+        const avatarHtml = user.photoURL
+          ? `<img class="auth-avatar" src="${escapeHtml(user.photoURL)}" alt="" referrerpolicy="no-referrer" />`
+          : `<span class="auth-avatar-placeholder">${escapeHtml(initial)}</span>`;
+
+        authBar.innerHTML = `
+          <div class="auth-user">
+            ${avatarHtml}
+            <span class="auth-name">${escapeHtml(name)}</span>
+            <button id="signout-btn" class="auth-btn signout" type="button">Sign out</button>
+          </div>
+        `;
+        document.getElementById("signout-btn").addEventListener("click", handleSignOut);
+
+        uploadBtn.disabled = false;
+        uploadBtn.textContent = "Upload Photo";
+        chatTextInput.disabled = false;
+        chatTextInput.placeholder = "Say something…";
+        chatSendBtn.disabled = false;
+      } else {
+        authBar.innerHTML = `
+          <div class="auth-prompt">
+            <span>Sign in to upload photos and join the chat</span>
+            <button id="signin-btn" class="auth-btn google-btn" type="button">
+              <svg viewBox="0 0 48 48" aria-hidden="true">
+                <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.1 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/>
+                <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.1 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/>
+                <path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 34.8 26.7 36 24 36c-5.3 0-9.7-3.1-11.3-8l-6.5 5C9.6 39.6 16.2 44 24 44z"/>
+                <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.3-4.2 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/>
+              </svg>
+              Sign in with Google
+            </button>
+          </div>
+        `;
+        document.getElementById("signin-btn").addEventListener("click", handleSignIn);
+
+        uploadBtn.disabled = true;
+        uploadBtn.textContent = "Sign in to upload";
+        chatTextInput.disabled = true;
+        chatTextInput.placeholder = "Sign in to chat";
+        chatSendBtn.disabled = true;
       }
     }
 
+    async function handleSignIn() {
+      try {
+        const provider = new GoogleAuthProvider();
+        await signInWithPopup(auth, provider);
+        setStatus("");
+      } catch (err) {
+        console.error("[auth] sign-in failed:", err);
+        if (err.code === "auth/unauthorized-domain") {
+          setStatus("Domain not authorized in Firebase Console — add it under Authentication → Settings → Authorized domains.");
+        } else if (err.code === "auth/popup-closed-by-user") {
+          setStatus("");
+        } else {
+          setStatus("Sign-in failed: " + (err.message || err.code || "unknown"));
+        }
+      }
+    }
+
+    async function handleSignOut() {
+      try {
+        await signOut(auth);
+        setStatus("");
+      } catch (err) {
+        console.error("[auth] sign-out failed:", err);
+      }
+    }
+
+    onAuthStateChanged(auth, (user) => {
+      console.log("[auth] state:", user ? user.displayName || user.uid : "(signed out)");
+      renderAuthUI(user);
+    });
+
     /* ---------------- CLOUDINARY THUMB HELPERS ---------------- */
     const THUMB_WIDTHS = [300, 500, 800];
-
     function withTransform(url, transform) {
       if (typeof url !== "string" || !url.includes("/image/upload/")) return url;
       return url.replace("/image/upload/", `/image/upload/${transform}/`);
@@ -244,27 +508,17 @@
     }
 
     /* ---------------- REST HELPERS ---------------- */
-    function buildUrl(path) {
-      // path can be "/chat_messages" or "/chat_messages?orderBy=%22%24key%22&limitToLast=100"
-      const [base, query] = path.split("?");
-      let url = `${DB_URL}${base}.json`;
-      const params = [];
-      if (query) params.push(query);
-      if (idToken) params.push(`auth=${encodeURIComponent(idToken)}`);
-      if (params.length) url += "?" + params.join("&");
-      return url;
-    }
-
     async function restGet(path) {
-      await ensureAuth();
-      const res = await fetch(buildUrl(path), { cache: "no-store" });
+      const res = await fetch(`${DB_URL}${path}.json`, {
+        cache: "no-store",
+        headers: { "Cache-Control": "no-cache" }
+      });
       if (!res.ok) throw new Error(`GET ${path} → HTTP ${res.status}`);
       return await res.json();
     }
 
     async function restPost(path, body) {
-      await ensureAuth();
-      const res = await fetch(buildUrl(path), {
+      const res = await fetch(`${DB_URL}${path}.json`, {
         method: "POST",
         cache: "no-store",
         headers: { "Content-Type": "application/json" },
@@ -272,6 +526,67 @@
       });
       if (!res.ok) throw new Error(`POST ${path} → HTTP ${res.status}`);
       return await res.json();
+    }
+
+    /* ---------------- NOTIFICATIONS ---------------- */
+    const NOTIF_PHOTO_KEY = "wall_last_seen_photo";
+    const NOTIF_MSG_KEY = "wall_last_seen_msg";
+    const BASE_TITLE = "Public Photo Wall";
+
+    let lastSeenPhotoKey = "";
+    let lastSeenMsgKey = "";
+    try {
+      lastSeenPhotoKey = localStorage.getItem(NOTIF_PHOTO_KEY) || "";
+      lastSeenMsgKey = localStorage.getItem(NOTIF_MSG_KEY) || "";
+    } catch {}
+
+    let lastProcessedPhotoKey = lastSeenPhotoKey;
+    let lastProcessedMsgKey = lastSeenMsgKey;
+    let firstPhotoRead = true;
+    let firstMsgRead = true;
+    let pendingUnread = 0;
+    let catchupPhotos = 0;
+    let catchupMsgs = 0;
+    let catchupShown = false;
+
+    const toastContainer = document.createElement("div");
+    toastContainer.className = "toast-container";
+    document.body.appendChild(toastContainer);
+
+    function showToast(msg, ms = 5000) {
+      const toast = document.createElement("div");
+      toast.className = "toast";
+      toast.textContent = msg;
+      toastContainer.appendChild(toast);
+      setTimeout(() => {
+        toast.classList.add("toast-out");
+        setTimeout(() => toast.remove(), 300);
+      }, ms);
+    }
+
+    function updateTitle() {
+      document.title = pendingUnread > 0 ? `(${pendingUnread}) ${BASE_TITLE}` : BASE_TITLE;
+    }
+
+    function maybeShowCatchup() {
+      if (catchupShown) return;
+      if (catchupPhotos === 0 && catchupMsgs === 0) return;
+      catchupShown = true;
+      const parts = [];
+      if (catchupPhotos > 0) parts.push(`${catchupPhotos} new photo${catchupPhotos > 1 ? "s" : ""}`);
+      if (catchupMsgs > 0) parts.push(`${catchupMsgs} new message${catchupMsgs > 1 ? "s" : ""}`);
+      const banner = document.createElement("div");
+      banner.className = "catchup-banner";
+      const label = document.createElement("span");
+      label.textContent = `While you were away: ${parts.join(" and ")}`;
+      const close = document.createElement("button");
+      close.type = "button";
+      close.setAttribute("aria-label", "Dismiss");
+      close.textContent = "×";
+      close.addEventListener("click", () => banner.remove());
+      banner.append(label, close);
+      document.body.appendChild(banner);
+      setTimeout(() => { if (banner.parentNode) banner.remove(); }, 15000);
     }
 
     /* ---------------- UPLOAD ---------------- */
@@ -318,6 +633,10 @@
     }
 
     async function savePhoto(info) {
+      if (!currentUser) {
+        setStatus("Sign in to upload photos.");
+        return;
+      }
       if (!info || !info.secure_url) {
         console.error("[upload] missing secure_url:", info);
         setStatus("Upload succeeded but no URL returned.");
@@ -332,6 +651,9 @@
           width: info.width || null,
           height: info.height || null,
           format: info.format || null,
+          uploaderId: currentUser.uid,
+          uploaderName: currentUser.displayName || (currentUser.email ? currentUser.email.split("@")[0] : "User"),
+          uploaderPhoto: currentUser.photoURL || null,
           createdAt: { ".sv": "timestamp" },
           uploadedAt: Date.now()
         });
@@ -340,13 +662,17 @@
         await readPhotos("after upload");
       } catch (err) {
         console.error("[upload] push failed:", err);
-        setStatus("Photo uploaded, but saving failed. Try refreshing.");
+        setStatus("Photo uploaded, but saving to the wall failed.");
       } finally {
         pendingSaves--;
       }
     }
 
-    document.getElementById("upload-btn").addEventListener("click", () => {
+    uploadBtn.addEventListener("click", () => {
+      if (!currentUser) {
+        handleSignIn();
+        return;
+      }
       const w = getWidget();
       if (w) w.open();
     });
@@ -371,6 +697,21 @@
       img.addEventListener("error", () => card.classList.add("is-broken"), { once: true });
 
       const caption = document.createElement("figcaption");
+
+      if (photo.uploaderName) {
+        const byline = document.createElement("span");
+        byline.className = "card-byline";
+        if (photo.uploaderPhoto) {
+          const av = document.createElement("img");
+          av.src = photo.uploaderPhoto;
+          av.alt = "";
+          av.referrerPolicy = "no-referrer";
+          byline.appendChild(av);
+        }
+        byline.appendChild(document.createTextNode(photo.uploaderName));
+        caption.appendChild(byline);
+      }
+
       const link = document.createElement("a");
       link.href = photo.url;
       link.target = "_blank";
@@ -403,6 +744,35 @@
       console.log(`[gallery] ${reason}:`, entries.length, "photo(s)");
     }
 
+    function processPhotoNotifs(entries) {
+      const newest = entries[0]?.key || "";
+      if (firstPhotoRead) {
+        firstPhotoRead = false;
+        lastProcessedPhotoKey = newest;
+        if (lastSeenPhotoKey && newest && newest > lastSeenPhotoKey) {
+          catchupPhotos = entries.filter(e => e.key > lastSeenPhotoKey).length;
+          maybeShowCatchup();
+        }
+        if (!document.hidden && newest) {
+          lastSeenPhotoKey = newest;
+          try { localStorage.setItem(NOTIF_PHOTO_KEY, newest); } catch {}
+        }
+        return;
+      }
+      if (newest && newest > lastProcessedPhotoKey) {
+        const n = entries.filter(e => e.key > lastProcessedPhotoKey).length;
+        lastProcessedPhotoKey = newest;
+        if (document.hidden) {
+          pendingUnread += n;
+          updateTitle();
+        } else {
+          lastSeenPhotoKey = newest;
+          try { localStorage.setItem(NOTIF_PHOTO_KEY, newest); } catch {}
+          showToast(`📷 ${n} new photo${n > 1 ? "s" : ""}`);
+        }
+      }
+    }
+
     async function readPhotos(reason) {
       try {
         const data = await restGet("/public_photos");
@@ -414,30 +784,16 @@
         }
         entries.sort((a, b) => b.key.localeCompare(a.key));
         renderPhotos(entries, reason);
+        processPhotoNotifs(entries);
       } catch (err) {
         console.error(`[gallery] read(${reason}):`, err);
       }
     }
 
+    readPhotos("initial");
+    setInterval(() => readPhotos("poll"), POLL_MS);
+
     /* ---------------- CHAT ---------------- */
-    const CHAT_CLIENT_ID = (() => {
-      try {
-        const existing = localStorage.getItem("chat_client_id");
-        if (existing) return existing;
-        const id = (crypto.randomUUID && crypto.randomUUID()) ||
-                   (Date.now().toString(36) + Math.random().toString(36).slice(2));
-        localStorage.setItem("chat_client_id", id);
-        return id;
-      } catch {
-        return "anon-" + Math.random().toString(36).slice(2);
-      }
-    })();
-
-    try {
-      const saved = localStorage.getItem("chat_name");
-      if (saved) chatNameInput.value = saved;
-    } catch {}
-
     let lastSend = 0;
     let sending = false;
     let lastChatKey = "";
@@ -459,7 +815,7 @@
 
     function renderChat(messages, reason) {
       const key = messages.map(m =>
-        `${m.clientId || ""}|${m.clientSentAt || 0}|${m.text || ""}`
+        `${m.authorId || m.clientId || ""}|${m.clientSentAt || 0}|${m.text || ""}`
       ).join("§");
       if (key === lastChatKey) return;
       lastChatKey = key;
@@ -478,17 +834,35 @@
       for (const msg of messages) {
         const row = document.createElement("div");
         row.className = "chat-message";
-        if (msg.clientId && msg.clientId === CHAT_CLIENT_ID) row.classList.add("is-own");
+        const isOwn = currentUser && msg.authorId && msg.authorId === currentUser.uid;
+        if (isOwn) row.classList.add("is-own");
 
         const meta = document.createElement("div");
         meta.className = "chat-message-meta";
 
+        const displayName = String(msg.authorName || msg.name || "Anonymous").slice(0, 24);
+        const authorPhoto = msg.authorPhoto;
+
+        if (authorPhoto) {
+          const av = document.createElement("img");
+          av.className = "chat-avatar";
+          av.src = authorPhoto;
+          av.alt = "";
+          av.referrerPolicy = "no-referrer";
+          meta.appendChild(av);
+        } else {
+          const av = document.createElement("span");
+          av.className = "chat-avatar-placeholder";
+          av.textContent = displayName.charAt(0).toUpperCase();
+          meta.appendChild(av);
+        }
+
         const name = document.createElement("span");
         name.className = "chat-name";
-        name.textContent = String(msg.name || "Anonymous").slice(0, 24);
+        name.textContent = displayName;
         meta.appendChild(name);
 
-        if (row.classList.contains("is-own")) {
+        if (isOwn) {
           const you = document.createElement("span");
           you.className = "chat-you";
           you.textContent = "You";
@@ -512,37 +886,70 @@
       console.log(`[chat] ${reason}:`, messages.length, "message(s)");
     }
 
+    function processMsgNotifs(messageKeys) {
+      const newest = messageKeys[messageKeys.length - 1] || "";
+      if (firstMsgRead) {
+        firstMsgRead = false;
+        lastProcessedMsgKey = newest;
+        if (lastSeenMsgKey && newest && newest > lastSeenMsgKey) {
+          catchupMsgs = messageKeys.filter(k => k > lastSeenMsgKey).length;
+          maybeShowCatchup();
+        }
+        if (!document.hidden && newest) {
+          lastSeenMsgKey = newest;
+          try { localStorage.setItem(NOTIF_MSG_KEY, newest); } catch {}
+        }
+        return;
+      }
+      if (newest && newest > lastProcessedMsgKey) {
+        const n = messageKeys.filter(k => k > lastProcessedMsgKey).length;
+        lastProcessedMsgKey = newest;
+        if (document.hidden) {
+          pendingUnread += n;
+          updateTitle();
+        } else {
+          lastSeenMsgKey = newest;
+          try { localStorage.setItem(NOTIF_MSG_KEY, newest); } catch {}
+          showToast(`💬 ${n} new message${n > 1 ? "s" : ""}`);
+        }
+      }
+    }
+
     async function readChat(reason) {
       try {
-        // Proper REST query — .json before ?, auth appended as &auth=
-        // Only downloads the newest 100 messages, not the entire history.
-        const data = await restGet(
-          '/chat_messages?orderBy=%22%24key%22&limitToLast=100'
-        );
+        const data = await restGet("/chat_messages");
         const messages = [];
+        const messageKeys = [];
         if (data && typeof data === "object") {
-          for (const k of Object.keys(data).sort()) {
+          const keys = Object.keys(data).sort();
+          const last = keys.slice(-100);
+          for (const k of last) {
             messages.push(data[k] || {});
+            messageKeys.push(k);
           }
         }
         renderChat(messages, reason);
+        processMsgNotifs(messageKeys);
       } catch (err) {
         console.error(`[chat] read(${reason}):`, err);
       }
     }
 
-    /* ---------------- BOOT ---------------- */
-    (async () => {
-      await ensureAuth();
-      readPhotos("initial");
-      readChat("initial");
-      setInterval(() => readPhotos("poll"), POLL_MS);
-      setInterval(() => readChat("poll"), POLL_MS);
-      console.log(`[app] ${VERSION} ready`);
-    })();
+    readChat("initial");
+    setInterval(() => readChat("poll"), POLL_MS);
 
     document.addEventListener("visibilitychange", () => {
       if (document.visibilityState === "visible") {
+        pendingUnread = 0;
+        updateTitle();
+        if (lastProcessedPhotoKey) {
+          lastSeenPhotoKey = lastProcessedPhotoKey;
+          try { localStorage.setItem(NOTIF_PHOTO_KEY, lastSeenPhotoKey); } catch {}
+        }
+        if (lastProcessedMsgKey) {
+          lastSeenMsgKey = lastProcessedMsgKey;
+          try { localStorage.setItem(NOTIF_MSG_KEY, lastSeenMsgKey); } catch {}
+        }
         readPhotos("visibility");
         readChat("visibility");
       }
@@ -550,8 +957,10 @@
 
     chatForm.addEventListener("submit", async (e) => {
       e.preventDefault();
-      console.log("[chat] submit", { sending, lastSend });
-
+      if (!currentUser) {
+        chatStatus("Sign in to send messages.");
+        return;
+      }
       if (sending) { chatStatus("Still sending…"); return; }
       const text = chatTextInput.value.trim();
       if (!text) { chatStatus("Type a message first."); return; }
@@ -562,9 +971,8 @@
         return;
       }
 
-      const rawName = chatNameInput.value.trim();
-      const name = rawName ? rawName.slice(0, 24) : "Anonymous";
-      try { localStorage.setItem("chat_name", name); } catch {}
+      const name = currentUser.displayName ||
+                   (currentUser.email ? currentUser.email.split("@")[0] : "User");
 
       sending = true;
       chatSendBtn.disabled = true;
@@ -575,9 +983,10 @@
 
       try {
         const key = await restPost("/chat_messages", {
-          name,
+          authorId: currentUser.uid,
+          authorName: name,
+          authorPhoto: currentUser.photoURL || null,
           text: text.slice(0, 500),
-          clientId: CHAT_CLIENT_ID,
           createdAt: { ".sv": "timestamp" },
           clientSentAt: now
         });
@@ -595,6 +1004,8 @@
         chatSendBtn.textContent = origLabel;
       }
     });
+
+    console.log(`[app] ${VERSION} ready`);
   </script>
 </body>
 </html>
